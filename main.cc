@@ -271,13 +271,6 @@ int main() {
 							}
 							break;
 						}
-						case 5:
-						{
-							if (ex.at(0) == "webhooks" && ex.at(1) == "false") {
-								webhooks = false;
-							}
-							break;
-						}
 					}
 					r_line++;
 				}
