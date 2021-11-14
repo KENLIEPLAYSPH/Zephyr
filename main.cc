@@ -14453,11 +14453,6 @@ int main() {
 															Player::OnTalkBubble(peer, pData->netID, "Failed to create new account please try again!", 0, true);
 															break;
 														}
-														case -6:
-														{
-															Player::OnTalkBubble(peer, pData->netID, "Too much accounts are crated from this device or location!", 0, true);
-															break;
-														}
 													}
 												}
 											}
