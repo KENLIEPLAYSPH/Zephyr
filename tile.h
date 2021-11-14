@@ -8061,12 +8061,12 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 				}
 				item_count_give = atoi(item_count.c_str());
 				if (item_count_give > 200 || item_count_give <= 0) {
-					Player::OnConsoleMessage(peer, "`oItem count must be between 0 and 250");
+					Player::OnConsoleMessage(peer, "`oItem count must be between 0 and 200");
 					return;
 				}
 			}
 			if (CheckItemMaxed(peer, item_id_give, item_count_give) || static_cast<PlayerInfo*>(peer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(peer->data)->currentInventorySize && CheckItemExists(peer, item_id_give) && CheckItemMaxed(peer, item_id_give, item_count_give) || static_cast<PlayerInfo*>(peer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(peer->data)->currentInventorySize && !CheckItemExists(peer, item_id_give)) {
-				Player::OnConsoleMessage(peer, "`o" + getItemDef(item_id_give).name + " wont fit into my inventory!");
+				Player::OnConsoleMessage(peer, "`o" + getItemDef(item_id_give).name + " won't fit into my inventory!");
 				return;
 			}
 			Player::OnConsoleMessage(peer, "`oYou got " + to_string(item_count_give) + " '`$" + getItemDef(item_id_give).name + "`o'.");

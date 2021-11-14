@@ -19351,8 +19351,8 @@ int main() {
 																int xdrop = droppedItem.x;
 																int ydrop = droppedItem.y;
 																int iddrop = droppedItem.id;
-																int give_count = (250 - atoi(GetItemCount(peer, droppedItem.id).c_str()));
-																int idcount = droppedItem.count - (250 - atoi(GetItemCount(peer, droppedItem.id).c_str()));
+																int give_count = (200 - atoi(GetItemCount(peer, droppedItem.id).c_str()));
+																int idcount = droppedItem.count - (200 - atoi(GetItemCount(peer, droppedItem.id).c_str()));
 																world->droppedItems.erase(world->droppedItems.begin() + atik);
 																SendTake(peer, pData->netID, pMov->x, pMov->y, itemIdx + 1);
 																DropItem(world, peer, -1, xdrop, ydrop, iddrop, idcount, 0);

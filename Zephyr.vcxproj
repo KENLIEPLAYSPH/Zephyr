@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{2c3ede48-5a4e-4158-a05f-fbf6caffb61f}</ProjectGuid>
-    <RootNamespace>GTPS</RootNamespace>
+    <RootNamespace>Zephyr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Zephyr</ProjectName>
   </PropertyGroup>
@@ -199,7 +199,7 @@
     <Image Include="placeholder.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GTPS.rc" />
+    <ResourceCompile Include="Zephyr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
