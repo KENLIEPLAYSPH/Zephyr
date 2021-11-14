@@ -18165,12 +18165,12 @@ int main() {
 											if (static_cast<PlayerInfo*>(currentPeer->data)->rawName == pData->lastInfo)
 											{
 												if (static_cast<PlayerInfo*>(currentPeer->data)->haveGrowId == false) continue;
-												GamePacket ps2 = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), "`0Warning from `4System`0: You've been `4BANNED `0from Zephyr for 730 days"), "audio/hub_open.wav"), 0));
+												GamePacket ps2 = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), "`0Warning from `4System`0: You've been `4BANNED `0from " + server_name + " for 730 days"), "audio/hub_open.wav"), 0));
 												ENetPacket* packet2 = enet_packet_create(ps2.data,
 													ps2.len,
 													ENET_PACKET_FLAG_RELIABLE);
 												enet_peer_send(currentPeer, 0, packet2);
-												GamePacket ps3 = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`oWarning from `4System`o: You've been `4BANNED `ofrom Zephyr for 730 days"));
+												GamePacket ps3 = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`oWarning from `4System`o: You've been `4BANNED `ofrom " + server_name + " for 730 days"));
 												ENetPacket* packet3 = enet_packet_create(ps3.data,
 													ps3.len,
 													ENET_PACKET_FLAG_RELIABLE);
