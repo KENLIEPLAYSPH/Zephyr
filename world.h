@@ -8826,7 +8826,6 @@ inline void LoadPlayerData(ENetPeer* peer) {
 			int skin = j["skin"];
 			string chatcolor = j["chatcolor"];
 			string lastworld = j["lastworld"];
-			int timecursed = j["timecursed"];
 			int timemuted = j["timemuted"];
 			int surgerycooldown = j["surgerycooldown"];
 			string lastnormalworld = j["lastnormalworld"];
@@ -8863,10 +8862,6 @@ inline void LoadPlayerData(ENetPeer* peer) {
 				pData->haveSuperSupporterName = true;
 				pData->Subscriber = true;
 				pData->SubscribtionEndDay = atoi(subdate.c_str());
-			}
-			if (timecursed != 0) {
-				pData->isCursed = true;
-				pData->lastCursed = timecursed;
 			}
 			if (timemuted != 0) {
 				pData->taped = true;
@@ -9491,10 +9486,4 @@ inline void send_mute_panel(ENetPeer* peer, string extra) {
 	PlayerInfo* pData = GetPeerData(peer);
 	if (extra != "") extra += "<CR>";
 	Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`!Muting Panel``|left|32|\nadd_textbox|`!User: " + pData->lastInfo + "<CR>" + extra + "`r<CR>`!Choose the mute amount and write the reason.|\nadd_text_input|days|`oDays:|" + to_string(pData->last_ban_days) + "|9|\nadd_text_input|hours|`oHours:|" + to_string(pData->last_ban_hours) + "|9|\nadd_text_input|minutes|`oMinutes:|" + to_string(pData->last_ban_minutes) + "|9|\nadd_spacer|small|\nadd_text_input|reason|`!Reason:|" + pData->last_ban_reason + "|30|\nend_dialog|mute_panel|Cancel|`4MUTE|");
-}
-
-inline void send_curse_panel(ENetPeer* peer, string extra) {
-	PlayerInfo* pData = GetPeerData(peer);
-	if (extra != "") extra += "<CR>";
-	Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`!Cursing Panel``|left|32|\nadd_textbox|`!User: " + pData->lastInfo + "<CR>" + extra + "`r<CR>`!Choose the curse amount and write the reason.|\nadd_text_input|days|`oDays:|" + to_string(pData->last_ban_days) + "|9|\nadd_text_input|hours|`oHours:|" + to_string(pData->last_ban_hours) + "|9|\nadd_text_input|minutes|`oMinutes:|" + to_string(pData->last_ban_minutes) + "|9|\nadd_spacer|small|\nadd_text_input|reason|`!Reason:|" + pData->last_ban_reason + "|30|\nend_dialog|curse_panel|Cancel|`4CURSE|");
 }

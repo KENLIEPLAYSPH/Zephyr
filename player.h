@@ -397,7 +397,6 @@ inline int getState(PlayerInfo* info) {
 	val |= info->noBody << 5;
 	val |= info->goldenHalo << 7;
 	val |= info->isFrozen << 8;
-	val |= info->isCursed << 12;
 	val |= info->isDuctaped << 13;
 	val |= info->haveSuperSupporterName << 24;
 	val |= info->isShining << 15;
@@ -2400,6 +2399,25 @@ inline void sendSound(ENetPeer* peer, const string sound) {
 	enet_peer_send(peer, 0, packet2);
 	delete[] data;
 }
+ /*void DailyMath() {
+	while (DailyMath) {
+		if (quest + 400000 < (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count()) {
+			quest = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count();
+			int userMaxRand = 100, userLowRand = 0;
+			resultnbr2 = rand() % userMaxRand + userLowRand + 1;
+			srand(time(0));
+			resultnbr1 = rand() % userMaxRand + userLowRand + 1;
+			hasil = resultnbr1 + resultnbr2;
+			prize = (rand() % 7220) + 7300;
+			for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+				if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
+				Player::OnConsoleMessage(currentPeer, "`9** Growtopia Daily Math [Questions : `3'" + to_string(resultnbr1) + " + " + to_string(resultnbr2) + "'`9 = ?] Prize: `2" + to_string(prize) + "`9 (gems) ! `o(/a <answer>).");
+				sendSound(currentPeer, "startopia_tool_droid.wav");
+				DailyMaths = true;
+			}
+		}
+	}
+} */
 inline void sendTime(ENetPeer* peer) {
 	auto _tm = time(nullptr);
 	const auto curtime = localtime(&_tm);

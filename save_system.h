@@ -13,29 +13,6 @@ inline void save_manager() {
 		for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 			if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 			if (!static_cast<PlayerInfo*>(currentPeer->data)->haveGrowId || static_cast<PlayerInfo*>(currentPeer->data)->currentWorld == "EXIT" || !static_cast<PlayerInfo*>(currentPeer->data)->isIn) continue;
-			if (static_cast<PlayerInfo*>(currentPeer->data)->isCursed) {
-				auto cooldownleft = calcBanDuration(static_cast<PlayerInfo*>(currentPeer->data)->lastCursed);
-				if (cooldownleft < 1) {
-					Player::OnConsoleMessage(currentPeer, "You are no longer bound to the netherworld, you're free to go. (`$Curse ``mod removed)");
-					static_cast<PlayerInfo*>(currentPeer->data)->skinColor = 0x8295C3FF;
-					sendClothes(currentPeer);
-					static_cast<PlayerInfo*>(currentPeer->data)->isCursed = false;
-					send_state(currentPeer);
-					static_cast<PlayerInfo*>(currentPeer->data)->lastCursed = 0;
-				}
-			}
-			if (static_cast<PlayerInfo*>(currentPeer->data)->Fishing && !static_cast<PlayerInfo*>(currentPeer->data)->TriggerFish && static_cast<PlayerInfo*>(currentPeer->data)->FishPosX != 0 && static_cast<PlayerInfo*>(currentPeer->data)->FishPosY != 0) {
-				if (rand() % 100 <= 50) {
-					static_cast<PlayerInfo*>(currentPeer->data)->TriggerFish = true;
-					for (auto currentPeers = server->peers; currentPeers < &server->peers[server->peerCount]; ++currentPeers) {
-						if (currentPeers->state != ENET_PEER_STATE_CONNECTED) continue;
-						if (isHere(currentPeer, currentPeers))  {
-							Player::OnParticleEffect(currentPeers, 36, static_cast<PlayerInfo*>(currentPeer->data)->FishPosX, static_cast<PlayerInfo*>(currentPeer->data)->FishPosY, 0);
-							Player::PlayAudio(currentPeers, "audio/splash.wav", 0);
-						}
-					}
-				}
-			}
 			if (static_cast<PlayerInfo*>(currentPeer->data)->isDuctaped) {
 				auto cooldownleft = calcBanDuration(static_cast<PlayerInfo*>(currentPeer->data)->lastMuted);
 				if (cooldownleft < 1) {
