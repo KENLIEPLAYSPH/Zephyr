@@ -7879,35 +7879,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		else if (str == "/rules") {
 			Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wHelp & Rules``|left|18|\nadd_spacer|small|\nadd_textbox|`wTo keep this place fun we've got some ground rules to check out:``|left|\nadd_spacer|small|\nadd_label_with_icon|small|`wKeep your password secret. Sharing your password will result in stolen items.``|left|24|\nadd_label_with_icon|small|`wUnprotected items are at risk of being stolen. Use doors, locks, and blocks wisely to protect your items.``|left|24|\nadd_label_with_icon|small|`wWe cannot return stolen items, so BE CAREFUL!``|left|24|\nadd_label_with_icon|small|`wBe civil. Bullying, racism, excessive profanity, sexual content, and abusive behavior are not allowed.``|left|24|\nadd_label_with_icon|small|`wPlayers that are harmful to the community may be banned. This includes accounts that use lies, fake games, or trickery to mistreat other players.``|left|24|\nadd_label_with_icon|small|`wPunishments may be applied to alt accounts as well as any devices and IP addresses used by the offender.``|left|24|\nadd_label_with_icon|small|`wTrying to get punished or asking for a punishment can earn you a worse punishment.``|left|24|\nadd_label_with_icon|small|`w'Hacking' the game - including client-side manipulation, auto-clickers, speed hacks, clock manipulation, bots, macroing, and autofarming - will result in a ban.``|left|24|\nadd_label_with_icon|small|`wDon't lie about mods or fake official Growtopia system messages.``|left|24|\nadd_label_with_icon|small|`w'Drop games' are illegal scams. You can be punished for hosting, playing, advertising or even watching.``|left|24|\nadd_label_with_icon|small|`wBetting or gambling (asking players to pay for a chance to win something) is not allowed.``|left|24|\nadd_label_with_icon|small|`wIf you find a world or player name that is in violation of our rules, message a @Mod. Do not /bc or /sb from an inappropriate world.``|left|24|\nadd_label_with_icon|small|`w@Moderators are here to enforce the rules. Abusing, spamming or harassing mods will have consequences.``|left|24|\nadd_label_with_icon|small|`wAccounts, locks, or worlds may be deleted after long periods of inactivity.``|left|24|\nadd_label_with_icon|small|`wOut of game buying/selling of Growtopia accounts, items or worlds is not allowed and may result in a ban.``|left|24|\nadd_label_with_icon|small|`wIAP fraud will result in permanent suspension.``|left|24|\nadd_label_with_icon|small|`wItem function and prices are subject to change without warning.``|left|24|\nadd_label_with_icon|small|`wYour creations and items could be deleted at any time. We do everything in our power to prevent this, but data loss may happen without warning. Lost items cannot be restored.``|left|24|\nadd_spacer|small|\nadd_label_with_icon|small|`wFor technical support, IAP issues, or to report a problem, please email " + server_email + "``|left|24|\nadd_spacer|small|\nend_dialog|popup||Continue|");
 		}
-		else if (str.substr(0, 3) == "/a ") {
-			int imie = atoi(str.substr(3, cch.length() - 3 - 1).c_str());
-			if (DailyMaths == false) return;
-			if ((str.substr(3, cch.length() - 3 - 1).find_first_not_of("0123456789") != string::npos)) return;
-			if (imie == 0 || imie != hasil) {
-				Player::OnConsoleMessage(peer, "`oYour Answer is Wrong!");
-				return;
-			}
-			if (imie == hasil) {
-				resultnbr1 = 0; resultnbr2 = 0; hasil = 0;
-				std::ifstream ifsz("save/gemdb/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".zep");
-				std::string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
-				auto gembux = atoi(content.c_str());
-				auto fingembux = gembux + prize;
-				ofstream myfile;
-				myfile.open("save/gemdb/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".zep");
-				myfile << fingembux;
-				myfile.close();
-				auto gemcalc = gembux + prize;
-				Player::OnSetBux(peer, gemcalc, 0);
-				prize = 0;
-				for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-					if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
-			//		Player::OnConsoleMessage(currentPeer, "`9** Growtopia Daily Math: (party) Party Math Event Winner is `w" + ((PlayerInfo*)(peer->data))->displayName + "`9!");
-			//		sendSound(currentPeer, "pinata_lasso.wav");
-					DailyMaths = false;
-				}
-			}
-		}
 		else if (str.substr(0, 3) == "/r ") {
 			if (static_cast<PlayerInfo*>(peer->data)->isDuctaped == true) return;
 			for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
