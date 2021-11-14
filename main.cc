@@ -8612,89 +8612,6 @@ int main() {
 													//SendPunishView(peer, pData->lastInfo);
 												}
 											}
-											if (cursePanelDialog) {
-												if (!isMod(peer)) break;
-												if (infoDat.at(0) == "days") {
-													b_days = atoi(infoDat.at(1).c_str());
-													pData->last_ban_days = atoi(infoDat.at(1).c_str());
-													if (b_days < 0) {
-														send_curse_panel(peer, "`4Error occured: Days cannot be negative!");
-														break;
-													}
-												}
-												if (infoDat.at(0) == "hours") {
-													b_hours = atoi(infoDat.at(1).c_str());
-													pData->last_ban_hours = atoi(infoDat.at(1).c_str());
-													if (b_hours < 0) {
-														send_curse_panel(peer, "`4Error occured: Hours cannot be negative!");
-														break;
-													}
-												}
-												if (infoDat.at(0) == "minutes") {
-													b_minutes = atoi(infoDat.at(1).c_str());
-													pData->last_ban_minutes = atoi(infoDat.at(1).c_str());
-													if (b_minutes < 0) {
-														send_curse_panel(peer, "`4Error occured: Minutes cannot be negative!");
-														break;
-													}
-												}
-												if (infoDat.at(0) == "reason") {
-													string reason = infoDat.at(1);
-													pData->last_ban_reason = reason;
-													if (b_days == 0 && b_hours == 0 && b_minutes == 0) {
-														send_curse_panel(peer, "`4Error occured: Ban length is 0!");
-														break;
-													}
-													else if (reason.size() == 0) {
-														send_curse_panel(peer, "`4Error occured: You must enter the reason!");
-														break;
-													}
-													else if (reason.size() >= 90) {
-														send_curse_panel(peer, "`4Error occured: Reason is too long!");
-														break;
-													}
-													/*success*/
-													int konvertuotasInt = (b_minutes * 60) + (b_hours * 60 * 60) + (b_days * 24 * 60 * 60);
-													try {
-														ifstream read_player("save/players/_" + pData->lastInfo + ".json");
-														if (!read_player.is_open()) {
-															continue;
-														}
-														json j;
-														read_player >> j;
-														read_player.close();
-														j["timecursed"] = (GetCurrentTimeInternalSeconds() + (static_cast<long long>(konvertuotasInt)));
-														Player::OnTextOverlay(peer, OutputBanTime(konvertuotasInt) + "Curse mod applied to " + pData->lastInfo + "!");
-														ofstream write_player("save/players/_" + pData->lastInfo + ".json");
-														write_player << j << std::endl;
-														write_player.close();
-													}
-													catch (std::exception& e) {
-														std::cout << e.what() << std::endl;
-														continue;
-													}
-													string userdisplay = "";
-													for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-														if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
-														if (static_cast<PlayerInfo*>(currentPeer->data)->rawName == pData->lastInfo) {
-															userdisplay = static_cast<PlayerInfo*>(currentPeer->data)->displayName;
-														}
-													} if (userdisplay == "") userdisplay = pData->lastInfo;
-													for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-														if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
-														Player::OnConsoleMessage(currentPeer, "`#** `$The Ancients `ohave used `#Curse `oon `w" + userdisplay + "`o! `#**");
-														if (static_cast<PlayerInfo*>(currentPeer->data)->rawName == pData->lastInfo) {
-															Player::OnAddNotification(currentPeer, "`wWarning from `4System`w: You've been `4CURSED `wfor " + OutputBanTime(konvertuotasInt) + "", "audio/hub_open.wav", "interface/atomic_button.rttex");
-															Player::OnConsoleMessage(currentPeer, "`wWarning from `4System`w: You've been `4CURSED `wfor " + OutputBanTime(konvertuotasInt) + "");
-															static_cast<PlayerInfo*>(currentPeer->data)->isCursed = true;
-															static_cast<PlayerInfo*>(currentPeer->data)->lastCursed = (GetCurrentTimeInternalSeconds() + (static_cast<long long>(konvertuotasInt) * 60));
-															handle_world(currentPeer, "HELL");
-														}
-													}
-													LogAccountActivity(pData->rawName, pData->lastInfo, "Curse for " + OutputBanTime(konvertuotasInt) + "(" + reason + ")");
-													//SendPunishView(peer, pData->lastInfo);
-												}
-											}
 											if (banPanelDialog) {
 												if (!isMod(peer)) break;
 												if (infoDat.at(0) == "days") {
@@ -18240,15 +18157,6 @@ int main() {
 										pData->last_ban_minutes = 0;
 										pData->last_ban_reason = "";
 										send_mute_panel(peer, "");
-									}
-								}
-								if (btn == "cursepanel") {
-									if (isMod(peer)) {
-										pData->last_ban_days = 0;
-										pData->last_ban_hours = 0;
-										pData->last_ban_minutes = 0;
-										pData->last_ban_reason = "";
-										send_curse_panel(peer, "");
 									}
 								}
 								if (btn == "suspend")
