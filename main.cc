@@ -14416,7 +14416,7 @@ int main() {
 															pData->haveGrowId = true;
 															pData->HasLogged = true;
 															pData->effect = 8421376;
-															Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wGrowID GET!``|left|206|\nadd_textbox|A `wGrowID`` with the log on of `w" + pData->displayName + "`` created.  Write it and your password down as they will be required to log on from now on!|left|\nend_dialog|growid_apply|Continue||");
+															Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wGrowID GET!``|left|1400|\nadd_textbox|A `wGrowID`` with the log on of `w" + pData->displayName + "`` created.  Write it and your password down as they will be required to log on from now on!|left|\nend_dialog|growid_apply|Continue||");
 															Player::PlayAudio(peer, "audio/piano_nice.wav", 150);
 															ofstream myfile;
 															myfile.open("save/gemdb/_" + pData->rawName + ".zep");
@@ -14451,6 +14451,11 @@ int main() {
 														case -5:
 														{
 															Player::OnTalkBubble(peer, pData->netID, "Failed to create new account please try again!", 0, true);
+															break;
+														}
+														case -6:
+														{
+															Player::OnTalkBubble(peer, pData->netID, "Too many accounts from the same location!", 0, true);
 															break;
 														}
 													}
