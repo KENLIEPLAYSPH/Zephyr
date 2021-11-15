@@ -8877,7 +8877,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
 		}
 		else if (str == "/zephyr") {
-		     Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|Zephyr|left|242|\nadd_url_button|Github Repository|http://github.com/mqhirr/Zephyr||\nend_dialog|Zephyr|Github Repository|Ok|");
+		     Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|Zephyr|left|242|\nadd_label|Github Repository Link:|\nadd_smalltext|The repository is currently private.|left|\nadd_label|https://github.com/mqhirr/Zephyr|");
         }
 		else if (str == "/nuke") {
 			if (!isMod(peer)) {
