@@ -15688,7 +15688,7 @@ int main() {
 										Player::PlayAudio(peer, "audio/cash_register.wav", 0);
 									}
 								}
-								if (btn == "view_guide") {
+							/*	if (btn == "view_guide") {
 									GTDialog guide;
 									guide.addLabelWithIcon("`9Guide", 6336, LABEL_BIG);
 									guide.addTextBox("Here you can find information about " + server_name + " items and custom recipes, note this guide might contain some missing information!");
@@ -15706,7 +15706,7 @@ int main() {
 										}
 										infile.close();
 										guide.addCustom(dialog);
-										/*guide.addSpacer(SPACER_SMALL);
+										guide.addSpacer(SPACER_SMALL);
 										guide.addLabelWithIcon("`9Custom Seed Recipes:", 2, LABEL_BIG);
 										guide.addSpacer(SPACER_SMALL);
 										dialog = "";
@@ -15718,7 +15718,7 @@ int main() {
 											}
 										}
 										infile3.close();
-										guide.addCustom(dialog);*/
+										guide.addCustom(dialog);
 										guide.addSpacer(SPACER_SMALL);
 										guide.addQuickExit();
 										guide.addButton("Close", "Close");
@@ -15727,7 +15727,7 @@ int main() {
 									catch (const std::out_of_range& e) {
 										std::cout << e.what() << std::endl;
 									}
-								}
+								}*/
 								if (btn == "getKey") {
 									if (isWorldOwner(peer, world) || isDev(peer)) {
 										try {

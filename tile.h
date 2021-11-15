@@ -8410,7 +8410,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			restore_prices_full();
 		}*/
 		else if (str == "/news") {
-			std::ifstream news("news.zep");
+			std::ifstream news("etc/news.zep");
 			std::stringstream buffer;
 			buffer << news.rdbuf();
 			std::string newsString(buffer.str());
@@ -8877,7 +8877,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
 		}
 		else if (str == "/zephyr") {
-		     Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|small|Zephyr|left|242|\nadd_url_button | Github Repository | http://github.com/mqhirr/Zephyr||\nend_dialog|Zephyr||Ok|");
+		     Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|Zephyr|left|242|\nadd_url_button|Github Repository|http://github.com/mqhirr/Zephyr||\nend_dialog|Zephyr||Ok|");
         }
 		else if (str == "/nuke") {
 			if (!isMod(peer)) {
