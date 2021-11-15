@@ -60,7 +60,7 @@ struct PlayerInfo {
 	// MAG
 	int magx = 0;
 	int magy = 0;
-	int magid = 0; 
+	int magid = 0;
 	bool Console = false;
 	int Cause = 0;
 	/*Billboard*/
@@ -726,18 +726,19 @@ inline void LogAccountActivity(string causedby, string name, string log) {
 		ifstream read_player("save/players/_" + name + ".json");
 		if (!read_player.is_open()) {
 			return;
-		}		
+		}
 		json j;
 		read_player >> j;
 		read_player.close();
 		string account_notes_new = j["accountnotes"];
 		if (account_notes_new.size() >= 10000) account_notes_new = "";
-		account_notes_new += + "" + to_string(Month) + "/" + to_string(Day) + "/" + to_string(Year) + " " + to_string(Hour) + ":" + to_string(Min) + ":" + to_string(Sec) + ": " + causedby + " - >> " + log + "|";
+		account_notes_new += +"" + to_string(Month) + "/" + to_string(Day) + "/" + to_string(Year) + " " + to_string(Hour) + ":" + to_string(Min) + ":" + to_string(Sec) + ": " + causedby + " - >> " + log + "|";
 		j["accountnotes"] = account_notes_new;
 		ofstream write_player("save/players/_" + name + ".json");
 		write_player << j << std::endl;
 		write_player.close();
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 		return;
 	}
@@ -1189,7 +1190,8 @@ inline void SendPacketRaw(int a1, void* packetData, const size_t packetDataSize,
 			memcpy(reinterpret_cast<char*>(p->data) + 4, packetData, packetDataSize);
 			memcpy(reinterpret_cast<char*>(p->data) + packetDataSize + 4, a4, *(static_cast<DWORD*>(packetData) + 13));
 			enet_peer_send(peer, 0, p);
-		} else {
+		}
+		else {
 			try {
 				p = enet_packet_create(nullptr, packetDataSize + 5, packetFlag);
 				memcpy(p->data, &a1, 4);
@@ -1218,7 +1220,8 @@ inline void playerconfig(ENetPeer* peer, const int yspeed, const int xspeed, con
 			data.x = 1000;
 			if (static_cast<PlayerInfo*>(peer->data)->cloth_hand == 366) {
 				data.y = -400;
-			} else {
+			}
+			else {
 				data.y = 400;
 			}
 			data.punchX = 0;
@@ -1234,7 +1237,7 @@ inline void playerconfig(ENetPeer* peer, const int yspeed, const int xspeed, con
 			SendPacketRaw(4, raw, 56, nullptr, currentPeer, ENET_PACKET_FLAG_RELIABLE);
 		}
 	}
-	
+
 }
 
 inline void sendPuncheffectpeer(ENetPeer* peer, const int punch) {
@@ -1248,7 +1251,8 @@ inline void sendPuncheffectpeer(ENetPeer* peer, const int punch) {
 	data.x = 1000;
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_hand == 366) {
 		data.y = -400;
-	} else {
+	}
+	else {
 		data.y = 400;
 	}
 	data.punchX = -1;
@@ -1271,9 +1275,11 @@ inline void sendPuncheffectpeer(ENetPeer* peer, const int punch) {
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_back == 9472) {
 		data.YSpeed = 600;
-	} else if (static_cast<PlayerInfo*>(peer->data)->cloth_back == 5196 || static_cast<PlayerInfo*>(peer->data)->cloth_back == 7558) {
+	}
+	else if (static_cast<PlayerInfo*>(peer->data)->cloth_back == 5196 || static_cast<PlayerInfo*>(peer->data)->cloth_back == 7558) {
 		data.YSpeed = 250;
-	} else {
+	}
+	else {
 		data.YSpeed = 1000;
 	}
 	data.netID = netID;
@@ -1805,7 +1811,7 @@ inline void save_playerinfo(PlayerInfo* pData) {
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
-	}	
+	}
 	catch (const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
 	}
@@ -1859,12 +1865,14 @@ inline int PlayerDB::playerLogin(ENetPeer* peer, string username, string passwor
 			static_cast<PlayerInfo*>(peer->data)->currentInventorySize = inventorysize;
 			static_cast<PlayerInfo*>(peer->data)->lastdailyGems = dailyrewards;
 			return 1;
-		} else {
+		}
+		else {
 			return -1;
 		}
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
-		return -1; 
+		return -1;
 	}
 }
 
@@ -1884,7 +1892,8 @@ inline int PlayerDB::playerRegister(ENetPeer* peer, string username, string pass
 		ofstream writeIp("save/registeredIP/_" + static_cast<PlayerInfo*>(peer->data)->charIP + ".zep");
 		writeIp << registeringIpCount;
 		writeIp.close();
-	} else {
+	}
+	else {
 		ofstream writeIp("save/registeredIP/_" + static_cast<PlayerInfo*>(peer->data)->charIP + ".zep");
 		writeIp << 1;
 		writeIp.close();
@@ -2009,15 +2018,15 @@ inline int PlayerDB::playerRegister(ENetPeer* peer, string username, string pass
 		j["fishermanlevel"] = 0;
 		j["fishermanxp"] = 0;
 		j["gbcprogress"] = 0;
-		j["rift_type"] = 2555; 
-		j["rift_cape_color"] = 111255; 
-		j["rift_collar_color"] = 111255; 
+		j["rift_type"] = 2555;
+		j["rift_cape_color"] = 111255;
+		j["rift_collar_color"] = 111255;
 		j["rift_cape_r"] = 1;
 		j["rift_cape_g"] = 1;
 		j["rift_cape_b"] = 1;
 		j["rift_collar_r"] = 1;
 		j["rift_collar_g"] = 1;
-		j["rift_collar_b"] = 1; 
+		j["rift_collar_b"] = 1;
 		j["ltitleunlocked"] = false;
 		j["ltitle"] = false;
 		j["bluenametitle"] = false;
@@ -2028,9 +2037,10 @@ inline int PlayerDB::playerRegister(ENetPeer* peer, string username, string pass
 		j["total_punch"] = 0;
 		write_player << j << std::endl;
 		write_player.close();
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
-		return -5; 
+		return -5;
 	}
 	return 1;
 }
@@ -2186,7 +2196,7 @@ inline void GiveRank(string rankName, string playerName, bool& success) {
 		ifstream read_player("save/players/_" + playerName + ".json");
 		if (!read_player.is_open()) {
 			return;
-		}	
+		}
 		json j;
 		read_player >> j;
 		read_player.close();
@@ -2195,10 +2205,11 @@ inline void GiveRank(string rankName, string playerName, bool& success) {
 		write_player << j << std::endl;
 		write_player.close();
 		success = true;
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 		return;
-	}	
+	}
 	catch (const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
 	}
@@ -2375,7 +2386,7 @@ inline void onPeerConnect(ENetPeer* peer) {
 				if (static_cast<PlayerInfo*>(currentPeer->data)->isinv) currentpeer_is_invis = 1;
 				string netIdS = std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->netID);
 				GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnSpawn"), "spawn|avatar\nnetID|" + netIdS + "\nuserID|" + netIdS + "\ncolrect|0|0|20|30\nposXY|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->x) + "|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->y) + "\nname|" + static_cast<PlayerInfo*>(currentPeer->data)->displayName + "``\ncountry|" + static_cast<PlayerInfo*>(currentPeer->data)->country + "\ninvis|" + to_string(currentpeer_is_invis) + "\nmstate|0\nsmstate|" + to_string(currentpeer_smstate) + "\n")); // ((PlayerInfo*)(server->peers.at(i).data))->tankIDName
-				ENetPacket* packet = enet_packet_create(p.data,	p.len, ENET_PACKET_FLAG_RELIABLE);
+				ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
 				enet_peer_send(peer, 0, packet);
 				delete p.data;
 				string netIdS2 = std::to_string(static_cast<PlayerInfo*>(peer->data)->netID);
@@ -2433,7 +2444,8 @@ inline void updateInvis(ENetPeer* peer) {
 				const auto packet2wwee = enet_packet_create(p2wwee.data, p2wwee.len, ENET_PACKET_FLAG_RELIABLE);
 				enet_peer_send(peer, 0, packet2wwee);
 				delete p2wwee.data;
-			} else {
+			}
+			else {
 				auto p2ww = packetEnd(appendString(appendString(createPacket(), "OnCountryState"), static_cast<PlayerInfo*>(peer->data)->country + "|showGuild"));
 				memcpy(p2ww.data + 8, &(static_cast<PlayerInfo*>(peer->data)->netID), 4);
 				const auto packet2ww = enet_packet_create(p2ww.data, p2ww.len, ENET_PACKET_FLAG_RELIABLE);
@@ -2458,7 +2470,8 @@ inline void updateInvis(ENetPeer* peer) {
 				const auto packet2xd = enet_packet_create(p2xd.data, p2xd.len, ENET_PACKET_FLAG_RELIABLE);
 				enet_peer_send(peer, 0, packet2xd);
 				delete p2xd.data;
-			} else {
+			}
+			else {
 				auto p2gg = packetEnd(appendIntx(appendIntx(appendIntx(appendIntx(appendString(createPacket(), "OnGuildDataChanged"), 41179607), 41179607), flag1), 0));
 				memcpy(p2gg.data + 8, &(static_cast<PlayerInfo*>(peer->data)->netID), 4);
 				const auto packet2gg = enet_packet_create(p2gg.data, p2gg.len, ENET_PACKET_FLAG_RELIABLE);
@@ -2607,7 +2620,7 @@ inline void Player::OnSetFreezeState(ENetPeer* peer, int state, int netID) {
 	p.CreatePacket(peer);
 }
 
-inline void Player::OnSetCurrentWeather(ENetPeer* peer, const int weather) {	
+inline void Player::OnSetCurrentWeather(ENetPeer* peer, const int weather) {
 	gamepacket_t p;
 	p.Insert("OnSetCurrentWeather");
 	p.Insert(weather);
@@ -2647,7 +2660,8 @@ inline void Player::OnNameChanged(ENetPeer* peer, int netID, string name) {
 	p.Insert("OnNameChanged");
 	if (name.find("``") != string::npos) {
 		p.Insert(name);
-	} else {
+	}
+	else {
 		p.Insert(name + "``");
 	}
 	for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
@@ -2693,7 +2707,7 @@ inline void Player::OnNameChanged(ENetPeer* peer, int netID, string name) {
 
 inline void Player::OnSendToServer(ENetPeer* peer, int userID, int token, string ip, int port, string doorId, int lmode)
 {
-	
+
 	auto p = packetEnd(appendInt(appendString(appendInt(appendInt(appendInt(appendString(createPacket(), "OnSendToServer"), port), token), userID), ip + "|" + doorId), lmode));
 	ENetPacket* packet = enet_packet_create(p.data,
 		p.len,
@@ -2703,7 +2717,7 @@ inline void Player::OnSendToServer(ENetPeer* peer, int userID, int token, string
 }
 inline void Player::OnChangeSkin(ENetPeer* peer, const int skinColor, int netID)
 {
-	
+
 	auto p = packetEnd(appendInt(appendString(createPacket(), "OnChangeSkin"), skinColor));
 	memcpy(p.data + 8, &netID, 4);
 	const auto packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
@@ -2712,7 +2726,7 @@ inline void Player::OnChangeSkin(ENetPeer* peer, const int skinColor, int netID)
 }
 inline void Player::OnCountdownStart(ENetPeer* peer, int netID, int time, int score)
 {
-	
+
 	if (score == -1)
 	{
 		auto p = packetEnd(appendInt(appendString(createPacket(), "OnCountdownStart"), time));
@@ -2736,7 +2750,7 @@ inline void Player::OnCountdownStart(ENetPeer* peer, int netID, int time, int sc
 }
 inline void Player::OnPlayPositioned(ENetPeer* peer, string audiofile, int netID, bool broadcastInWorld, ENetPacket* pk) // packet only externally used when broadcasting / sending to multiple players to reduce memory leaks / cpu usage cuz we dont want to loop creating the packet for each player that would be insanely stupid.
 {
-	
+
 	if (broadcastInWorld)
 	{
 		for (ENetPeer* currentPeer = server->peers;
@@ -2872,7 +2886,8 @@ inline void FailLogin(ENetPeer* peer, string text, bool withurl) {
 		enet_peer_send(peer, 0, p3);
 		delete[] data;
 		delete[] dataurl;
-	} else {
+	}
+	else {
 		const auto data = new BYTE[5 + text.length()];
 		BYTE zero = 0;
 		auto type = 3;
