@@ -3664,7 +3664,7 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 					if (!iscontains) {
 						bool success = true;
 						SaveItemMoreTimes(6260, 1, peer, success, pData->rawName + " from subscription");
-						Player::OnAddNotification(peer, "`wYou've obtained `5Amulet Of Force`w!", "audio/hub_open.wav", "interface/cash_icon_overlay.rttex");
+						Player::OnAddNotification(peer, "`wYou've obtained the `5Amulet Of Force`w!", "audio/hub_open.wav", "interface/cash_icon_overlay.rttex");
 					}
 				} else {
 					Player::OnTalkBubble(peer, pData->netID, "Must be used on a person.", 0, true); 
@@ -8206,8 +8206,8 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 				static_cast<PlayerInfo*>(currentPeer->data)->ltitle = true;
 				static_cast<PlayerInfo*>(currentPeer->data)->ltitleunlocked = true;
 				enet_peer_disconnect_later(currentPeer, 0);
-				Player::OnConsoleMessage(currentPeer, "`4System-Message: `9Owner `2 " + static_cast<PlayerInfo*>(peer->data)->rawName + " `8has just gave you `8Legendary Title.");
-				Player::OnAddNotification(currentPeer, "`4System-Message: `2Administrator " + static_cast<PlayerInfo*>(peer->data)->rawName + "`wHas Give You Legendary Title.", "audio/hub_open.wav", "interface/cash_icon_overlay.rttex");
+				Player::OnConsoleMessage(currentPeer, "`4System-Message: `9Owner `2 " + static_cast<PlayerInfo*>(peer->data)->rawName + " `8has just gave you the `8Legendary Title.");
+				Player::OnAddNotification(currentPeer, "`4System-Message: `2Administrator " + static_cast<PlayerInfo*>(peer->data)->rawName + "`whas just gave you the Legendary Title.", "audio/hub_open.wav", "interface/cash_icon_overlay.rttex");
 			}
 		}
 		Player::OnConsoleMessage(peer, "`2You successfully gave `8Legendary Title to : `2" + target_name);
@@ -8460,7 +8460,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		else if (str.substr(0, 4) == "/an ") {
 		if (!isOwner(peer))
 		{
-			Player::OnConsoleMessage(peer, "`9Sorry! `2This Command Only Available For Owner!");
+			sendWrongCmd(peer);
 			return;
 		}
 		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), str.substr(4, cch.length() - 4 - 1).c_str()), "audio/mp3/suspended.mp3"), 0));
@@ -8482,13 +8482,13 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		delete p.data;
 							}
-		else if (str.substr(0, 4) == "/c") {
+		else if (str.substr(0, 4) == "/rs") {
 		if (!isOwner(peer))
 		{
-			Player::OnConsoleMessage(peer, "`9Sorry! `2This Command Only Available For Owner!");
+			sendWrongCmd(peer);
 			return;
 		}
-		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), "`4WARNING!: `wServer is in a `4UPDATE! `wFrom:`4Cold"), "audio/already_used.wav"), 0));
+		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), "`4WARNING!: `wServer is `4UPDATING"), "audio/already_used.wav"), 0));
 		ENetPacket* packet = enet_packet_create(p.data,
 			p.len,
 			ENET_PACKET_FLAG_RELIABLE);
@@ -8507,31 +8507,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		delete p.data;
 							}
-		else if (str.substr(0, 4) == "/pl") {
-		if (!isOwner(peer))
-		{
-			Player::OnConsoleMessage(peer, "`9Sorry! `2This Command Only Available For Owner!");
-			return;
-		}
-		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/large/special_event.rttex"), "`cGIVEAWAY!: `wGiveaway Starting in `41 Minute!`w in world `9" + ((PlayerInfo*)(peer->data))->currentWorld + "`w, Go there! and grab some `9World Locks"), "audio/cumbia_horns.wav"), 0));
-		ENetPacket* packet = enet_packet_create(p.data,
-			p.len,
-			ENET_PACKET_FLAG_RELIABLE);
-		ENetPeer* currentPeer;
-		for (currentPeer = server->peers;
-			currentPeer < &server->peers[server->peerCount];
-			++currentPeer)
-		{
-			if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
-				continue;
-			if (((PlayerInfo*)(currentPeer->data))->currentWorld == "EXIT")
-				continue;
-			if (((PlayerInfo*)(currentPeer->data))->isIn == false)
-				continue;
-			enet_peer_send(currentPeer, 0, packet);
-		}
-		delete p.data;
-		}
 		else if (str.substr(0, 5) == "/pay ") {
 			if (static_cast<PlayerInfo*>(peer->data)->isCursed) {
 				Player::OnConsoleMessage(peer, "You cannot perform this action while you are cursed");
@@ -8789,7 +8764,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str == "/beta")
 		{
-		Player::OnAddNotification(peer, "`4This feature is not available yet.", "audio/hit.wav", "interface/large/playerportal_button.rttex");
+		Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
         }
 		else if (str == "/nuke") {
 			if (world->isNuked) {
@@ -8866,6 +8841,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 5) == "/ban ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			if (world == nullptr || static_cast<PlayerInfo*>(peer->data)->currentWorld == "EXIT" || serverIsFrozen) return;
 			if (static_cast<PlayerInfo*>(peer->data)->haveGrowId && static_cast<PlayerInfo*>(peer->data)->rawName == world->owner || isMod(peer))
 			{
@@ -9073,6 +9052,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 6) == "/mute ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			ifstream read_player("save/players/_" + PlayerDB::getProperName(str.substr(6, cch.length() - 6 - 6)) + ".json");
 			if (!read_player.is_open()) {
 				Player::OnConsoleMessage(peer, "Player does not exist!");
@@ -9088,6 +9071,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/curse ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			ifstream read_player("save/players/_" + PlayerDB::getProperName(str.substr(6, cch.length() - 6 - 6)) + ".json");
 			if (!read_player.is_open()) {
 				Player::OnConsoleMessage(peer, "Player does not exist!");
@@ -9412,6 +9399,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 5) == "/gsm ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			string name = static_cast<PlayerInfo*>(peer->data)->displayName;
 			GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`4Global System Message: `o" + str.substr(4, cch.length() - 4 - 1)));
 			string text = "action|play_sfx\nfile|audio/sungate.wav\ndelayMS|0\n";
@@ -9524,6 +9515,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 8) == "/infoex ") {
 			string checknick = PlayerDB::getProperName(str.substr(8, cch.length() - 8 - 1));
+			if (!isMod(peer)) {
+				sendWrongCmd(peer);
+				return;
+			}
 			try {
 				ifstream read_player("save/players/_" + checknick + ".json");
 				if (!read_player.is_open()) {
@@ -9574,6 +9569,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/banip ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			string warn_info = str;
 			size_t extra_space = warn_info.find("  ");
 			if (extra_space != std::string::npos)
@@ -10042,6 +10041,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		else if (str.substr(0, 6) == "/nick ") {
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			string name2 = str.substr(6, cch.length() - 6 - 1);
 			if ((str.substr(6, cch.length() - 6 - 1).find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != string::npos)) return;
 			if (name2.length() < 3) return;
@@ -10092,6 +10095,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		else if (str == "/invis" || str == "/invisible") {
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			if (static_cast<PlayerInfo*>(peer->data)->isinv == false) {
 				static_cast<PlayerInfo*>(peer->data)->isinv = true;
 				Player::OnConsoleMessage(peer, "`oYou are now ninja, invisible to all.");
@@ -10310,9 +10317,13 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/schat ")
 		{
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			if (static_cast<PlayerInfo*>(peer->data)->isDuctaped == true)
 			{
-				GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`@Staff Chat Not `4Allowed `@When You Are `9Duct-taped`@!"));
+				GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`@Staff Chat is not `4allowed `@when you're `9Duct-taped`@!"));
 				ENetPacket* packet = enet_packet_create(p.data,
 					p.len,
 					ENET_PACKET_FLAG_RELIABLE);
@@ -10546,6 +10557,10 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		} 
 		else if (str.substr(0, 7) == "/color ") {
+		if (!isMod(peer)) {
+			sendWrongCmd(peer);
+			return;
+		}
 			if (str.substr(7, cch.length() - 7 - 1).size() >= 20 || str.substr(7, cch.length() - 7 - 1).size() <= 0) return;
 			int color = atoi(str.substr(7, cch.length() - 7 - 1).c_str());
 			static_cast<PlayerInfo*>(peer->data)->skinColor = color;

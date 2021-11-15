@@ -34,24 +34,6 @@ inline void save_manager() {
 					static_cast<PlayerInfo*>(currentPeer->data)->SurgeryTime = 0;
 				}
 			}
-			if (static_cast<PlayerInfo*>(currentPeer->data)->PunchPotion) {
-				auto cooldownleft = calcBanDuration(static_cast<PlayerInfo*>(currentPeer->data)->usedPunchPotion);
-				if (cooldownleft < 1) {
-					Player::OnConsoleMessage(currentPeer, "You feel weak again. (`$One HIT `omod removed)");
-					sendSound(currentPeer, "audio/dialog_confirm.wav");
-					static_cast<PlayerInfo*>(currentPeer->data)->PunchPotion = false;
-					static_cast<PlayerInfo*>(currentPeer->data)->usedPunchPotion = 0;
-				}
-			}
-			if (static_cast<PlayerInfo*>(currentPeer->data)->PlacePotion) {
-				auto cooldownleft = calcBanDuration(static_cast<PlayerInfo*>(currentPeer->data)->usedPlacePotion);
-				if (cooldownleft < 1) {
-					Player::OnConsoleMessage(currentPeer, "Your hands shrinks again. (`$Triple Place `omod removed)");
-					sendSound(currentPeer, "audio/dialog_confirm.wav");
-					static_cast<PlayerInfo*>(currentPeer->data)->PlacePotion = false;
-					static_cast<PlayerInfo*>(currentPeer->data)->usedPlacePotion = 0;
-				}
-			}
 			if (static_cast<PlayerInfo*>(currentPeer->data)->GeigerCooldown) {
 				auto cooldownleft = calcBanDuration(static_cast<PlayerInfo*>(currentPeer->data)->GeigerTime);
 				if (cooldownleft < 1) {
