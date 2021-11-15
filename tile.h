@@ -3658,14 +3658,6 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 						std::cout << e.what() << std::endl;
 						return;
 					}
-					send_state(peer);
-					auto iscontains = false;
-					SearchInventoryItem(peer, 6260, 1, iscontains);
-					if (!iscontains) {
-						bool success = true;
-						SaveItemMoreTimes(6260, 1, peer, success, pData->rawName + " from subscription");
-						Player::OnAddNotification(peer, "`wYou've obtained the `5Amulet Of Force`w!", "audio/hub_open.wav", "interface/cash_icon_overlay.rttex");
-					}
 				} else {
 					Player::OnTalkBubble(peer, pData->netID, "Must be used on a person.", 0, true); 
 				}
