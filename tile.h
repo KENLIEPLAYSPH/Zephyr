@@ -8876,6 +8876,9 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		{
 			Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
 		}
+		else if (str == "/zephyr") {
+		     Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|small|Zephyr|left|242|\nadd_url_button | Github Repository | http://github.com/mqhirr/Zephyr||\nend_dialog|Zephyr||Ok|");
+        }
 		else if (str == "/nuke") {
 			if (!isMod(peer)) {
 				sendWrongCmd(peer);
