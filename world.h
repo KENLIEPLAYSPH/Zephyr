@@ -585,7 +585,7 @@ inline WorldInfo CreateWorld(const string name, int width, int height, const boo
 	world.name = name;
 	world.width = width;
 	world.height = height;
-	world.drop_gem = false;
+	world.drop_gem = true;
 	GenerateGrowaloneLikeWorld(&world, cave, width, height, dirtType, lavaType, mainDoorType, bedrockType, rockType, caveBackgroundType, 0, 0, 0, BlastProperties_RandomDeco1);
 	return world;
 }
@@ -595,7 +595,7 @@ WorldInfo generateWorld(string name, int width, int height) {
 	world.name = name;
 	world.width = width;
 	world.height = height;
-	world.drop_gem = false;
+	world.drop_gem = true;
 	for (auto i = 0; i < world.width * world.height; i++) {
 		WorldItem tiles{};
 		tiles.foreground = 0;
@@ -813,7 +813,7 @@ inline AWorld WorldDB::get2(string name) {
 			info.category = category;
 			info.rating = rating;
 			if (rating == 1) {
-				info.drop_gem = false;
+				info.drop_gem = true;
 			}
 			else {
 				info.drop_gem = true;

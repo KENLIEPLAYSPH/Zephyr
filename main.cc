@@ -13855,9 +13855,6 @@ int main() {
 													if (world->rating == 1 && infoDat.at(1) == "0") {
 														world->rating = 0;
 														world->drop_gem = true;
-													} else if (world->rating == 0 && infoDat.at(1) == "1") {
-														world->rating = 1;
-														world->drop_gem = false;
 													}
 												}
 												if (infoDat.at(0) == "checkbox_rainbow") {

@@ -1642,7 +1642,7 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 						std::cout << e.what() << std::endl;
 						return;
 					}
-					string drop_gems = "0|";
+					string drop_gems = "1|";
 					if (world->rating == 1) drop_gems = "1|";
 					int muted = world->silence;
 					string wlmenu = "";
