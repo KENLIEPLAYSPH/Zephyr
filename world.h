@@ -330,8 +330,7 @@ inline void GenerateGrowaloneLikeWorld(WorldInfo* world, const bool cave, const 
 					float chance = k / 2.5;
 					if (rand() % 100 <= chance) {
 						settile(world, j, k, 9380);
-					}
-					else {
+					} else {
 						settile(world, j, k, 3564);
 					}
 					if ((rand() % 12) > 10)
@@ -368,12 +367,12 @@ inline void GenerateGrowaloneLikeWorld(WorldInfo* world, const bool cave, const 
 			}
 			const auto mainDoorX = (rand() % (width - 4)) + 2;
 			auto f = 30 + offset[mainDoorX];
-			settile(world, mainDoorX, f, mainDoorType);
+			settile(world, mainDoorX, f, mainDoorType); 
 			settile(world, mainDoorX + 1, f, 20);
 			settiletext(world, mainDoorX + 1, f, "Welcome to the mines!");
 			settile(world, mainDoorX - 1, f, 0);
 			settile(world, mainDoorX, f - 1, 696);
-			settileactive(world, mainDoorX, f - 1, 696);
+			settileactive(world, mainDoorX , f - 1, 696);
 			settile(world, mainDoorX + 1, f - 1, 0);
 			settile(world, mainDoorX - 1, f - 1, 0);
 			settile(world, mainDoorX, f + 1, bedrockType);
@@ -401,8 +400,7 @@ inline void GenerateGrowaloneLikeWorld(WorldInfo* world, const bool cave, const 
 			settile(world, minerX - 2, f - 2, 3584);
 			delete[] offset;
 			delete[] offset2;
-		}
-		else {
+		} else {
 			const auto offset = new int[width];
 			const auto offset2 = new int[width];
 			offset[0] = (height - 60 < 0) ? -10 : height - 60;
@@ -516,10 +514,9 @@ inline void GenerateGrowaloneLikeWorld(WorldInfo* world, const bool cave, const 
 			delete[] offset;
 			delete[] offset2;
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 }
 
 inline void GenerateRegularWorld(WorldInfo* world, const int width, const int height, const int dirtType = 2, const int lavaType = 4, const int mainDoorType = 6, const int bedrockType = 8, const int rockType = 10, const int caveBackgroundType = 14, const int machineId = 0)
@@ -574,10 +571,9 @@ inline void GenerateRegularWorld(WorldInfo* world, const int width, const int he
 				world->items.at(i).background = caveBackgroundType;
 			}
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 }
 
 inline WorldInfo CreateWorld(const string name, int width, int height, const bool cave = false, const int dirtType = 2, const int lavaType = 4, const int mainDoorType = 6, const int bedrockType = 8, const int rockType = 10, const int caveBackgroundType = 14) {
@@ -737,8 +733,7 @@ inline AWorld WorldDB::get2(string name) {
 					ret.info = info;
 					ret.ptr = &worlds.at(worlds.size() - 1);
 					return ret;
-				}
-				else if (usedlargeblast == true) {
+				} else if (usedlargeblast == true) {
 					usedlargeblast = false;
 					WorldInfo info = CreateWorld(name, 150, 100);
 					worlds.push_back(info);
@@ -746,8 +741,7 @@ inline AWorld WorldDB::get2(string name) {
 					ret.info = info;
 					ret.ptr = &worlds.at(worlds.size() - 1);
 					return ret;
-				}
-				else if (usedthermoblast == true) {
+				} else if (usedthermoblast == true) {
 					usedthermoblast = false;
 					WorldInfo info = CreateWorld(name, 100, 60, false, 0, 0, 6, 8, 0, 0);
 					worlds.push_back(info);
@@ -755,8 +749,7 @@ inline AWorld WorldDB::get2(string name) {
 					ret.info = info;
 					ret.ptr = &worlds.at(worlds.size() - 1);
 					return ret;
-				}
-				else if (usedcaveblast == true) {
+				} else if (usedcaveblast == true) {
 					usedcaveblast = false;
 					WorldInfo info = CreateWorld(name, 90, 60, true);
 					worlds.push_back(info);
@@ -764,14 +757,14 @@ inline AWorld WorldDB::get2(string name) {
 					ret.info = info;
 					ret.ptr = &worlds.at(worlds.size() - 1);
 					return ret;
-				}
+				} 
 				WorldInfo info = generateWorld(name, 100, 60);
 				worlds.push_back(info);
 				ret.id = worlds.size() - 1;
 				ret.info = info;
 				ret.ptr = &worlds.at(worlds.size() - 1);
 				return ret;
-			}
+			}	
 			json j;
 			read_world >> j;
 			read_world.close();
@@ -786,7 +779,7 @@ inline AWorld WorldDB::get2(string name) {
 			int update_id = j["update_id"];
 			bool disableDrop = j["disableDrop"];
 			string category = j["category"];
-			int rating = j["rating"];
+			int rating = j["rating"]; 
 			int entrylevel = j["entrylevel"];
 			int width = j["width"];
 			int height = j["height"];
@@ -814,8 +807,7 @@ inline AWorld WorldDB::get2(string name) {
 			info.rating = rating;
 			if (rating == 1) {
 				info.drop_gem = true;
-			}
-			else {
+			} else {
 				info.drop_gem = true;
 			}
 			info.entrylevel = entrylevel;
@@ -885,8 +877,7 @@ inline AWorld WorldDB::get2(string name) {
 			ret.info = info;
 			ret.ptr = &worlds.at(worlds.size() - 1);
 			return ret;
-		}
-		catch (std::exception& e) {
+		} catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
 			WorldInfo info = CreateWorld(name, 100, 60);
 			worlds.push_back(info);
@@ -895,8 +886,7 @@ inline AWorld WorldDB::get2(string name) {
 			ret.ptr = &worlds.at(worlds.size() - 1);
 			return ret;
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
 		AWorld ret;
 		ret.id = -1;
@@ -988,9 +978,9 @@ inline int getPlayersCountInWorldVSave(const string name) {
 			tile["f"] = info.items.at(i).fire;
 			tile["red"] = info.items.at(i).red;
 			tile["ds1"] = info.items[i].display1;
-			tile["ds2"] = info.items[i].display2;
-			tile["ds3"] = info.items[i].display3;
-			tile["ds4"] = info.items[i].display4;
+		    tile["ds2"] = info.items[i].display2;
+		    tile["ds3"] = info.items[i].display3;
+		    tile["ds4"] = info.items[i].display4;
 			tile["gre"] = info.items.at(i).green;
 			tile["blu"] = info.items.at(i).blue;
 			tile["es"] = info.items.at(i).evolvestage;
@@ -1018,7 +1008,7 @@ inline int getPlayersCountInWorldVSave(const string name) {
 		j["weather"] = info.weather;
 		j["publicBlock"] = info.publicBlock;
 		j["silence"] = info.silence;
-		j["update_id"] = 0;
+		j["update_id"] = 0; 
 		j["disableDrop"] = info.DisableDrop;
 		j["category"] = info.category;
 		j["rating"] = info.rating;
@@ -1055,10 +1045,9 @@ inline int getPlayersCountInWorldEvent(WorldInfo* world, string name) {
 			}
 			if (static_cast<PlayerInfo*>(currentPeer->data)->currentWorld == name && !static_cast<PlayerInfo*>(currentPeer->data)->isinv) count++;
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 	return count;
 }
 
@@ -1073,23 +1062,22 @@ inline int getPlayersCountInWorldEvent(WorldInfo world, string name) {
 			}
 			if (static_cast<PlayerInfo*>(currentPeer->data)->currentWorld == name && !static_cast<PlayerInfo*>(currentPeer->data)->isinv) count++;
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 	return count;
 }
 
 /*inline void saveAll() {
 	try {
-		for (int i = 0; i < worlds.size(); i++) {
+		for (int i = 0; i < worlds.size(); i++) { 
 			if (worlds.at(i).name != "EXIT" && worlds.at(i).name != "error") {
 				flush(worlds.at(i));
 			}
 		}
 	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 }*/
 
 vector<WorldInfo*> getRandomWorldsPointer(int how_much, int min_peoples) {
@@ -1106,12 +1094,11 @@ vector<WorldInfo*> getRandomWorldsPointer(int how_much, int min_peoples) {
 				}
 				if (getPlayersCountInWorld(world->name) < min_peoples) continue;
 				ret.push_back(world);
-			}
+			} 
 		}
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 	return ret;
 }
 
@@ -1494,113 +1481,77 @@ inline void buildItemsDatabase() {
 			def.growTime = atoi(ex[8].c_str());
 			if (def.id == 866) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 872) {
+			} else if (def.id == 872) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 928) {
+			} else if (def.id == 928) {
 				def.growTime = 43200;
-			}
-			else if (def.id == 1008) {
+			} else if (def.id == 1008) {
 				def.growTime = 79200;
-			}
-			else if (def.id == 1044) {
+			} else if (def.id == 1044) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 1632) {
+			} else if (def.id == 1632) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 1636) {
+			} else if (def.id == 1636) {
 				def.growTime = 604800;
-			}
-			else if (def.id == 2798) {
+			} else if (def.id == 2798) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 3044) {
+			} else if (def.id == 3044) {
 				def.growTime = 172800;
-			}
-			else if (def.id == 3888) {
+			} else if (def.id == 3888) {
 				def.growTime = 259200;
-			}
-			else if (def.id == 4858) {
+			} else if (def.id == 4858) {
 				def.growTime = 4200;
-			}
-			else if (def.id == 5116) {
+			} else if (def.id == 5116) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 5318) {
+			} else if (def.id == 5318) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 6212) {
+			} else if (def.id == 6212) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 6414) {
+			} else if (def.id == 6414) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 7476) {
+			} else if (def.id == 7476) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 7766) {
+			} else if (def.id == 7766) {
 				def.growTime = 172800;
-			}
-			else if (def.id == 7770) {
+			} else if (def.id == 7770) {
 				def.growTime = 259200;
-			}
-			else if (def.id == 7774) {
+			} else if (def.id == 7774) {
 				def.growTime = 259200;
-			}
-			else if (def.id == 7778) {
+			} else if (def.id == 7778) {
 				def.growTime = 259200;
-			}
-			else if (def.id == 8050) {
+			} else if (def.id == 8050) {
 				def.growTime = 172800;
-			}
-			else if (def.id == 8076) {
+			} else if (def.id == 8076) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8088) {
+			} else if (def.id == 8088) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8100) {
+			} else if (def.id == 8100) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8112) {
+			} else if (def.id == 8112) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8124) {
+			} else if (def.id == 8124) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8136) {
+			} else if (def.id == 8136) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8148) {
+			} else if (def.id == 8148) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8160) {
+			} else if (def.id == 8160) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8172) {
+			} else if (def.id == 8172) {
 				def.growTime = 432000;
-			}
-			else if (def.id == 8196) {
+			} else if (def.id == 8196) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 9224) {
+			} else if (def.id == 9224) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 9302) {
+			} else if (def.id == 9302) {
 				def.growTime = 259200;
-			}
-			else if (def.id == 10446) {
+			} else if (def.id == 10446) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 10450) {
+			} else if (def.id == 10450) {
 				def.growTime = 86400;
-			}
-			else if (def.id == 10656) {
+			} else if (def.id == 10656) {
 				def.growTime = 12000;
-			}
-			else if (def.id == 10656) {
+			} else if (def.id == 10656) {
 				def.growTime = 12000;
 			}
 			string cl = ex[9];
@@ -1661,7 +1612,7 @@ inline void buildItemsDatabase() {
 			}
 			maxItems = def.id;
 			itemDefs.push_back(def);
-		}
+		} 
 	}
 	craftItemDescriptions();
 }
@@ -1938,7 +1889,7 @@ inline void sendPData(ENetPeer* peer, PlayerMoving* data)
 }
 
 inline void sendArrow(ENetPeer* peer, const uint16_t itemid, const bool droppeditem) {
-	PlayerMoving pmov;
+    PlayerMoving pmov;
 	memset(&pmov, 0, sizeof(PlayerMoving));
 	*reinterpret_cast<uint32_t*>(&pmov) = 37 | (droppeditem << 8);
 	pmov.netID = itemid;
@@ -2268,7 +2219,7 @@ inline void send_state(ENetPeer* peer) {
 				auto var = static_cast<PlayerInfo*>(currentPeer->data)->effect;
 				memcpy(raw + 1, &var, 3);
 				SendPacketRaw(4, raw, 56, nullptr, peer, ENET_PACKET_FLAG_RELIABLE);
-			}
+			}	
 			gamepacket_t p_name(0, static_cast<PlayerInfo*>(currentPeer->data)->netID);
 			p_name.Insert("OnNameChanged");
 			if (static_cast<PlayerInfo*>(currentPeer->data)->displayName.find("``") != string::npos) {
@@ -2328,12 +2279,10 @@ inline void end_surgery(ENetPeer* peer, bool Fail) {
 		catch (const std::out_of_range& e) {
 			std::cout << e.what() << std::endl;
 		}
-	}
-	else {
+	} else {
 		if (SurgeryDay) {
 			static_cast<PlayerInfo*>(peer->data)->SurgeryTime = (GetCurrentTimeInternalSeconds() + (30 * 60));
-		}
-		else {
+		} else {
 			static_cast<PlayerInfo*>(peer->data)->SurgeryTime = (GetCurrentTimeInternalSeconds() + (20 * 60));
 		}
 	}
@@ -2416,8 +2365,7 @@ inline void sendPlayerLeave(ENetPeer* peer) {
 	if (find(static_cast<PlayerInfo*>(peer->data)->lastworlds.begin(), static_cast<PlayerInfo*>(peer->data)->lastworlds.end(), static_cast<PlayerInfo*>(peer->data)->currentWorld) != static_cast<PlayerInfo*>(peer->data)->lastworlds.end()) {
 		static_cast<PlayerInfo*>(peer->data)->lastworlds.erase(std::remove(static_cast<PlayerInfo*>(peer->data)->lastworlds.begin(), static_cast<PlayerInfo*>(peer->data)->lastworlds.end(), static_cast<PlayerInfo*>(peer->data)->currentWorld), static_cast<PlayerInfo*>(peer->data)->lastworlds.end());
 		static_cast<PlayerInfo*>(peer->data)->lastworlds.push_back(static_cast<PlayerInfo*>(peer->data)->currentWorld);
-	}
-	else {
+	} else {
 		static_cast<PlayerInfo*>(peer->data)->lastworlds.push_back(static_cast<PlayerInfo*>(peer->data)->currentWorld);
 	}
 	static_cast<PlayerInfo*>(peer->data)->ischeck = false;
@@ -3259,7 +3207,7 @@ inline void sendHMonitor(ENetPeer* peer, int x, int y, string name, bool online,
 	memset(packet, 0, 4 + 56 + 8 + len);
 	packet[0] = 4;
 	memcpy(packet + 4, pmovpacked, 56);
-	*reinterpret_cast<uint16_t*>(packet + 4 + 56) = 0x4D8;
+	*reinterpret_cast<uint16_t*>(packet + 4 + 56) = 0x4D8; 
 	*reinterpret_cast<uint16_t*>(packet + 4 + 56 + 6) = 1 | (online ? 0x40 : 0);
 	*reinterpret_cast<uint16_t*>(packet + 6 + 56) = background;
 	*static_cast<uint8_t*>(packet + 4 + 56 + 8) = 0x0B;
@@ -3277,7 +3225,7 @@ inline string lock_tile_datas(int visual, uint32_t owner, uint32_t adminLength, 
 	data[2] = 0x01;
 	if (isPublic) data[2] |= 0x80;
 	data[4] = 3;
-	data[5] = visual;
+	data[5] = visual; 
 	STRINT(data, 6) = owner;
 	STRINT(data, 10) = adminLength;
 	for (uint32_t i = 0; i < adminLength; i++) {
@@ -3356,7 +3304,7 @@ inline void send_canvas_data(ENetPeer* peer, short fg, short bg, int x, int y, i
 	memcpy(ExtendedData + 15, text.data(), TextLen);
 	memcpy(raw + 56, ExtendedData, extendedLen);
 	SendPacketRaw3(4, raw, 56 + 15 + item + TextLen, nullptr, peer, ENET_PACKET_FLAG_RELIABLE);
-	delete[] ExtendedData;
+	delete[] ExtendedData; 
 }
 
 inline void sendDrop(ENetPeer* peer, int netID, int x, int y, int item, int count, BYTE specialEffect) {
@@ -3661,8 +3609,7 @@ inline void DropItem(WorldInfo* world, ENetPeer* peer, int netID, int x, int y, 
 				count = 100;
 			}
 			for (auto i = 0; i < idstoremove.size(); i++) processTakeServer(world, peer, idstoremove.at(i));
-		}
-		else {
+		} else {
 			vector<int> idstoremove;
 			for (auto i = 0; i < world->droppedItems.size(); i++) {
 				if (blockX == static_cast<int>(world->droppedItems.at(i).x / 32) && blockY == static_cast<int>(world->droppedItems.at(i).y / 32)) {
@@ -3806,8 +3753,7 @@ inline int getGemCount(const int item)
 		if (rarity == 0) return 0;
 		if (rarity > 13) {
 			count = rarity / 3;
-		}
-		else {
+		} else {
 			const auto ran = rand() % 2;
 			switch (ran)
 			{
@@ -3841,7 +3787,7 @@ inline void DailyRewardCheck(ENetPeer* peer) {
 	if (static_cast<PlayerInfo*>(peer->data)->lastdailyGems <= GetCurrentTimeInternalSeconds() / 60) {
 		static_cast<PlayerInfo*>(peer->data)->lastdailyGems = (GetCurrentTimeInternalSeconds() / 60) + 1440;
 		//bool success = true;
-		/*if (static_cast<PlayerInfo*>(peer->data)->Subscriber && static_cast<PlayerInfo*>(peer->data)->SubscribtionEndDay - 1 >= 1)  {
+		/*if (static_cast<PlayerInfo*>(peer->data)->Subscriber && static_cast<PlayerInfo*>(peer->data)->SubscribtionEndDay - 1 >= 1)  { 
 			SaveItemMoreTimes(1360, 2, peer, success, static_cast<PlayerInfo*>(peer->data)->rawName + " from daily reward");
 		} else {
 			SaveItemMoreTimes(1360, 1, peer, success, static_cast<PlayerInfo*>(peer->data)->rawName + " from daily reward");
@@ -3853,7 +3799,7 @@ inline void DailyRewardCheck(ENetPeer* peer) {
 			ifstream read_player("save/players/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".json");
 			if (!read_player.is_open()) {
 				return;
-			}
+			}	
 			json j;
 			read_player >> j;
 			read_player.close();
@@ -3861,15 +3807,13 @@ inline void DailyRewardCheck(ENetPeer* peer) {
 			if (static_cast<PlayerInfo*>(peer->data)->SubscribtionEndDay <= 0) {
 				j["subtype"] = "";
 				j["subdate"] = "";
-			}
-			else {
+			} else {
 				j["subdate"] = to_string(static_cast<PlayerInfo*>(peer->data)->SubscribtionEndDay);
 			}
 			ofstream write_player("save/players/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".json");
 			write_player << j << std::endl;
 			write_player.close();
-		}
-		catch (std::exception& e) {
+		} catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
 			return;
 		}
@@ -4177,8 +4121,7 @@ inline void DoCancelTransitionAndTeleport(ENetPeer* peer, const int x, const int
 		const auto packet249 = enet_packet_create(p2346.data, p2346.len, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(peer, 0, packet249);
 		delete p2346.data;
-	}
-	else {
+	} else {
 		if (!entered) {
 			GamePacket p4 = packetEnd(appendFloat(appendString(createPacket(), "OnSetPos"), x * 32, y * 32));
 			memcpy(p4.data + 8, &(static_cast<PlayerInfo*>(peer->data)->netID), 4);
@@ -4215,162 +4158,122 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 		if (level == 1) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 1, peer, success, "");
-		}
-		else if (level == 2) {
+		} else if (level == 2) {
 
-		}
-		else if (level == 3) {
-
-		}
-		else if (level == 4) {
-
-		}
-		else if (level == 5) {
+		} else if (level == 3) {
+			
+		} else if (level == 4) {
+			
+		} else if (level == 5) {
 			auto success = true;
 			SaveItemMoreTimes(4996, 1, peer, success, "");
-		}
-		else if (level == 6) {
-
-		}
-		else if (level == 7) {
-
-		}
-		else if (level == 8) {
+		} else if (level == 6) {
+			
+		} else if (level == 7) {
+			
+		} else if (level == 8) {
 			auto success = true;
 			SaveItemMoreTimes(6860, 1, peer, success, "");
-		}
-		else if (level == 9) {
+		} else if (level == 9) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 10, peer, success, "");
-		}
-		else if (level == 10) {
+		} else if (level == 10) {
 			auto success = true;
 			SaveItemMoreTimes(6008, 1, peer, success, "");
 		}
-	}
-	else if (type == "provider") {
+	} else if (type == "provider") {
 		Player::PlayAudio(peer, "audio/levelup.wav", 0);
 		Player::OnParticleEffect(peer, 46, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y, 0);
 		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wProvider role is now level " + to_string(level) + "!", 0, true);
 		if (level == 1) {
 			auto success = true;
 			SaveItemMoreTimes(1636, 1, peer, success, "");
-		}
-		else if (level == 2) {
+		} else if (level == 2) {
 
-		}
-		else if (level == 3) {
+		} else if (level == 3) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 3, peer, success, "");
-		}
-		else if (level == 4) {
-
-		}
-		else if (level == 5) {
+		} else if (level == 4) {
+			
+		} else if (level == 5) {
 			auto success = true;
 			SaveItemMoreTimes(5082, 1, peer, success, "");
-		}
-		else if (level == 6) {
-
-		}
-		else if (level == 7) {
-
-		}
-		else if (level == 8) {
+		} else if (level == 6) {
+			
+		} else if (level == 7) {
+			
+		} else if (level == 8) {
 			auto success = true;
 			SaveItemMoreTimes(6860, 1, peer, success, "");
-		}
-		else if (level == 9) {
+		} else if (level == 9) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 10, peer, success, "");
-		}
-		else if (level == 10) {
+		} else if (level == 10) {
 			auto success = true;
 			SaveItemMoreTimes(7558, 1, peer, success, "");
 		}
-	}
-	else if (type == "geiger") {
+	} else if (type == "geiger") {
 		Player::PlayAudio(peer, "audio/levelup.wav", 0);
 		Player::OnParticleEffect(peer, 46, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y, 0);
 		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wGeiger Hunter role is now level " + to_string(level) + "!", 0, true);
 		if (level == 1) {
 			auto success = true;
 			SaveItemMoreTimes(4656, 1, peer, success);
-		}
-		else if (level == 2) {
+		} else if (level == 2) {
 
-		}
-		else if (level == 3) {
+		} else if (level == 3) {
 
-		}
-		else if (level == 4) {
+		} else if (level == 4) {
+			
+		} else if (level == 5) {
 
-		}
-		else if (level == 5) {
-
-		}
-		else if (level == 6) {
-
-		}
-		else if (level == 7) {
-
-		}
-		else if (level == 8) {
+		} else if (level == 6) {
+			
+		} else if (level == 7) {
+			
+		} else if (level == 8) {
 			auto success = true;
 			SaveItemMoreTimes(10424, 1, peer, success);
-		}
-		else if (level == 9) {
+		} else if (level == 9) {
 			auto success = true;
 			SaveItemMoreTimes(5084, 1, peer, success);
-		}
-		else if (level == 10) {
+		} else if (level == 10) {
 			auto success = true;
 			SaveItemMoreTimes(8480, 1, peer, success);
 		}
-	}
-	else if (type == "fisherman") {
+	} else if (type == "fisherman") {
 		Player::PlayAudio(peer, "audio/levelup.wav", 0);
 		Player::OnParticleEffect(peer, 46, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y, 0);
 		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wFisherman role is now level " + to_string(level) + "!", 0, true);
 		if (level == 1) {
 			auto success = true;
 			SaveItemMoreTimes(3010, 1, peer, success);
-		}
-		else if (level == 2) {
+		} else if (level == 2) {
 
-		}
-		else if (level == 3) {
+		} else if (level == 3) {
 
-		}
-		else if (level == 4) {
+		} else if (level == 4) {
 			auto success = true;
 			SaveItemMoreTimes(3074, 1, peer, success);
-		}
-		else if (level == 5) {
+		} else if (level == 5) {
 			auto success = true;
 			SaveItemMoreTimes(5740, 1, peer, success);
-		}
-		else if (level == 6) {
-
-		}
-		else if (level == 7) {
+		} else if (level == 6) {
+			
+		} else if (level == 7) {
 			auto success = true;
 			SaveItemMoreTimes(1550, 1, peer, success);
-		}
-		else if (level == 8) {
+		} else if (level == 8) {
 			auto success = true;
 			SaveItemMoreTimes(3100, 1, peer, success);
-		}
-		else if (level == 9) {
+		} else if (level == 9) {
 			auto success = true;
 			SaveItemMoreTimes(5080, 1, peer, success);
-		}
-		else if (level == 10) {
+		} else if (level == 10) {
 			auto success = true;
 			SaveItemMoreTimes(3040, 1, peer, success);
 		}
-	}
-	else if (type == "regular") {
+	} else if (type == "regular") {
 		for (ENetPeer* net_peer = server->peers; net_peer < &server->peers[server->peerCount]; ++net_peer) {
 			if (net_peer->state != ENET_PEER_STATE_CONNECTED) continue;
 			if (isHere(peer, net_peer)) {
@@ -4379,34 +4282,26 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 		}
 		if (level == 1) {
 
-		}
-		else if (level == 2) {
+		} else if (level == 2) {
 			auto success = true;
 			SaveItemMoreTimes(340, 75, peer, success, "");
-		}
-		else if (level == 3) {
+		} else if (level == 3) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 1, peer, success, "");
-		}
-		else if (level == 4) {
+		} else if (level == 4) {
 			auto success = true;
 			SaveItemMoreTimes(1938, 1, peer, success, "");
-		}
-		else if (level == 5) {
+		} else if (level == 5) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 5, peer, success, "");
-		}
-		else if (level == 6) {
-
-		}
-		else if (level == 7) {
+		} else if (level == 6) {
+			
+		} else if (level == 7) {
 			auto success = true;
 			SaveItemMoreTimes(6918, 1, peer, success, "");
-		}
-		else if (level == 8) {
+		} else if (level == 8) {
 
-		}
-		else if (level == 9) {
+		} else if (level == 9) {
 			std::ifstream ifsz("save/gemdb/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".zep");
 			std::string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
 			auto gembux = atoi(content.c_str());
@@ -4417,15 +4312,12 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 			myfile.close();
 			auto gemcalc = gembux + 5000;
 			Player::OnSetBux(peer, gemcalc, 0);
-		}
-		else if (level == 10) {
+		} else if (level == 10) {
 			auto success = true;
 			SaveItemMoreTimes(1740, 1, peer, success, "");
-		}
-		else if (level == 11) {
+		} else if (level == 11) {
 
-		}
-		else if (level == 12) {
+		} else if (level == 12) {
 			std::ifstream ifsz("save/gemdb/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".zep");
 			std::string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
 			auto gembux = atoi(content.c_str());
@@ -4436,17 +4328,14 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 			myfile.close();
 			auto gemcalc = gembux + 15000;
 			Player::OnSetBux(peer, gemcalc, 0);
-		}
-		else if (level == 13) {
+		} else if (level == 13) {
 			auto success = true;
 			SaveItemMoreTimes(8452, 1, peer, success, "");
-		}
-		else if (level == 14) {
+		} else if (level == 14) {
 			auto success = true;
 			SaveItemMoreTimes(1486, 5, peer, success, "");
-		}
-		else if (level == 15) {
-
+		} else if (level == 15) {
+			
 		}
 	}
 }
@@ -4462,13 +4351,13 @@ inline void SendXP(ENetPeer* peer, int amount) {
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_necklace == 9168) {
 		amount *= 2;
-	}
+	} 
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_back == 9152) {
 		amount *= 2;
-	}
+	} 
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_back == 9506) {
 		amount *= 2;
-	}
+	} 
 	if (isYellowAnces(GetPeerData(peer)) || FarmingEvent) {
 		if (static_cast<PlayerInfo*>(peer->data)->cloth_ances == 5078 || FarmingEvent) {
 			const auto chance = (rand() % 100) + 1;
@@ -4476,8 +4365,7 @@ inline void SendXP(ENetPeer* peer, int amount) {
 				amount *= 2;
 				Player::OnParticleEffect(peer, 49, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y, 0);
 			}
-		}
-		else if (static_cast<PlayerInfo*>(peer->data)->cloth_ances == 5126) /*lvl2*/ {
+		} else if (static_cast<PlayerInfo*>(peer->data)->cloth_ances == 5126) /*lvl2*/ {
 			const auto chance = (rand() % 100) + 1;
 			if (chance <= 10)
 			{
@@ -4587,13 +4475,11 @@ inline void find_geiger(ENetPeer* peer) {
 		if (static_cast<PlayerInfo*>(peer->data)->geigerlevel >= 10) chanceofbonus = 5;
 		if (static_cast<PlayerInfo*>(peer->data)->geigerlevel >= 2 && rand() % 100 <= chanceofbonus) {
 			Player::OnConsoleMessage(peer, "Infused bonus not gained irradiated mod");
-		}
-		else {
+		} else {
 			if (GeigerDay) {
 				Player::OnConsoleMessage(peer, "`oYou are aglow with radiation!. (`$Irradiated `omod added, `$15 mins `oleft)``");
 				static_cast<PlayerInfo*>(peer->data)->GeigerTime = (GetCurrentTimeInternalSeconds() + (15 * 60));
-			}
-			else {
+			} else {
 				Player::OnConsoleMessage(peer, "`oYou are aglow with radiation!. (`$Irradiated `omod added, `$30 mins `oleft)``");
 				static_cast<PlayerInfo*>(peer->data)->GeigerTime = (GetCurrentTimeInternalSeconds() + (30 * 60));
 			}
@@ -4652,22 +4538,18 @@ inline void find_geiger(ENetPeer* peer) {
 			static_cast<PlayerInfo*>(peer->data)->geigerlevel++;
 			static_cast<PlayerInfo*>(peer->data)->geigerxp = 0;
 			SyncPlayerRoles(peer, static_cast<PlayerInfo*>(peer->data)->geigerlevel, "geiger");
-		}
-		else {
+		} else {
 			static_cast<PlayerInfo*>(peer->data)->geigerxp += 10;
 		}
 		SendXP(peer, 15);
-	}
-	else {
+	} else {
 		const auto checkx = static_cast<PlayerInfo*>(peer->data)->geigerx - static_cast<PlayerInfo*>(peer->data)->x;
 		const auto checky = static_cast<PlayerInfo*>(peer->data)->y - static_cast<PlayerInfo*>(peer->data)->geigery;
 		if (checkx > 200 || checkx < -200) {
 			SendParticleEffect(peer, static_cast<PlayerInfo*>(peer->data)->x + 10, static_cast<PlayerInfo*>(peer->data)->y + 10, 0, 114, 0);
-		}
-		else if (checky > 200 || checky < -200) {
+		} else if (checky > 200 || checky < -200) {
 			SendParticleEffect(peer, static_cast<PlayerInfo*>(peer->data)->x + 10, static_cast<PlayerInfo*>(peer->data)->y + 10, 1, 114, 0);
-		}
-		else {
+		} else {
 			SendParticleEffect(peer, static_cast<PlayerInfo*>(peer->data)->x + 10, static_cast<PlayerInfo*>(peer->data)->y + 10, 2, 114, 0);
 		}
 	}
@@ -4837,8 +4719,7 @@ inline void SendDropSeed(WorldInfo* world, ENetPeer* peer, const int x, const in
 	if (chance <= target_v) {
 		if (isSeed(foreground)) {
 			DropItem(world, peer, -1, x * 32 + (rand() % 16), y * 32 + (rand() % 16), foreground, 1, 0);
-		}
-		else {
+		} else {
 			DropItem(world, peer, -1, x * 32 + (rand() % 16), y * 32 + (rand() % 16), foreground + 1, 1, 0);
 		}
 	}
@@ -5254,11 +5135,9 @@ inline void SendCombiner(ENetPeer* peer, WorldInfo* world, const int x, const in
 						int y_p = world->droppedItems.at(i).y / 32;
 						if (x_p == x && y_p == y && world->droppedItems.at(i).id == id1) {
 							id1count = world->droppedItems.at(i).count;
-						}
-						else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id2) {
+						} else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id2) {
 							id2count = world->droppedItems.at(i).count;
-						}
-						else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id3) {
+						} else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id3) {
 							id3count = world->droppedItems.at(i).count;
 						}
 						if (id1count != 0 && id2count != 0 && id3count != 0) break;
@@ -5275,36 +5154,31 @@ inline void SendCombiner(ENetPeer* peer, WorldInfo* world, const int x, const in
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.erase(world->droppedItems.begin() + i);
 									i--;
-								}
-								else {
+								} else {
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.at(i).uid = world->droppedCount++;
 									sendDrop(peer, -1, world->droppedItems.at(i).x + 1, world->droppedItems.at(i).y + 1, world->droppedItems.at(i).id, world->droppedItems.at(i).count, 0);
 								}
-							}
-							else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id2) {
+							} else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id2) {
 								world->droppedItems.at(i).count -= atoi(ex.at(4).c_str());
 								id2count = world->droppedItems.at(i).count;
 								if (world->droppedItems.at(i).count <= 0) {
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.erase(world->droppedItems.begin() + i);
 									i--;
-								}
-								else {
+								} else {
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.at(i).uid = world->droppedCount++;
 									sendDrop(peer, -1, world->droppedItems.at(i).x + 1, world->droppedItems.at(i).y + 1, world->droppedItems.at(i).id, world->droppedItems.at(i).count, 0);
 								}
-							}
-							else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id3) {
+							} else if (x_p == x && y_p == y && world->droppedItems.at(i).id == id3) {
 								world->droppedItems.at(i).count -= atoi(ex.at(5).c_str());
 								id3count = world->droppedItems.at(i).count;
 								if (world->droppedItems.at(i).count <= 0) {
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.erase(world->droppedItems.begin() + i);
 									i--;
-								}
-								else {
+								} else {
 									RemoveDroppedItem(peer, world->droppedItems.at(i).uid);
 									world->droppedItems.at(i).uid = world->droppedCount++;
 									sendDrop(peer, -1, world->droppedItems.at(i).x + 1, world->droppedItems.at(i).y + 1, world->droppedItems.at(i).id, world->droppedItems.at(i).count, 0);
@@ -5348,8 +5222,7 @@ inline void SendGhost(ENetPeer* peer) {
 		sendClothes(peer);
 		Player::OnConsoleMessage(peer, "`oYour atoms are suddenly aware of quantum tunneling. (`$Ghost in the Shell `omod added)``");
 		Player::PlayAudio(peer, "audio/dialog_confirm.wav", 0);
-	}
-	else {
+	} else {
 		if (static_cast<PlayerInfo*>(peer->data)->skinColor == -2450) {
 			static_cast<PlayerInfo*>(peer->data)->skinColor = 0x8295C3FF;
 			sendClothes(peer);
@@ -5362,7 +5235,7 @@ inline void SendGhost(ENetPeer* peer) {
 }
 inline void sendnews(ENetPeer* peer)
 {
-	std::ifstream news("news.zep");
+	std::ifstream news("etc/news.zep");
 	std::stringstream buffer;
 	buffer << news.rdbuf();
 	std::string newsString(buffer.str());
@@ -6653,8 +6526,8 @@ inline void complete_surgery(ENetPeer* peer)
 	vector<int> surg_rewards{ 3172, 1258, 1260, 1262, 1264, 1266, 1268, 1270, 4308, 4310, 4312, 4314, 4316, 4318, 3172, 1258, 1260, 1262, 1264, 1266, 1268, 1270, 4308, 4310, 4312, 4314, 4316, 4318, 4296, 1242, 1244, 1246, 1248, 1282, 1284, 1286, 1290, 1288, 1292, 1294, 1256, 2586, 782, 3536, 764, 4176, 4322, 4080, 2992, 2976, 3790, 4990, 1506, 1274, 9000, 1252, 8284, 8954, 8534, 8478, 8480, 8486, 8484, 8482, 8468, 8494, 8466, 8490, 8456, 8458, 8496, 8472, 6398, 6426, 6340, 6342, 6350, 6818, 8244, 8242, 8240, 8452, 8454, 8488, 8498, 8474, 8476, 8492 };
 
 
-
-	if (static_cast<PlayerInfo*>(peer->data)->cloth_face == 312)
+	
+	if (static_cast<PlayerInfo*>(peer->data)->cloth_face == 312) 
 	{
 		surg_rewards.push_back(5482);
 	}
@@ -6850,25 +6723,23 @@ inline void restore_prices() {
 					}
 				}
 				infile.close();
-				vector<float>rise{ 1.01,1.02,1.03,1.04,1.05,1.06,1.07,1.08,1.09 };
-				vector<float>fall{ 0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99 };
+				vector<float>rise{1.01,1.02,1.03,1.04,1.05,1.06,1.07,1.08,1.09};
+				vector<float>fall{0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99};
 				bool r_rise = (rand() % 2) != 0;
 				if (r_rise) { /*rise*/
 					float rise_num = rise.at(rand() % rise.size());
 					past_price *= rise_num;
 					rise_k++;
-				}
-				else { /*fall*/
+				} else { /*fall*/
 					float fall_num = fall.at(rand() % fall.size());
 					past_price *= fall_num;
 					drop_k++;
-				}
+				}	
 				kaina = past_price;
 				if (kaina > 200 && itemid != 9498 && itemid != 5154 && itemid != 5140 && itemid != 5138 && itemid != 5136 && itemid != 7382 && itemid != 4762) kaina = 250;
 				if (kaina < 1) kaina = 1;
 				if (itemid == 7188) kaina = 100;
-			}
-			else {
+			} else {
 				int past_price = 0;
 				ifstream infile("etc/price/prdata.zep");
 				for (string line; getline(infile, line);) {
@@ -6881,26 +6752,25 @@ inline void restore_prices() {
 					}
 				}
 				infile.close();
-				vector<float>rise{ 1.01,1.02,1.03,1.04,1.05,1.06,1.07,1.08,1.09 };
-				vector<float>fall{ 0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99 };
+				vector<float>rise{1.01,1.02,1.03,1.04,1.05,1.06,1.07,1.08,1.09};
+				vector<float>fall{0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99};
 				bool r_rise = (rand() % 2) != 0;
 				if (r_rise) { /*rise*/
 					float rise_num = rise.at(rand() % rise.size());
 					past_price *= rise_num;
 					rise_k++;
-				}
-				else { /*fall*/
+				} else { /*fall*/
 					float fall_num = fall.at(rand() % fall.size());
 					past_price *= fall_num;
 					drop_k++;
-				}
+				}	
 				kaina = past_price;
 				if (kaina > 20000) kaina = 25000;
 				if (kaina < 1) kaina = 1;
 				if (itemid == 7188) kaina = 100;
 			}
 			append += to_string(itemid) + "|" + to_string(kaina) + "|0\n";
-		}
+		} 
 		remove("etc/price/prdata3.zep");
 		if (rename(oldname2, newname2) != 0) {
 			SendConsole("Filesystem Exception #3 Failed to rename file", "ERROR");
@@ -6924,15 +6794,14 @@ inline void restore_prices() {
 			Player::PlayAudio(currentPeer, "audio/bell.wav", 0);
 		}
 		SendConsole("Item prices were refreshed", "WARN");
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 }
 
 inline void LoadEvents(bool ignore = false)
 {
-
+	
 	string test = lastday;
 	time_t t = time(nullptr);
 	// ReSharper disable once CppDeprecatedEntity
@@ -7096,7 +6965,7 @@ inline void SendPunishView(ENetPeer* peer, string PlayerName) {
 		if (!read_player.is_open()) {
 			Player::OnConsoleMessage(peer, PlayerName + " does not exist");
 			return;
-		}
+		}	
 		json j;
 		read_player >> j;
 		read_player.close();
@@ -7173,7 +7042,7 @@ inline void SendPunishView(ENetPeer* peer, string PlayerName) {
 					aplayerid = mysql_row[0];
 					ausername = mysql_row[1];
 					aip = mysql_row[38];
-					anickname = mysql_row[44];
+					anickname = mysql_row[44];	
 				}
 				if (anickname == "") anickname = info_dat[i];
 				allinfo.addLabelWithIconButton("`5" + info_dat[i] + " `w(" + anickname + "`w) #" + aplayerid + " `oHrs: `w" + to_string(rand() % 3000) + " `oIP: `w" + aip + "", 658, "viewinfo_" + info_dat[i] + "");
@@ -7181,11 +7050,10 @@ inline void SendPunishView(ENetPeer* peer, string PlayerName) {
 			allinfo.addSpacer(SPACER_SMALL);
 		}*/
 		allinfo.endDialog("Close", "", "Close");
-		Player::OnDialogRequest(peer, allinfo.finishDialog());
-	}
-	catch (std::exception& e) {
+		Player::OnDialogRequest(peer, allinfo.finishDialog());	
+	} catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
-	}
+	}	
 	catch (const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
 	}
@@ -7195,92 +7063,77 @@ inline void SendGrowpedia(ENetPeer* peer) {
 	string level1 = "", level2 = "", level3 = "", level4 = "", level5 = "", level6 = "", level7 = "", level8 = "", level9 = "", level10 = "", level11 = "", level12 = "", level13 = "", level14 = "", level15 = "", level16 = "", level17 = "", level18 = "", level19 = "", level20 = "";
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 1) {
 		level1 = "`oUnlocked: 1000 Gems``";
-	}
-	else {
+	} else {
 		level1 = "`a(Locked) 1000 Gems``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 2) {
 		level2 = "`oUnlocked: 75 Chandelier``";
-	}
-	else {
+	} else {
 		level2 = "`a(Locked) 75 Chandelier``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 3) {
 		level3 = "`oUnlocked: Growtoken``";
-	}
-	else {
+	} else {
 		level3 = "`a(Locked) Growtoken``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 4) {
 		level4 = "`oUnlocked: Earth Mastery: 1% chance to break dirt in a single hit``|left|5050|\nadd_label_with_icon|sml|`oUnlocked: Diamond Wings``";
-	}
-	else {
+	} else {
 		level4 = "`a(Locked) Earth Mastery: 1% chance to break dirt in a single hit``|left|5050|\nadd_label_with_icon|sml|`a(Locked) Diamond Wings``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 5) {
 		level5 = "`oUnlocked: 5 Growtokens``";
-	}
-	else {
+	} else {
 		level5 = "`a(Locked) 5 Growtokens``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 6) {
 		level6 = "`oUnlocked: Earth Mastery (level 2) - Chance increase to 2%``";
-	}
-	else {
+	} else {
 		level6 = "`a(Locked) Earth Mastery (level 2) - Chance increase to 2%``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 7) {
 		level7 = "`oUnlocked: Punch Potion``";
-	}
-	else {
+	} else {
 		level7 = "`a(Locked) Punch Potion``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 8) {
 		level8 = "`oUnlocked: Flawless: 1% chance to decrease seed grow time when planting``|left|7186|\nadd_label_with_icon|sml|`oUnlocked: Earth Mastery (level 3) - Chance increase to 3%``";
-	}
-	else {
+	} else {
 		level8 = "`a(Locked) Flawless: 1% chance to decrease seed grow time when planting``|left|7186|\nadd_label_with_icon|sml|`a(Locked) Earth Mastery (level 3) - Chance increase to 3%``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 9) {
 		level9 = "`oUnlocked: 5000 Gems``";
-	}
-	else {
+	} else {
 		level9 = "`a(Locked) 5000 Gems``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 10) {
 		level10 = "`oUnlocked: Harvester: 1% chance to obtain extra block drop when harvesting trees``|left|1966|\nadd_label_with_icon|sml|`oUnlocked: Unique Prize``";
-	}
-	else {
+	} else {
 		level10 = "`a(Locked) Harvester: 1% chance to obtain extra block drop when harvesting trees``|left|1966|\nadd_label_with_icon|sml|`a(Locked) Unique Prize``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 11) {
 		level11 = "`oUnlocked: Flawless (level 2) - Chance increase to 2%``";
-	}
-	else {
+	} else {
 		level11 = "`a(Locked) Flawless (level 2) - Chance increase to 2%``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 12) {
 		level12 = "`oUnlocked: 15000 Gems``";
-	}
-	else {
+	} else {
 		level12 = "`a(Locked) 15000 Gems``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 13) {
 		level13 = "`oUnlocked: Harvester (level 2) - Chance increase to 2%``|left|1966|\nadd_label_with_icon|sml|`oUnlocked: Hands of the Void``";
-	}
-	else {
+	} else {
 		level13 = "`a(Locked) Harvester (level 2) - Chance increase to 2%``|left|1966|\nadd_label_with_icon|sml|`a(Locked) Hands of the Void``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 14) {
 		level14 = "`oUnlocked: 5 Growtokens``";
-	}
-	else {
+	} else {
 		level14 = "`a(Locked) 5 Growtokens``";
 	}
 	if (static_cast<PlayerInfo*>(peer->data)->level >= 15) {
 		level15 = "`oUnlocked: Ultimate Seediary Ability: Randomize all seed recipes into higher tier``";
-	}
-	else {
+	} else {
 		level15 = "`a(Locked) Ultimate Seediary Ability: Randomize all seed recipes into higher tier``";
 	}
 	Player::OnDialogRequest(peer, "add_label_with_icon|big|`wLevel up Rewards``|left|18|\nadd_spacer|small|\nadd_textbox|`9Here are all the Level up rewards that you have earned so far!``|left|\nadd_spacer|small|\nadd_spacer|small|\nadd_smalltext|Level 1 rewards:|left|\nadd_label_with_icon|sml|" + level1 + "|left|112|\nadd_spacer|small|\nadd_smalltext|Level 2 rewards:|left|\nadd_label_with_icon|sml|" + level2 + "|left|340|\nadd_spacer|small|\nadd_smalltext|Level 3 rewards:|left|\nadd_label_with_icon|sml|" + level3 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 4 rewards:|left|\nadd_label_with_icon|sml|" + level4 + "|left|1938|\nadd_spacer|small|\nadd_smalltext|Level 5 rewards:|left|\nadd_label_with_icon|sml|" + level5 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 6 rewards:|left|\nadd_label_with_icon|sml|" + level6 + "|left|5050|\nadd_spacer|small|\nadd_smalltext|Level 7 rewards:|left|\nadd_label_with_icon|sml|" + level7 + "|left|6918|\nadd_spacer|small|\nadd_smalltext|Level 8 rewards:|left|\nadd_label_with_icon|sml|" + level8 + "|left|5050|\nadd_spacer|small|\nadd_smalltext|Level 9 rewards:|left|\nadd_label_with_icon|sml|" + level9 + "|left|112|\nadd_spacer|small|\nadd_smalltext|Level 10 rewards:|left|\nadd_label_with_icon|sml|" + level10 + "|left|2478|\nadd_spacer|small|\nadd_smalltext|Level 11 rewards:|left|\nadd_label_with_icon|sml|" + level11 + "|left|7186|\nadd_spacer|small|\nadd_smalltext|Level 12 rewards:|left|\nadd_label_with_icon|sml|" + level12 + "|left|112|\nadd_smalltext|Level 13 rewards:|left|\nadd_label_with_icon|sml|" + level13 + "|left|8452|\nadd_spacer|small|\nadd_smalltext|Level 14 rewards:|left|\nadd_label_with_icon|sml|" + level14 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 15 rewards:|left|\nadd_label_with_icon|sml|" + level15 + "|left|6128|\nadd_spacer|small|\nadd_button|back|Close|noflags|0|0||\nadd_quick_exit|");
@@ -7364,8 +7217,7 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 			{
 				HowMuchLbs = (rand() % 90) + 1;
 				ChanceOfGear = (rand() % 350) + 1;
-			}
-			else {
+			} else {
 				return;
 			}
 
@@ -7404,7 +7256,7 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 						SendTradeEffect(peer, BlockID, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->netID, 150);
 					}
 				}
-			}
+			} 
 			else if (static_cast<PlayerInfo*>(peer->data)->fishermanlevel >= 3 && rand() % 100 <= 1) {
 				bool success = true;
 				SaveItemMoreTimes(260, 1, peer, success, "");
@@ -7447,8 +7299,7 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 					static_cast<PlayerInfo*>(peer->data)->fishermanlevel++;
 					static_cast<PlayerInfo*>(peer->data)->fishermanxp = 0;
 					SyncPlayerRoles(peer, static_cast<PlayerInfo*>(peer->data)->fishermanlevel, "fisherman");
-				}
-				else {
+				} else {
 					static_cast<PlayerInfo*>(peer->data)->fishermanxp += 3;
 				}
 				return;
@@ -7479,7 +7330,7 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 						Player::OnConsoleMessage(currentPeer, "`$" + static_cast<PlayerInfo*>(peer->data)->displayName + " `oCaught `$" + getItemDef(GearID).name + " `oand got `$" + to_string(Gems) + " `ogems");
 						Player::PlayAudio(currentPeer, "audio/getpoint.wav", 0);
 						SendTradeEffect(currentPeer, GearID, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->netID, 150);
-					}
+					}	
 				}
 				Player::OnSetPos(peer, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y);
 				int targetfishlevel = 1600;
@@ -7489,8 +7340,7 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 					static_cast<PlayerInfo*>(peer->data)->fishermanlevel++;
 					static_cast<PlayerInfo*>(peer->data)->fishermanxp = 0;
 					SyncPlayerRoles(peer, static_cast<PlayerInfo*>(peer->data)->fishermanlevel, "fisherman");
-				}
-				else {
+				} else {
 					static_cast<PlayerInfo*>(peer->data)->fishermanxp += 5;
 				}
 				return;
@@ -7500,14 +7350,12 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 			if (!iscontains) {
 				auto success = true;
 				SaveItemMoreTimes(ItemID, count, peer, success, static_cast<PlayerInfo*>(peer->data)->rawName + " from fishing");
-			}
-			else {
+			} else {
 				DropItem(world, peer, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y, ItemID, count, 0);
 			}
 			if (getItemDef(ItemID).blockType == BlockTypes::FISH) {
 				Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wYou caught a `2" + to_string(count) + " lb. " + getItemDef(ItemID).name + "`2!", 0, false);
-			}
-			else {
+			} else {
 				Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wYou caught a `2" + getItemDef(ItemID).name + "`2!", 0, false);
 			}
 			auto Gems = 0;
@@ -7568,15 +7416,13 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 				static_cast<PlayerInfo*>(peer->data)->fishermanlevel++;
 				static_cast<PlayerInfo*>(peer->data)->fishermanxp = 0;
 				SyncPlayerRoles(peer, static_cast<PlayerInfo*>(peer->data)->fishermanlevel, "fisherman");
-			}
-			else {
+			} else {
 				static_cast<PlayerInfo*>(peer->data)->fishermanxp += 2;
 			}
-		}
+		} 
 		Player::OnSetPos(peer, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y);
 		return;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->Fishing && !static_cast<PlayerInfo*>(peer->data)->TriggerFish) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->Fishing && !static_cast<PlayerInfo*>(peer->data)->TriggerFish) {
 		static_cast<PlayerInfo*>(peer->data)->FishPosX = 0;
 		static_cast<PlayerInfo*>(peer->data)->FishPosY = 0;
 		static_cast<PlayerInfo*>(peer->data)->Fishing = false;
@@ -7801,11 +7647,10 @@ inline void send_rainbow_shit_data(ENetPeer* peer, short fg, short bg, int x, in
 	int flags = 0;
 	if (rainbow) {
 		flags = 128;
-	}
-	else {
+	} else {
 		flags = 0;
 	}
-	ExtendedData[9] = flags;
+	ExtendedData[9] = flags; 
 	memcpy(ExtendedData + 10, &NetID, 4);
 	ExtendedData[15] = 0;
 	ExtendedData[16] = 0;
@@ -7821,7 +7666,7 @@ inline void send_rainbow_shit_data(ENetPeer* peer, short fg, short bg, int x, in
 	ExtendedData[26] = 0;
 	memcpy(raw + 56, ExtendedData, extendedLen);
 	SendPacketRaw3(4, raw, 56 + 26, nullptr, peer, ENET_PACKET_FLAG_RELIABLE);
-	delete[] ExtendedData;
+	delete[] ExtendedData; 
 
 }
 
@@ -7829,7 +7674,7 @@ inline void send_npc(ENetPeer* peer, float fromX, float fromY, float toX, float 
 	PlayerMoving pmov;
 	memset(&pmov, 0, sizeof(PlayerMoving));
 	*reinterpret_cast<uint32_t*>(&pmov) = 34 | (npc_type << 8) | (npc_id << 16) | (command << 24);
-	*reinterpret_cast<float*>(&pmov + 40) = speed;
+	*reinterpret_cast<float*>(&pmov + 40) = speed; 
 	pmov.x = fromX;
 	pmov.y = fromY;
 	pmov.XSpeed = toX;
@@ -7869,114 +7714,101 @@ inline void equip_item(ENetPeer* peer, int id, const int type) {
 	bool overhaul_update = false;
 	if (static_cast<PlayerInfo*>(peer->data)->cloth9 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth9 = 0;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth8 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth8 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth8 = 0;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth7 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth7 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth7 = 0;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth6 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth6 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth6 = 0;
 		static_cast<PlayerInfo*>(peer->data)->canDoubleJump = false;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth5 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth5 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth5 = 0;
 		if (static_cast<PlayerInfo*>(peer->data)->cloth4 != 0) {
 			id = static_cast<PlayerInfo*>(peer->data)->cloth4;
 			silent_equip = true;
 			goto equip;
-		}
-		else {
+		} else {
 			static_cast<PlayerInfo*>(peer->data)->effect = 8421376;
 		}
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth4 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth4 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth4 = 0;
 		if (static_cast<PlayerInfo*>(peer->data)->cloth5 != 0) {
 			id = static_cast<PlayerInfo*>(peer->data)->cloth5;
 			silent_equip = true;
 			goto equip;
-		}
-		else {
+		} else {
 			static_cast<PlayerInfo*>(peer->data)->effect = 8421376;
 		}
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth3 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth3 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth3 = 0;
 		if (static_cast<PlayerInfo*>(peer->data)->cloth5 != 0 || static_cast<PlayerInfo*>(peer->data)->cloth4 != 0) {
 			overhaul_update = true;
 			goto equip;
-		}
-		else {
+		} else {
 			static_cast<PlayerInfo*>(peer->data)->effect = 8421376;
 		}
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth2 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth2 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth2 = 0;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth1 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth1 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth1 = 0;
-	}
-	else if (static_cast<PlayerInfo*>(peer->data)->cloth0 == id) {
+	} else if (static_cast<PlayerInfo*>(peer->data)->cloth0 == id) {
 		static_cast<PlayerInfo*>(peer->data)->cloth0 = 0;
-	}
-	else {
+	} else {
 		switch (type) {
-		case 0:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth0 = id;
-			break;
-		}
-		case 1:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth1 = id;
-			break;
-		}
-		case 2:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth2 = id;
-			break;
-		}
-		case 3:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth3 = id;
-			break;
-		}
-		case 4:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth4 = id;
-			break;
-		}
-		case 5:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth5 = id;
-			break;
-		}
-		case 6:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth6 = id;
-			break;
-		}
-		case 7:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth7 = id;
-			break;
-		}
-		case 8:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth8 = id;
-			break;
-		}
-		case 10:
-		{
-			static_cast<PlayerInfo*>(peer->data)->cloth9 = id;
-			break;
-		}
-		default:
-		{
-			break;
-		}
+			case 0:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth0 = id;
+				break;
+			}
+			case 1:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth1 = id;
+				break;
+			}
+			case 2:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth2 = id;
+				break;
+			}
+			case 3:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth3 = id;
+				break;
+			}
+			case 4:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth4 = id;
+				break;
+			}
+			case 5:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth5 = id;
+				break;
+			}
+			case 6:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth6 = id;   
+				break;
+			}
+			case 7:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth7 = id;
+				break;
+			}
+			case 8:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth8 = id;
+				break;
+			}
+			case 10:
+			{
+				static_cast<PlayerInfo*>(peer->data)->cloth9 = id;
+				break;
+			}
+			default:
+			{
+				break;
+			}
 		}
 	equip:
 		int x = 1;
@@ -7986,483 +7818,480 @@ inline void equip_item(ENetPeer* peer, int id, const int type) {
 		for (int i = 0; i < x; i++) {
 			if (x != 1) {
 				switch (i) {
-				case 1:
+					case 1:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth0;
+						break;
+					}
+					case 2:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth1;
+						break;
+					}
+					case 3:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth2;
+						break;
+					}
+					case 4:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth3;
+						break;
+					}
+					case 5:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth4;
+						break;
+					}
+					case 6:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth5;
+						break;
+					}
+					case 7:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth6;
+						break;
+					}
+					case 8:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth7;
+						break;
+					}
+					case 9:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth8;
+						break;
+					}
+					case 10:
+					{
+						id = static_cast<PlayerInfo*>(peer->data)->cloth9;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			switch (id) {
+				case 3172:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth0;
+					if (static_cast<PlayerInfo*>(peer->data)->SurgeryCooldown) {
+						Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`2Your briefs have stunned the judge!", 0, true);
+						RemoveInventoryItem(3172, 1, peer, true);
+						if (!silent_equip) Player::OnConsoleMessage(peer, "You've paid your debt to society! (`$Malpractice`` mod removed)");
+						sendSound(peer, "audio/dialog_confirm.wav");
+						static_cast<PlayerInfo*>(peer->data)->SurgeryCooldown = false;
+						static_cast<PlayerInfo*>(peer->data)->SurgeryTime = 0;
+					}
+					bool contains = false;
+					SearchInventoryItem(peer, 3172, 1, contains);
+					if (!contains) return;
 					break;
 				}
-				case 2:
+				case 898: case 1830: case 1966:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth1;
+					playerconfig(peer, 1150, 130, 0x14);
 					break;
 				}
-				case 3:
+				case 9506: 
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth2;
+					playerconfig(peer, 1150, 500, 0x14);
 					break;
 				}
-				case 4:
+				case 1946:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth3;
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421401;
 					break;
 				}
-				case 5:
+				case 1874:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth4;
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421400;
 					break;
 				}
-				case 6:
+				case 1204:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth5;
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oGive people the evil eye. (`oFocused eyes mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
 					break;
 				}
-				case 7:
+				case 1780:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth6;
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421396;
 					break;
 				}
-				case 8:
+				case 2204:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth7;
+					static_cast<PlayerInfo*>(peer->data)->geigerx = rand() % 3000;
+					static_cast<PlayerInfo*>(peer->data)->geigery = rand() % 1500;
 					break;
 				}
-				case 9:
+				case 1676:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth8;
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421393;
 					break;
 				}
-				case 10:
+				case 1576:
 				{
-					id = static_cast<PlayerInfo*>(peer->data)->cloth9;
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421392;
+					break;
+				}
+				case 1542:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421391;
+					break;
+				}
+				case 2910:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421432;
+					break;
+				}
+				case 2890:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421431;
+					break;
+				}
+				case 2906:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421429;
+					break;
+				}
+				case 2876:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421427;
+					break;
+				}
+				case 1512:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421390;
+					break;
+				}
+				case 2866:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421426;
+					break;
+				}
+				case 594:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421380;
+					break;
+				}
+				case 6312:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421529;
+					break;
+				}
+				case 2212:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421408;
+					break;
+				}
+				case 3466:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421405;
+					break;
+				}
+				case 138:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421377;
+					break;
+				}
+				case 2476:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421415;
+					break;
+				}
+				case 2450:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421414;
+					break;
+				}
+				case 2266:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421411;
+					break;
+				}
+				case 2388:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421413;
+					break;
+				}
+				case 366:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421378;
+					break;
+				}
+				case 472:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421379;
+					break;
+				}
+				case 2220:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421410;
+					break;
+				}
+				case 1484:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421389;
+					break;
+				}
+				case 2756:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421423;
+					break;
+				}
+				case 2754:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421422;
+					break;
+				}
+				case 2720:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421420;
+					break;
+				}
+				case 2592:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oNone can stand against you! (`oLegendary Swordsmaster mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421419;
+					break;
+				}
+				case 6782:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421509;
+					break;
+				}
+				case 8452:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421412;
+					break;
+				}
+				case 5480: case 11362: case 11312: case 11314:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oWho needs arms when you have these? (`oRayman fist! mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421456;
+					break;
+				}
+				case 1782:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou should be very very nice to your pet. (`oLegendary! mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421397;
+					break;
+				}
+				case 1868:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou command a mighty (violent) dragon! (`oDrakeborn mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421399;
+					break;
+				}
+				case 10618:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421563;
+					break;
+				}
+				case 1804:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou electrocute things. (`oFistful Of Thunder mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
+					break;
+				}
+				case 9058:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
+					break;
+				}
+				case 9484:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
+					break;
+				}
+				case 9486:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
+					break;
+				}
+				case 7912:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
+					break;
+				}
+				case 6026:
+				{
+					if (!silent_equip) Player::OnConsoleMessage(peer, "`oThe truth is yours! (`oWhip of Truth mod added`o)");
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
+					break;
+				}
+				case 9164:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
+					break;
+				}
+				case 2572:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421418;
+					break;
+				}
+				case 2872:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8424243;
+					break;
+				}
+				case 2952: case 11310: case 11342: case 11354: case 11318: case 11320: case 11336: case 9510: case 9512: case 9520: case 9514: case 5142: case 9496: case 9492: case 9494: case 9488: case 3932: case 9448: case 9452: case 9508: case 9454: case 9456: case 9458: case 9430: case 9554: case 9576: case 9568:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421406;
+					break;
+				}
+				case 4778:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
+					break;
+				}
+				case 4474:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421448;
+					break;
+				}
+				case 3686:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421444;
+					break;
+				}
+				case 3418:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421441;
+					break;
+				}
+				case 8910:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421505;
+					break;
+				}
+				case 7586:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421480;
+					break;
+				}
+				case 7488:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421479;
+					break;
+				}
+				case 7196:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421471;
+					break;
+				}
+				case 10128:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421547;
+					break;
+				}
+				case 10652:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421564;
+					break;
+				}
+				case 10426:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421559;
+					break;
+				}
+				case 7136:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421468;
+					break;
+				}
+				case 7044:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421462;
+					break;
+				}
+				case 6308:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421458;
+					break;
+				}
+				case 3300:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421440;
+					break;
+				}
+				case 4996:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421453;
+					break;
+				}
+				case 3214:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421436;
+					break;
+				}
+				case 3168:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421435;
+					break;
+				}
+				case 3124:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421434;
+					break;
+				}
+				case 3066:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421433;
+					break;
+				}
+				case 9502:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
+					break;
+				}
+				case 9236:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421521;
+					break;
+				}
+				case 9376:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421525;
+					break;
+				}
+				case 9006:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = 8421511;
+					break;
+				}
+				case 1956:
+				{
+					static_cast<PlayerInfo*>(peer->data)->effect = -997;
 					break;
 				}
 				default:
 				{
+					if (type == 6) {
+						if (id == 10426 || id == 156 || id == 9006 || id == 1958 || getItemDef(id).name.find("Aura") != string::npos || id == 9476 || id == 9434 || getItemDef(id).name.find("Wings") != string::npos || getItemDef(id).name.find("Cape") != string::npos || id == 8580 || id == 5158 || id == 9410 || id == 9306 || id == 10022 || id == 8308 || id == 7834 || id == 10020 || id == 9760 || id == 10016 || id == 10012 || id == 1674 || id == 9478 || id == 9506 || id == 9476 || id == 1970 || id == 8286 || id == 9506 || id == 9478 || id == 8552 || id == 362 || id == 678 || id == 736 || id == 7734 || id == 7762 || id == 818 || id == 1206 || id == 1460 || id == 1550 || id == 1574 || id == 1668 || id == 1672 || id == 1674 || id == 1784 || id == 1824 || id == 1936 || id == 1938 || id == 1970 || id == 2254 || id == 2256 || id == 2258 || id == 2260 || id == 2262 || id == 2264 || id == 2390 || id == 2392 || id == 3120 || id == 3308 || id == 3512 || id == 4534 || id == 4986 || id == 5754 || id == 6144 || id == 6334 || id == 6694 || id == 6818 || id == 6842 || id == 1934 || id == 3134 || id == 6004 || id == 1780 || id == 2158 || id == 2160 || id == 2162 || id == 2164 || id == 2166 || id == 2168 || id == 2438 || id == 2538 || id == 2778 || id == 3858 || id == 350 || id == 998 || id == 1738 || id == 2642 || id == 2982 || id == 3104 || id == 3144 || id == 5738 || id == 3112 || id == 2722 || id == 3114 || id == 4970 || id == 4972 || id == 5020 || id == 6284 || id == 4184 || id == 4628 || id == 5322 || id == 4112 || id == 4114 || id == 3442 || id == 9466 || id == 8286 || id == 5136 || id == 9416 || id == 9356) {
+							if (id == 5196 || id == 7558) {
+								if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou can fly in air! It's like double jumping, but more. (`oFlying mod added`o)");
+							} else {
+								if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou can jump in mid-air! It's like flying, but less. (`oDouble jump mod added`o)");
+							}
+							static_cast<PlayerInfo*>(peer->data)->canDoubleJump = true;
+						} else {
+							static_cast<PlayerInfo*>(peer->data)->canDoubleJump = false;
+						}		
+					} else if (type == 4 || type == 5) {
+						static_cast<PlayerInfo*>(peer->data)->effect = 8421376;
+					} 
 					break;
 				}
-				}
-			}
-			switch (id) {
-			case 3172:
-			{
-				if (static_cast<PlayerInfo*>(peer->data)->SurgeryCooldown) {
-					Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`2Your briefs have stunned the judge!", 0, true);
-					RemoveInventoryItem(3172, 1, peer, true);
-					if (!silent_equip) Player::OnConsoleMessage(peer, "You've paid your debt to society! (`$Malpractice`` mod removed)");
-					sendSound(peer, "audio/dialog_confirm.wav");
-					static_cast<PlayerInfo*>(peer->data)->SurgeryCooldown = false;
-					static_cast<PlayerInfo*>(peer->data)->SurgeryTime = 0;
-				}
-				bool contains = false;
-				SearchInventoryItem(peer, 3172, 1, contains);
-				if (!contains) return;
-				break;
-			}
-			case 898: case 1830: case 1966:
-			{
-				playerconfig(peer, 1150, 130, 0x14);
-				break;
-			}
-			case 9506:
-			{
-				playerconfig(peer, 1150, 500, 0x14);
-				break;
-			}
-			case 1946:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421401;
-				break;
-			}
-			case 1874:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421400;
-				break;
-			}
-			case 1204:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oGive people the evil eye. (`oFocused eyes mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
-				break;
-			}
-			case 1780:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421396;
-				break;
-			}
-			case 2204:
-			{
-				static_cast<PlayerInfo*>(peer->data)->geigerx = rand() % 3000;
-				static_cast<PlayerInfo*>(peer->data)->geigery = rand() % 1500;
-				break;
-			}
-			case 1676:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421393;
-				break;
-			}
-			case 1576:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421392;
-				break;
-			}
-			case 1542:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421391;
-				break;
-			}
-			case 2910:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421432;
-				break;
-			}
-			case 2890:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421431;
-				break;
-			}
-			case 2906:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421429;
-				break;
-			}
-			case 2876:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421427;
-				break;
-			}
-			case 1512:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421390;
-				break;
-			}
-			case 2866:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421426;
-				break;
-			}
-			case 594:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421380;
-				break;
-			}
-			case 6312:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421529;
-				break;
-			}
-			case 2212:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421408;
-				break;
-			}
-			case 3466:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421405;
-				break;
-			}
-			case 138:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421377;
-				break;
-			}
-			case 2476:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421415;
-				break;
-			}
-			case 2450:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421414;
-				break;
-			}
-			case 2266:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421411;
-				break;
-			}
-			case 2388:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421413;
-				break;
-			}
-			case 366:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421378;
-				break;
-			}
-			case 472:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421379;
-				break;
-			}
-			case 2220:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421410;
-				break;
-			}
-			case 1484:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421389;
-				break;
-			}
-			case 2756:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421423;
-				break;
-			}
-			case 2754:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421422;
-				break;
-			}
-			case 2720:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421420;
-				break;
-			}
-			case 2592:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oNone can stand against you! (`oLegendary Swordsmaster mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421419;
-				break;
-			}
-			case 6782:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421509;
-				break;
-			}
-			case 8452:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421412;
-				break;
-			}
-			case 5480: case 11362: case 11312: case 11314:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oWho needs arms when you have these? (`oRayman fist! mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421456;
-				break;
-			}
-			case 1782:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou should be very very nice to your pet. (`oLegendary! mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421397;
-				break;
-			}
-			case 1868:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou command a mighty (violent) dragon! (`oDrakeborn mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421399;
-				break;
-			}
-			case 10618:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421563;
-				break;
-			}
-			case 1804:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou electrocute things. (`oFistful Of Thunder mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
-				break;
-			}
-			case 9058:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
-				break;
-			}
-			case 9484:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
-				break;
-			}
-			case 9486:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
-				break;
-			}
-			case 7912:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421398;
-				break;
-			}
-			case 6026:
-			{
-				if (!silent_equip) Player::OnConsoleMessage(peer, "`oThe truth is yours! (`oWhip of Truth mod added`o)");
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
-				break;
-			}
-			case 9164:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
-				break;
-			}
-			case 2572:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421418;
-				break;
-			}
-			case 2872:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8424243;
-				break;
-			}
-			case 2952: case 11310: case 11342: case 11354: case 11318: case 11320: case 11336: case 9510: case 9512: case 9520: case 9514: case 5142: case 9496: case 9492: case 9494: case 9488: case 3932: case 9448: case 9452: case 9508: case 9454: case 9456: case 9458: case 9430: case 9554: case 9576: case 9568:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421406;
-				break;
-			}
-			case 4778:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421452;
-				break;
-			}
-			case 4474:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421448;
-				break;
-			}
-			case 3686:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421444;
-				break;
-			}
-			case 3418:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421441;
-				break;
-			}
-			case 8910:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421505;
-				break;
-			}
-			case 7586:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421480;
-				break;
-			}
-			case 7488:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421479;
-				break;
-			}
-			case 7196:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421471;
-				break;
-			}
-			case 10128:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421547;
-				break;
-			}
-			case 10652:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421564;
-				break;
-			}
-			case 10426:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421559;
-				break;
-			}
-			case 7136:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421468;
-				break;
-			}
-			case 7044:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421462;
-				break;
-			}
-			case 6308:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421458;
-				break;
-			}
-			case 3300:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421440;
-				break;
-			}
-			case 4996:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421453;
-				break;
-			}
-			case 3214:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421436;
-				break;
-			}
-			case 3168:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421435;
-				break;
-			}
-			case 3124:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421434;
-				break;
-			}
-			case 3066:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421433;
-				break;
-			}
-			case 9502:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421512;
-				break;
-			}
-			case 9236:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421521;
-				break;
-			}
-			case 9376:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421525;
-				break;
-			}
-			case 9006:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = 8421511;
-				break;
-			}
-			case 1956:
-			{
-				static_cast<PlayerInfo*>(peer->data)->effect = -997;
-				break;
-			}
-			default:
-			{
-				if (type == 6) {
-					if (id == 10426 || id == 156 || id == 9006 || id == 1958 || getItemDef(id).name.find("Aura") != string::npos || id == 9476 || id == 9434 || getItemDef(id).name.find("Wings") != string::npos || getItemDef(id).name.find("Cape") != string::npos || id == 8580 || id == 5158 || id == 9410 || id == 9306 || id == 10022 || id == 8308 || id == 7834 || id == 10020 || id == 9760 || id == 10016 || id == 10012 || id == 1674 || id == 9478 || id == 9506 || id == 9476 || id == 1970 || id == 8286 || id == 9506 || id == 9478 || id == 8552 || id == 362 || id == 678 || id == 736 || id == 7734 || id == 7762 || id == 818 || id == 1206 || id == 1460 || id == 1550 || id == 1574 || id == 1668 || id == 1672 || id == 1674 || id == 1784 || id == 1824 || id == 1936 || id == 1938 || id == 1970 || id == 2254 || id == 2256 || id == 2258 || id == 2260 || id == 2262 || id == 2264 || id == 2390 || id == 2392 || id == 3120 || id == 3308 || id == 3512 || id == 4534 || id == 4986 || id == 5754 || id == 6144 || id == 6334 || id == 6694 || id == 6818 || id == 6842 || id == 1934 || id == 3134 || id == 6004 || id == 1780 || id == 2158 || id == 2160 || id == 2162 || id == 2164 || id == 2166 || id == 2168 || id == 2438 || id == 2538 || id == 2778 || id == 3858 || id == 350 || id == 998 || id == 1738 || id == 2642 || id == 2982 || id == 3104 || id == 3144 || id == 5738 || id == 3112 || id == 2722 || id == 3114 || id == 4970 || id == 4972 || id == 5020 || id == 6284 || id == 4184 || id == 4628 || id == 5322 || id == 4112 || id == 4114 || id == 3442 || id == 9466 || id == 8286 || id == 5136 || id == 9416 || id == 9356) {
-						if (id == 5196 || id == 7558) {
-							if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou can fly in air! It's like double jumping, but more. (`oFlying mod added`o)");
-						}
-						else {
-							if (!silent_equip) Player::OnConsoleMessage(peer, "`oYou can jump in mid-air! It's like flying, but less. (`oDouble jump mod added`o)");
-						}
-						static_cast<PlayerInfo*>(peer->data)->canDoubleJump = true;
-					}
-					else {
-						static_cast<PlayerInfo*>(peer->data)->canDoubleJump = false;
-					}
-				}
-				else if (type == 4 || type == 5) {
-					static_cast<PlayerInfo*>(peer->data)->effect = 8421376;
-				}
-				break;
-			}
 			}
 		}
 	}
 	sendPuncheffect(peer, static_cast<PlayerInfo*>(peer->data)->effect);
-	send_state(peer);
-	sendClothes(peer);
+	send_state(peer); 
+	sendClothes(peer);	
 }
 
 inline void restore_player_name(WorldInfo* world, ENetPeer* peer) {
@@ -8608,8 +8437,7 @@ inline void restore_prices_full() {
 				if (itemid == 7188) kaina = 100;
 				if (itemid == 5136) kaina = rand() % 3000 + 2500;
 				if (itemid == 5142) kaina = rand() % 3000 + 2500;
-			}
-			else {
+			} else {
 				if (getItemDef(itemid).rarity <= 6) kaina = 1;
 				else if (getItemDef(itemid).rarity <= 10) kaina = rand() % 2 + 1;
 				else if (getItemDef(itemid).rarity <= 20) kaina = rand() % 3 + 1;
@@ -8659,14 +8487,13 @@ inline void restore_prices_full() {
 				if (itemid == 5142) kaina = rand() % 3000 + 2500;
 			}
 			append += to_string(itemid) + "|" + to_string(kaina) + "|0\n";
-		}
+		} 
 		ofstream breaklogs("etc/price/prdata.zep", ios::app);
 		breaklogs << append;
 		breaklogs.close();
-	}
-	catch (const std::out_of_range& e) {
+	} catch(const std::out_of_range& e) {
 		std::cout << e.what() << std::endl;
-	}
+	} 
 }
 
 string get_player_buffs(PlayerInfo* pData) {
@@ -8713,46 +8540,46 @@ string get_player_buffs(PlayerInfo* pData) {
 		} if (item_multiplier.find(pData->cloth_necklace) != item_multiplier.end()) {
 			gem_multi += item_multiplier.at(pData->cloth_necklace);
 		} switch (gem_multi) {
-		case 2:
-		{
-			info = "Double";
-			break;
-		}
-		case 3:
-		{
-			info = "Triple";
-			break;
-		}
-		case 4:
-		{
-			info = "Quadruple";
-			break;
-		}
-		case 5:
-		{
-			info = "Quintuple";
-			break;
-		}
-		case 6:
-		{
-			info = "Sextuple";
-			break;
-		}
-		case 7:
-		{
-			info = "Septuple";
-			break;
-		}
-		case 8:
-		{
-			info = "Octuple";
-			break;
-		}
-		default:
-		{
-			info = to_string(gem_multi) + "x";
-			break;
-		}
+			case 2:
+			{
+				info = "Double";
+				break;
+			}
+			case 3:
+			{
+				info = "Triple";
+				break;
+			}
+			case 4:
+			{
+				info = "Quadruple";
+				break;
+			}
+			case 5:
+			{
+				info = "Quintuple";
+				break;
+			}
+			case 6:
+			{
+				info = "Sextuple";
+				break;
+			}
+			case 7:
+			{
+				info = "Septuple";
+				break;
+			}
+			case 8:
+			{
+				info = "Octuple";
+				break;
+			}
+			default:
+			{
+				info = to_string(gem_multi) + "x";
+				break;
+			}
 		}
 		buffs += "|\nadd_label_with_icon|small|`w" + info + " Gems``|left|112|";
 	}
@@ -8767,7 +8594,7 @@ string get_player_buffs(PlayerInfo* pData) {
 
 	if (pData->cloth_hand == 9494 || pData->cloth_hand == 9510) {
 		buffs += "|\nadd_label_with_icon|small|`w3x3 One HIT!``|left|" + to_string(pData->cloth_hand) + "|";
-	}
+	} 
 	if (pData->cloth_hand == 5480 || pData->cloth_hand == 9492) {
 		buffs += "|\nadd_label_with_icon|small|`wRayman's 3 far hit!``|left|" + to_string(pData->cloth_hand) + "|";
 	}
@@ -8783,8 +8610,7 @@ string get_player_buffs(PlayerInfo* pData) {
 		if (pData->cloth_hand == 9520 && !pData->PunchPotion) display_id = 9520;
 		if (pData->PunchPotion) {
 			buffs += "|\nadd_label_with_icon|small|`wOne HIT! (`w" + OutputBanTime(calcBanDuration(pData->usedPunchPotion)) + " left`o)``|left|" + to_string(display_id) + "|";
-		}
-		else {
+		} else {
 			buffs += "|\nadd_label_with_icon|small|`wOne HIT!``|left|" + to_string(display_id) + "|";
 		}
 	}
@@ -8796,8 +8622,7 @@ string get_player_buffs(PlayerInfo* pData) {
 		if (pData->cloth_hair == 4746 || pData->cloth_hair == 4748 || pData->cloth_hair == 4750) display_id = pData->cloth_hair;
 		if (pData->PlacePotion) {
 			buffs += "|\nadd_label_with_icon|small|`wTriple Place! (`w" + OutputBanTime(calcBanDuration(pData->usedPlacePotion)) + " left`o)``|left|" + to_string(display_id) + "|";
-		}
-		else {
+		} else {
 			buffs += "|\nadd_label_with_icon|small|`wTriple Place!``|left|" + to_string(display_id) + "|";
 		}
 	}
@@ -9277,303 +9102,303 @@ inline void send_quest_view(ENetPeer* peer, PlayerInfo* pData, WorldInfo* world)
 				string deliver = "";
 				string extra = "";
 				switch (pData->quest_step) {
-				case 1:
-				{
-					quest_info = "I challenge you to bring me 2,000 of those Sand thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/2,000)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 442 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 1:
+					{
+						quest_info = "I challenge you to bring me 2,000 of those Sand thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/2,000)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 442 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
 						}
-					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 2000) KiekTuri = 2000 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Sand";
-					}
-					break;
-				}
-				case 2:
-				{
-					quest_info = "Prove your might by defeating 100 Growtopians in single combat! You can battle them in Games or in Deathmatch events.";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100)";
-					deliver = "You have not proven your might!";
-					if (pData->quest_progress >= 100) {
-						deliver = "I am the champion!";
-					}
-					break;
-				}
-				case 3:
-				{
-					quest_info = "You must defeat 5,000 blocks in battle!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/5,000)";
-					deliver = "You are not yet worthy!";
-					if (pData->quest_progress >= 5000) {
-						deliver = "I have slain them all!";
-					}
-					break;
-				}
-				case 4:
-				{
-					quest_info = "I challenge you to bring me 600 of those Display Box thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/600)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1422 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 2000) KiekTuri = 2000 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Sand";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 600) KiekTuri = 600 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Display Box";
-					}
-					break;
-				}
-				case 5:
-				{
-					quest_info = "You must plant 50,000 rarity worth of trees! Bring life to this land!";
-					extra = "\nadd_smalltext|`o(For example, if you plant a tree of rarity 50, you get 50 points. A Dirt Tree is 1 point because it is rarity 1)|left|";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/50,000)";
-					deliver = "I will go plant more!";
-					if (pData->quest_progress >= 50000) {
-						deliver = "I have planted them all!";
-					}
-					break;
-				}
-				case 6:
-				{
-					quest_info = "Prove your skill! Earn 50 Growtokens in whatever way you want! You can keep the Growtokens, I'm not a greedy wizard.";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/50)";
-					deliver = "I will quest onward!";
-					if (pData->quest_progress >= 50) {
-						deliver = "I am talented!";
-					}
-					break;
-				}
-				case 7:
-				{
-					quest_info = "I challenge you to bring me 3 of those Golden Diaper thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1462 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 2:
+					{
+						quest_info = "Prove your might by defeating 100 Growtopians in single combat! You can battle them in Games or in Deathmatch events.";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100)";
+						deliver = "You have not proven your might!";
+						if (pData->quest_progress >= 100) {
+							deliver = "I am the champion!";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Golden Diaper";
-					}
-					break;
-				}
-				case 8:
-				{
-					quest_info = "Here's a freeform quest for you - I don't care what you do, just earn 10,000 XP doing it!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/10,000)";
-					deliver = "I'm on my way!";
-					if (pData->quest_progress >= 10000) {
-						deliver = "I have learned!";
-					}
-					break;
-				}
-				case 9:
-				{
-					quest_info = "I challenge you to bring me 800 of those Tombstone thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/800)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 784 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 3:
+					{
+						quest_info = "You must defeat 5,000 blocks in battle!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/5,000)";
+						deliver = "You are not yet worthy!";
+						if (pData->quest_progress >= 5000) {
+							deliver = "I have slain them all!";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 800) KiekTuri = 800 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Tombstone";
-					}
-					break;
-				}
-				case 10:
-				{
-					quest_info = "Look, it's not cheap being a Legendary Wizard. These aren't just purple robes, they're `9Legendary Purple Robes`o! So if you could just spot me like 100,000 Gems, I swear I'll think about paying you back. I'll think hard. Whaddya say?";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					std::ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
-					std::string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
-					KiekTuri = atoi(content.c_str());
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 100000) KiekTuri = 100000 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Gems";
-					}
-					break;
-				}
-				case 11:
-				{
-					quest_info = "You must crush 100,000 rarity worth of blocks! Destroy!";
-					extra = "\nadd_smalltext|`o(For example, if you smash a block of rarity 50, you get 50 points. A dirt block is 1 point because it is rarity 1)|left|";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
-					deliver = "I will go smash more!";
-					if (pData->quest_progress >= 100000) {
-						deliver = "No block can beat me!";
-					}
-					break;
-				}
-				case 12:
-				{
-					quest_info = "I challenge you to bring me 3 of those Golden Heartbow thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1464 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 4:
+					{
+						quest_info = "I challenge you to bring me 600 of those Display Box thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/600)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1422 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
 						}
-					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Golden Heartbow";
-					}
-					break;
-				}
-				case 13:
-				{
-					quest_info = "I need you to pick up some groceries for me. Collect 1,000 items from Providers.";
-					extra = "\nadd_smalltext|`o(Providers are items like Science Stations and Cows, that give you an item on a regular basis)|left|";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1,000)";
-					deliver = "I'm on my way!";
-					if (pData->quest_progress >= 1000) {
-						deliver = "I'm a cow-puncher!";
-					}
-					break;
-				}
-				case 14:
-				{
-					quest_info = "I challenge you to bring me 3 of those Golden Heart Crystal thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1458 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 600) KiekTuri = 600 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Display Box";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Golden Heart Crystal";
-					}
-					break;
-				}
-				case 15:
-				{
-					quest_info = "You must pluck 100,000 rarity worth of delicious fruit from any tree! I don't want the fruit, I'm just mad that it's up there!";
-					extra = "\nadd_smalltext|`o(For example, if you smash a rarity 50 tree and get 3 fruit from it, you will get 150 points)|left|";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
-					deliver = "I will go pick fruit!";
-					if (pData->quest_progress >= 100000) {
-						deliver = "The fruit is no more!";
-					}
-					break;
-				}
-				case 16:
-				{
-					quest_info = "I challenge you to bring me 1 of those Growie Award thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1614 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 5:
+					{
+						quest_info = "You must plant 50,000 rarity worth of trees! Bring life to this land!";
+						extra = "\nadd_smalltext|`o(For example, if you plant a tree of rarity 50, you get 50 points. A Dirt Tree is 1 point because it is rarity 1)|left|";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/50,000)";
+						deliver = "I will go plant more!";
+						if (pData->quest_progress >= 50000) {
+							deliver = "I have planted them all!";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 1) KiekTuri = 1 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Growie Award";
-					}
-					break;
-				}
-				case 17:
-				{
-					quest_info = "I challenge you to bring me 3 of those Super Firework thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1680 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 6:
+					{
+						quest_info = "Prove your skill! Earn 50 Growtokens in whatever way you want! You can keep the Growtokens, I'm not a greedy wizard.";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/50)";
+						deliver = "I will quest onward!";
+						if (pData->quest_progress >= 50) {
+							deliver = "I am talented!";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Super Firework";
-					}
-					break;
-				}
-				case 18:
-				{
-					quest_info = "I challenge you to bring me 3 of those Rainbow Wings thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1672 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 7:
+					{
+						quest_info = "I challenge you to bring me 3 of those Golden Diaper thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1462 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
 						}
-					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Rainbow Wings";
-					}
-					break;
-				}
-				case 19:
-				{
-					quest_info = "I challenge you to bring me 3 of those Birth Certificate thingies!";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1280 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Golden Diaper";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Birth Certificate";
-					}
-					break;
-				}
-				case 20:
-				{
-					quest_info = "And finally, i dare you to ascend to the peak of LEGENDARYMOUNTAIN and collect a Legendary Orb. This is the final challenge in any truly legendary quest.";
-					current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1)";
-					deliver = "You have none to deliver!";
-					auto KiekTuri = 0;
-					for (auto i = 0; i < pData->inventory.items.size(); i++) {
-						if (pData->inventory.items.at(i).itemID == 1794 && pData->inventory.items.at(i).itemCount > 0) {
-							KiekTuri = pData->inventory.items.at(i).itemCount;
-							break;
+					case 8:
+					{
+						quest_info = "Here's a freeform quest for you - I don't care what you do, just earn 10,000 XP doing it!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/10,000)";
+						deliver = "I'm on my way!";
+						if (pData->quest_progress >= 10000) {
+							deliver = "I have learned!";
 						}
+						break;
 					}
-					if (KiekTuri != 0) {
-						if (pData->quest_progress + KiekTuri > 1) KiekTuri = 1 - pData->quest_progress;
-						deliver = "Deliver " + to_string(KiekTuri) + " Legendary Orb";
+					case 9:
+					{
+						quest_info = "I challenge you to bring me 800 of those Tombstone thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/800)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 784 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 800) KiekTuri = 800 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Tombstone";
+						}
+						break;
 					}
-					break;
-				}
+					case 10:
+					{
+						quest_info = "Look, it's not cheap being a Legendary Wizard. These aren't just purple robes, they're `9Legendary Purple Robes`o! So if you could just spot me like 100,000 Gems, I swear I'll think about paying you back. I'll think hard. Whaddya say?";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						std::ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
+						std::string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
+						KiekTuri = atoi(content.c_str());
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 100000) KiekTuri = 100000 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Gems";
+						}
+						break;
+					}
+					case 11:
+					{
+						quest_info = "You must crush 100,000 rarity worth of blocks! Destroy!";
+						extra = "\nadd_smalltext|`o(For example, if you smash a block of rarity 50, you get 50 points. A dirt block is 1 point because it is rarity 1)|left|";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
+						deliver = "I will go smash more!";
+						if (pData->quest_progress >= 100000) {
+							deliver = "No block can beat me!";
+						}
+						break;
+					}
+					case 12:
+					{
+						quest_info = "I challenge you to bring me 3 of those Golden Heartbow thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1464 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Golden Heartbow";
+						}
+						break;
+					}
+					case 13:
+					{
+						quest_info = "I need you to pick up some groceries for me. Collect 1,000 items from Providers.";
+						extra = "\nadd_smalltext|`o(Providers are items like Science Stations and Cows, that give you an item on a regular basis)|left|";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1,000)";
+						deliver = "I'm on my way!";
+						if (pData->quest_progress >= 1000) {
+							deliver = "I'm a cow-puncher!";
+						}
+						break;
+					}
+					case 14:
+					{
+						quest_info = "I challenge you to bring me 3 of those Golden Heart Crystal thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1458 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Golden Heart Crystal";
+						}
+						break;
+					}
+					case 15:
+					{
+						quest_info = "You must pluck 100,000 rarity worth of delicious fruit from any tree! I don't want the fruit, I'm just mad that it's up there!";
+						extra = "\nadd_smalltext|`o(For example, if you smash a rarity 50 tree and get 3 fruit from it, you will get 150 points)|left|";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/100,000)";
+						deliver = "I will go pick fruit!";
+						if (pData->quest_progress >= 100000) {
+							deliver = "The fruit is no more!";
+						}
+						break;
+					}
+					case 16:
+					{
+						quest_info = "I challenge you to bring me 1 of those Growie Award thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1614 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 1) KiekTuri = 1 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Growie Award";
+						}
+						break;
+					}
+					case 17:
+					{
+						quest_info = "I challenge you to bring me 3 of those Super Firework thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1680 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Super Firework";
+						}
+						break;
+					}
+					case 18:
+					{
+						quest_info = "I challenge you to bring me 3 of those Rainbow Wings thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1672 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Rainbow Wings";
+						}
+						break;
+					}
+					case 19:
+					{
+						quest_info = "I challenge you to bring me 3 of those Birth Certificate thingies!";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/3)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1280 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 3) KiekTuri = 3 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Birth Certificate";
+						}
+						break;
+					}
+					case 20:
+					{
+						quest_info = "And finally, i dare you to ascend to the peak of LEGENDARYMOUNTAIN and collect a Legendary Orb. This is the final challenge in any truly legendary quest.";
+						current_progress = "(Current progress " + to_string(pData->quest_progress) + "/1)";
+						deliver = "You have none to deliver!";
+						auto KiekTuri = 0;
+						for (auto i = 0; i < pData->inventory.items.size(); i++) {
+							if (pData->inventory.items.at(i).itemID == 1794 && pData->inventory.items.at(i).itemCount > 0) {
+								KiekTuri = pData->inventory.items.at(i).itemCount;
+								break;
+							}
+						}
+						if (KiekTuri != 0) {
+							if (pData->quest_progress + KiekTuri > 1) KiekTuri = 1 - pData->quest_progress;
+							deliver = "Deliver " + to_string(KiekTuri) + " Legendary Orb";
+						}
+						break;
+					}
 				}
 				Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`9Quest For Honor``|left|1790|\nadd_smalltext|`o(Step " + step + "/20)``|\nadd_spacer|small|\nadd_textbox|`o" + quest_info + "``|" + extra + "\nadd_spacer|small|\nadd_smalltext|`o" + current_progress + "``|\nadd_button|deliver|`o" + deliver + "|noflags|0|0|\nadd_button|give_up|`oGive up this quest|noflags|0|0|\nend_dialog|legendary_wizard|Goodbye!||");
 			}
@@ -9599,7 +9424,7 @@ inline void send_info(ENetPeer* peer, PlayerInfo* pData) {
 	if (pData->cloth_back == 10424) {
 		rift_cape += "\nadd_button|rift_cape_edit|`$Rift Cape``|noflags|0|0|";
 	}
-	Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_player_info|" + pData->displayName + "|" + std::to_string(levels) + "|" + std::to_string(xp) + "|" + to_string(pData->level * 1500) + "|\nadd_spacer|small|" + joinguilddialog + "|" + rift_cape + "\nadd_button|EditBillboard|`$Edit Billboard|\nadd_button|change_password|`$Change password``|\nadd_button|manage_title|`$Title``|\nadd_button|manage_audio|`$Audio``|\nadd_button|notebook_edit|`$Notebook``|\nadd_button|goals|`$Goals & Quests``|noflags|0|0|\nadd_button|worlds_view|`$My Worlds``|\nadd_spacer|small|\nadd_textbox|`wActive effects:``|left|" + buffs + "|\nadd_spacer|small|\nadd_textbox|`oYou have `w" + to_string(pData->currentInventorySize) + "`` `obackpack slots.``|left|\nadd_textbox|`oYou have `w" + to_string(pData->TotalKills) + "`` `ototal kills.``|left|\nadd_spacer|small|\nadd_textbox|`oCurrent world: `w" + currentworld + " `o(`w" + std::to_string(xxx) + "`o, `w" + std::to_string(yyy) + "`o)|left|\nadd_spacer|small|\nadd_button|chc0|`wContinue|noflags|0|0|\n\nadd_quick_exit|\nnend_dialog|gazette||OK|");
+	Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_player_info|" + pData->displayName + "|" + std::to_string(levels) + "|" + std::to_string(xp) + "|" + to_string(pData->level * 1500) + "|\nadd_spacer|small|" + joinguilddialog + "|" + rift_cape + "\nadd_button|EditBillboard|`$Edit Billboard|\nadd_button|change_password|`$Change password``|\nadd_button|manage_title|`$Title``|\nadd_button|notebook_edit|`$Notebook``|\nadd_button|goals|`$Goals & Quests``|noflags|0|0|\nadd_button|worlds_view|`$My Worlds``|\nadd_spacer|small|\nadd_textbox|`wActive effects:``|left|" + buffs + "|\nadd_spacer|small|\nadd_textbox|`oYou have `w" + to_string(pData->currentInventorySize) + "`` `obackpack slots.``|left|\nadd_textbox|`oYou have `w" + to_string(pData->TotalKills) + "`` `ototal kills.``|left|\nadd_spacer|small|\nadd_textbox|`oCurrent world: `w" + currentworld + " `o(`w" + std::to_string(xxx) + "`o, `w" + std::to_string(yyy) + "`o)|left|\nadd_spacer|small|\nadd_button|chc0|`wContinue|noflags|0|0|\n\nadd_quick_exit|\nnend_dialog|gazette||OK|");
 }
 
 bool has_permission(int adminLevel, string str, bool subscriber) {

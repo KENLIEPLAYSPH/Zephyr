@@ -1268,50 +1268,13 @@ int main() {
 									for (string line; getline(infile, line);) {
 										if (line.length() > 3 && line.at(0) != '/' && line.at(1) != '/') {
 											auto ex = explode("|", line);
-											if (ex.at(0) == to_string(4762)) {
-												amethyst_price = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(5136)) {
-												smaraged_price = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(5138)) {
-												diamond_stone = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(5140)) {
-												pink_diamond = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(5142)) {
-												dark_stone_price = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(5154)) {
-												citrine_block = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(7382)) {
-												onyx_price = atoi(ex.at(1).c_str());
-											}
-											else if (ex.at(0) == to_string(9498)) {
-												hellstone_price = atoi(ex.at(1).c_str());
-												break;
-											}
 										}
 									}
 									infile.close();
-									dark_stone_price *= 1000;
-									amethyst_price *= 1000;
-									onyx_price *= 1000;
-									smaraged_price *= 1000;
-									diamond_stone *= 1000;
-									pink_diamond *= 1000;
-									citrine_block *= 1000;
-									hellstone_price *= 1000;
 									string items_here = "";
 									//new iotm
+								//	items_here += "\nadd_button|iotm|`oItem Of The Month``|interface/large/store_buttons/store_buttons16.rttex|May 2021:`` `9Plasma Heart``!<CR><CR>`2You Get:`` 1 `9Plasma Heart``.<CR><CR>`5Description:`` Static crackles as the power of Plasmatic energy takes over your entire body! Watch as the hue of the energy aura changes from dusk until dawn.|0|3|350000|0||interface/large/gui_store_button_overlays1.rttex|0|0||-1|-1||1|||||||";
 									items_here += "\nadd_banner|interface/large/gui_shop_featured_header.rttex|0|1|";
-									//items_here += "\nadd_button|vdsp|`wVoucher Dayz Surgical Pack``|interface/large/store_buttons/store_buttons35.rttex|`2You Get:`w 6 Voucher Dayz Surgery Supply Crate.``<CR><CR>`5Description:`` Get All the surgery tools you need to be an ace surgeon!``<CR><CR>``Each crate contains 10 each of the 13 Tools you need to complete surgery as well as 1 Hospital Bed, 1 Train-E Bot & 1 Surg-E.``<CR><CR><CR><CR>``You currently have 0 Grow Vouchers.``|1|4|150000|-1|0||-1|-1||1|||||||";
-									//items_here += "\nadd_button|rrvd|`wRadical Rider``|interface/large/store_buttons/store_buttons35.rttex|`2You Get:`w 6 Voucher Dayz Surgery Supply Crate.``<CR><CR>`5Description:`` Get All the surgery tools you need to be an ace surgeon!``<CR><CR>``Each crate contains 10 each of the 13 Tools you need to complete surgery as well as 1 Hospital Bed, 1 Train-E Bot & 1 Surg-E.``<CR><CR><CR><CR>``You currently have 0 Grow Vouchers.``|0|3|100000|0|||-1|-1||1|||||||";
-									items_here += "\nadd_button|iotm|`oItem Of The Month``|interface/large/store_buttons/store_buttons16.rttex|May 2021:`` `9Plasma Heart``!<CR><CR>`2You Get:`` 1 `9Plasma Heart``.<CR><CR>`5Description:`` Static crackles as the power of Plasmatic energy takes over your entire body! Watch as the hue of the energy aura changes from dusk until dawn.|0|3|350000|0||interface/large/gui_store_button_overlays1.rttex|0|0||-1|-1||1|||||||";
-									//items_here += "\nadd_banner|interface/large/gui_shop_featured_header.rttex|0|2|";
-									//items_here += "\nadd_banner|interface/large/gui_store_iap_message.rttex|0|1|You gay!|";
 									//items_here += "\nadd_banner|interface/large/gui_shop_featured_header.rttex|0|3|";
 									/*rift*/
 									items_here += "\nadd_button|rift_cape|`oRift Cape``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Rift Cape.<CR><CR>`5Description:`` Fully customizable cape, set your own colors, your own aura, or disable them!``|0|5|7500000|0|||-1|-1||-1|-1||1||||||0|";
@@ -13855,6 +13818,9 @@ int main() {
 													if (world->rating == 1 && infoDat.at(1) == "0") {
 														world->rating = 0;
 														world->drop_gem = true;
+													} else if (world->rating == 0 && infoDat.at(1) == "1") {
+														world->rating = 1;
+														world->drop_gem = true;
 													}
 												}
 												if (infoDat.at(0) == "checkbox_rainbow") {
@@ -15685,46 +15651,6 @@ int main() {
 										Player::PlayAudio(peer, "audio/cash_register.wav", 0);
 									}
 								}
-							/*	if (btn == "view_guide") {
-									GTDialog guide;
-									guide.addLabelWithIcon("`9Guide", 6336, LABEL_BIG);
-									guide.addTextBox("Here you can find information about " + server_name + " items and custom recipes, note this guide might contain some missing information!");
-									guide.addSpacer(SPACER_SMALL);
-									guide.addLabelWithIcon("`9Chemical Combiner Recipes:", 952, LABEL_BIG);
-									guide.addSpacer(SPACER_SMALL);
-									string dialog = "";
-									try {
-										ifstream infile("etc/binary.zep");
-										for (string line; getline(infile, line);) {
-											if (line.length() > 3 && line.at(0) != '/' && line.at(1) != '/') {
-												auto ex = explode("|", line);
-												dialog += "add_label_with_icon|small|`o" + ex.at(3) + " " + getItemDef(atoi(ex.at(0).c_str())).name + " + " + ex.at(4) + " " + getItemDef(atoi(ex.at(1).c_str())).name + " + " + ex.at(5) + " " + getItemDef(atoi(ex.at(2).c_str())).name + "|left|" + ex.at(6) + "|\n";
-											}
-										}
-										infile.close();
-										guide.addCustom(dialog);
-										guide.addSpacer(SPACER_SMALL);
-										guide.addLabelWithIcon("`9Custom Seed Recipes:", 2, LABEL_BIG);
-										guide.addSpacer(SPACER_SMALL);
-										dialog = "";
-										ifstream infile3("recipes.zep");
-										for (string line; getline(infile3, line);) {
-											if (line.length() > 3 && line.at(0) != '/' && line.at(1) != '/') {
-												auto ex = explode("|", line);
-												dialog += "add_label_with_icon|small|`o" + getItemDef(atoi(ex.at(0).c_str())).name + " + " + getItemDef(atoi(ex.at(1).c_str())).name + "|left|" + to_string(atoi(ex.at(2).c_str()) - 1) + "|\n";
-											}
-										}
-										infile3.close();
-										guide.addCustom(dialog);
-										guide.addSpacer(SPACER_SMALL);
-										guide.addQuickExit();
-										guide.addButton("Close", "Close");
-										Player::OnDialogRequest(peer, guide.finishDialog());
-									}
-									catch (const std::out_of_range& e) {
-										std::cout << e.what() << std::endl;
-									}
-								}*/
 								if (btn == "getKey") {
 									if (isWorldOwner(peer, world) || isDev(peer)) {
 										try {
@@ -17987,9 +17913,6 @@ int main() {
 										std::cout << e.what() << std::endl;
 										break;
 									}
-								}
-								if (btn == "manage_audio") {
-									Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label|big|Select a song|right|\nadd_label|small|Just a quick note there none of these songs are owned by us they are suggested by server players and were added by the developer's Once you start playing song there is no way to stop it!|left|\nadd_spacer|small|\nadd_checkbox|checkbox_ahrix|Ahrix Nova (Ahrix)|0|\nadd_checkbox|checkbox_phut|Phut Hon (Vietnam)|0|\nadd_checkbox|checkbox_stopme|Don't stop me now (QUEEN)|0|\nadd_checkbox|checkbox_feelit|Can you feel it (NCS)|0|\nadd_checkbox|checkbox_sayso|Say So! (MEP)|0|\nadd_checkbox|checkbox_bealone|Never be alone (Cursed Sheep)|0|\nadd_button|Cancel|Play|noflags|0|0|\nend_dialog|song_edit||");
 								}
 								if (btn == "change_password")
 								{
