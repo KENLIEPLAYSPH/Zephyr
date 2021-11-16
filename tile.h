@@ -8368,11 +8368,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		}
 		else if (str.substr(0, 4) == "/se ") {
-		if (!isOwner(peer))
-		{
-			Player::OnConsoleMessage(peer, "`9Sorry! `2This Command Only Available For Owner!");
-			return;
-		}
 		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), str.substr(4, cch.length() - 4 - 1).c_str()), "audio/hub_open.wav"), 0));
 		ENetPacket* packet = enet_packet_create(p.data,
 			p.len,
