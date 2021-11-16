@@ -2,7 +2,7 @@
 An open-source Growtopia server software project based on GTOS.
 #### Planned Features
 - 200 Max Items
-- No CItems
+- Gems drop and merge
 - Tutorial
 - Improved speed
 - User-friendly folder structure on core files
