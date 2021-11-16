@@ -265,7 +265,7 @@ int main() {
 						}
 						case 4:
 						{
-							if (ex.at(0) == "clearpeer" && ex.at(1) == "false") {
+							if (ex.at(0) == "clearpeer" && ex.at(1) == "true") {
 								SendConsole("This may cause client-side crashing | Clearpeer", "WARN");
 								clearpeer = false;
 							}
