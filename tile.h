@@ -8691,19 +8691,19 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
         }
 		else if (str == "/version")
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-fe04a64");
         }
 		else if (str == "/about")
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-fe04a64");
 		}
 		else if (str == "/ver")
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-fe04a64");
 		}
 		else if (str == "/zephyr")
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-fe04a64");
         }
 		else if (str == "/nuke") {
 			if (world->isNuked) {
