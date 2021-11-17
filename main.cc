@@ -6298,7 +6298,46 @@ int main() {
 									/*Fast Item Setup*/
 									auto Price = 100;
 									auto ItemID = 5666;
-									auto count = 90;
+									auto count = 50;
+									ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
+									string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
+									auto gembux = atoi(content.c_str());
+									if (gembux >= Price) {
+										if (CheckItemMaxed(peer, ItemID, count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, ItemID) && CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, ItemID)) {
+											Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+											GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You don't have enough space in your inventory that. You may be carrying to many of one of the items you are trying to purchase or you don't have enough free spaces to fit them all in your backpack!"));
+											ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+											enet_peer_send(peer, 0, packet);
+											delete p.data;
+											break;
+										}
+										gembux -= Price;
+										ofstream myfile;
+										myfile.open("save/gemdb/_" + pData->rawName + ".zep");
+										myfile << gembux;
+										myfile.close();
+										Player::OnSetBux(peer, gembux, 0);
+										bool success = true;
+										SaveItemMoreTimes(ItemID, count, peer, success, "Purchased from store");
+										Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
+										GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You've purchased " + to_string(count) + " `o" + getItemDef(ItemID).name + " `wfor `$" + to_string(Price) + " `wGems.\nYou have `$" + to_string(gembux) + " `wGems left.\n\n`5Received: ``" + to_string(count) + " " + getItemDef(ItemID).name + ""));
+										ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+										enet_peer_send(peer, 0, packet);
+										delete p.data;
+									}
+									else {
+										Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+										GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You can't afford `o" + getItemDef(ItemID).name + "``!  You're `$" + to_string(Price - gembux) + "`` Gems short."));
+										ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+										enet_peer_send(peer, 0, packet);
+										delete p.data;
+									}
+								}
+								if (cch == "action|buy\nitem|chand\n") {
+									/*Fast Item Setup*/
+									auto Price = 500;
+									auto ItemID = 340;
+									auto count = 50;
 									ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
 									string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
 									auto gembux = atoi(content.c_str());
@@ -6451,15 +6490,10 @@ int main() {
 										SaveItemMoreTimes(992, 3, peer, success, "Purchased from store");
 										SaveItemMoreTimes(990, 10, peer, success, "Purchased from store");
 										SaveItemMoreTimes(996, 10, peer, success, "Purchased from store");
-
 										SaveItemMoreTimes(998, 10, peer, success, "Purchased form store");
-
 										SaveItemMoreTimes(988, 3, peer, success, "Purchased from store");
-
 										SaveItemMoreTimes(1004, 10, peer, success, "Purchased from store");
-
 										SaveItemMoreTimes(1006, 1, peer, success, "Purchased from store");
-
 										SaveItemMoreTimes(1002, 1, peer, success, "Purchased from store");
 										SaveItemMoreTimes(994, 10, peer, success, "Purchased form store");
 										Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
@@ -6672,7 +6706,7 @@ int main() {
 									delete p.data;
 								}
 								if (cch == "action|buy\nitem|bigitems\n") {
-									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStoreRequest"), "set_description_text|`2Awesome Items!``  Select the item you'd like more info on, or BACK to go back.\nenable_tabs|1\nadd_tab_button|main_menu|Home|interface/large/btn_shop2.rttex||0|0|0|0||||-1|-1|||0|\nadd_tab_button|locks_menu|Locks And Stuff|interface/large/btn_shop2.rttex||0|1|0|0||||-1|-1|||0|\nadd_tab_button|itempack_menu|Item Packs|interface/large/btn_shop2.rttex||0|3|0|0||||-1|-1|||0|\nadd_tab_button|bigitems_menu|Awesome Items|interface/large/btn_shop2.rttex||1|4|0|0||||-1|-1|||0|\nadd_tab_button|weather_menu|Weather Machines|interface/large/btn_shop2.rttex|Tired of the same sunny sky?  We offer alternatives within...|0|5|0|0||||-1|-1|||0|\nadd_tab_button|token_menu|Growtoken Items|interface/large/btn_shop2.rttex||0|2|0|0||||-1|-1|||0|\nadd_button|5seed|`oSmall Seed Pack``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 1 Small Seed Pack.<CR><CR>`5Description:`` Contains one Small Seed Pack. Open it for `$5`` randomly chosen seeds, including 1 rare seed! Who knows what you'll get?!|1|4|100|0|||-1|-1||-1|-1||1||||||0|\nadd_button|lgrid|`oLaser Grid``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 90 Laser Grid.<CR><CR>`5Description:`` A simple farmable for a new growtopian!|1|4|100|0|||-1|-1||-1|-1||1||||||0|\nadd_button|ssp_10_pack|`oSmall Seed Pack Collection``|interface/large/store_buttons/store_buttons18.rttex|`2You Get:`` 10 Small Seed Packs.<CR><CR>`5Description:`` Open each one for `$5`` randomly chosen seeds apiece, including 1 rare seed per pack! Who knows what you'll get?!|0|4|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|rare_seed|`oRare Seed Pack``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 5 Randomly Chosen Rare Seeds.<CR><CR>`5Description:`` Expect some wondrous crops with these!|1|7|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|grow_spray|`o5-pack of Grow Spray Fertilizer``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 5 Grow Spray Fertilizers.<CR><CR>`5Description:`` Why wait?!  Treat yourself to a `$5-pack`` of amazing `wGrow Spray Fertilizer`` by GrowTech Corp.  Each bottle instantly ages a tree by `$1 hour``.|0|6|400|0|||-1|-1||-1|-1||1||||||0|\nadd_button|deluxe_grow_spray|`oDeluxe Grow Spray``|interface/large/store_buttons/store_buttons11.rttex|`2You Get:`` 1 Deluxe Grow Spray.<CR><CR>`5Description:`` GrowTech's new `$Deluxe`` `wGrow Spray`` instantly ages a tree by `$24 hours`` per bottle! That's somewhere around 25 times as much as regular Grow Spray!|0|2|2000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|bountiful_seed_pack|`oBountiful Seed Pack``|interface/large/store_buttons/store_buttons28.rttex|`2You Get:`` 1 Bountiful Seed Pack.<CR><CR>`5Description:`` Contains `$5`` randomly chosen bountiful seeds, including 1 rare seed! Who knows what you'll get?!|0|4|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|fishin_pack|`oFishin' Pack``|interface/large/store_buttons/store_buttons14.rttex|`2You Get:`` 1 Fishing Rod, 5 Wiggly Worms, 1 Hand Drill, 1 Nuclear Detonator,  1 `#Rare Tackle Box``, 10 Fish Tanks and 1 `#Rare Fish Tank Port`` .<CR><CR>`5Description:`` Relax and sit by the shore... this pack includes a Fishing Rod, Wiggly Worms for bait, Hand Drill, Nuclear Detonator, and a `#Rare`` Tackle Box which provides you with more free bait every two days, Fish Tanks, and a `#Rare`` Fish Tank Port to put the fish you catch into your fish tank!|0|0|10000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|guild_name_changer|`oGuild Name Changer``|interface/large/store_buttons/store_buttons23.rttex|`2You Get:`` 1 Guild Name Changer.<CR><CR>`5Description:`` Fancy a change? Bored of your guild name or made a mistake when creating it? Fear not, you can use up one of these to change your `2Guild's name``! The usual name checks will be initiated to check if your new guild name is valid. `4Only usable by the guild leader!``|0|6|100000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|geiger|`oGeiger Counter``|interface/large/store_buttons/store_buttons12.rttex|`2You Get:`` 1 Geiger Counter.<CR><CR>`5Description:`` With this fantabulous device, you can detect radiation around you. It bleeps red, then yellow, then green as you get closer to the source. Who knows what you might find? `4Not available any other way!``|0|1|25000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|guild_chest_pack|`oGuild Chest Pack``|interface/large/store_buttons/store_buttons19.rttex|`2You Get:`` 10 Guild Chests.<CR><CR>`5Description:`` A 10-pack of Guild Chests! Loaded with guildy goodness - pop a chest open for a surprise item!|0|4|20000|0|||-1|-1||-1|-1||1||||||0|"));
+									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStoreRequest"), "set_description_text|`2Awesome Items!``  Select the item you'd like more info on, or BACK to go back.\nenable_tabs|1\nadd_tab_button|main_menu|Home|interface/large/btn_shop2.rttex||0|0|0|0||||-1|-1|||0|\nadd_tab_button|locks_menu|Locks And Stuff|interface/large/btn_shop2.rttex||0|1|0|0||||-1|-1|||0|\nadd_tab_button|itempack_menu|Item Packs|interface/large/btn_shop2.rttex||0|3|0|0||||-1|-1|||0|\nadd_tab_button|bigitems_menu|Awesome Items|interface/large/btn_shop2.rttex||1|4|0|0||||-1|-1|||0|\nadd_tab_button|weather_menu|Weather Machines|interface/large/btn_shop2.rttex|Tired of the same sunny sky?  We offer alternatives within...|0|5|0|0||||-1|-1|||0|\nadd_tab_button|token_menu|Growtoken Items|interface/large/btn_shop2.rttex||0|2|0|0||||-1|-1|||0|\nadd_button|5seed|`oSmall Seed Pack``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 1 Small Seed Pack.<CR><CR>`5Description:`` Contains one Small Seed Pack. Open it for `$5`` randomly chosen seeds, including 1 rare seed! Who knows what you'll get?!|1|4|100|0|||-1|-1||-1|-1||1||||||0|\nadd_button|lgrid|`oLaser Grid``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 50 Laser Grid.<CR><CR>`5Description:`` A simple farmable for a new growtopian!|1|4|100|0|||-1|-1||-1|-1||1||||||0|\nadd_button|chand|`oChandeiler``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 50 Chandelier.<CR><CR>`5Description:`` A simple farmable for a new growtopian!|1|4|500|0|||-1|-1||-1|-1||1||||||0|\nadd_button|ssp_10_pack|`oSmall Seed Pack Collection``|interface/large/store_buttons/store_buttons18.rttex|`2You Get:`` 10 Small Seed Packs.<CR><CR>`5Description:`` Open each one for `$5`` randomly chosen seeds apiece, including 1 rare seed per pack! Who knows what you'll get?!|0|4|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|rare_seed|`oRare Seed Pack``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 5 Randomly Chosen Rare Seeds.<CR><CR>`5Description:`` Expect some wondrous crops with these!|1|7|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|grow_spray|`o5-pack of Grow Spray Fertilizer``|interface/large/store_buttons/store_buttons.rttex|`2You Get:`` 5 Grow Spray Fertilizers.<CR><CR>`5Description:`` Why wait?!  Treat yourself to a `$5-pack`` of amazing `wGrow Spray Fertilizer`` by GrowTech Corp.  Each bottle instantly ages a tree by `$1 hour``.|0|6|400|0|||-1|-1||-1|-1||1||||||0|\nadd_button|deluxe_grow_spray|`oDeluxe Grow Spray``|interface/large/store_buttons/store_buttons11.rttex|`2You Get:`` 1 Deluxe Grow Spray.<CR><CR>`5Description:`` GrowTech's new `$Deluxe`` `wGrow Spray`` instantly ages a tree by `$24 hours`` per bottle! That's somewhere around 25 times as much as regular Grow Spray!|0|2|2000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|bountiful_seed_pack|`oBountiful Seed Pack``|interface/large/store_buttons/store_buttons28.rttex|`2You Get:`` 1 Bountiful Seed Pack.<CR><CR>`5Description:`` Contains `$5`` randomly chosen bountiful seeds, including 1 rare seed! Who knows what you'll get?!|0|4|1000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|fishin_pack|`oFishin' Pack``|interface/large/store_buttons/store_buttons14.rttex|`2You Get:`` 1 Fishing Rod, 5 Wiggly Worms, 1 Hand Drill, 1 Nuclear Detonator,  1 `#Rare Tackle Box``, 10 Fish Tanks and 1 `#Rare Fish Tank Port`` .<CR><CR>`5Description:`` Relax and sit by the shore... this pack includes a Fishing Rod, Wiggly Worms for bait, Hand Drill, Nuclear Detonator, and a `#Rare`` Tackle Box which provides you with more free bait every two days, Fish Tanks, and a `#Rare`` Fish Tank Port to put the fish you catch into your fish tank!|0|0|10000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|guild_name_changer|`oGuild Name Changer``|interface/large/store_buttons/store_buttons23.rttex|`2You Get:`` 1 Guild Name Changer.<CR><CR>`5Description:`` Fancy a change? Bored of your guild name or made a mistake when creating it? Fear not, you can use up one of these to change your `2Guild's name``! The usual name checks will be initiated to check if your new guild name is valid. `4Only usable by the guild leader!``|0|6|100000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|geiger|`oGeiger Counter``|interface/large/store_buttons/store_buttons12.rttex|`2You Get:`` 1 Geiger Counter.<CR><CR>`5Description:`` With this fantabulous device, you can detect radiation around you. It bleeps red, then yellow, then green as you get closer to the source. Who knows what you might find? `4Not available any other way!``|0|1|25000|0|||-1|-1||-1|-1||1||||||0|\nadd_button|guild_chest_pack|`oGuild Chest Pack``|interface/large/store_buttons/store_buttons19.rttex|`2You Get:`` 10 Guild Chests.<CR><CR>`5Description:`` A 10-pack of Guild Chests! Loaded with guildy goodness - pop a chest open for a surprise item!|0|4|20000|0|||-1|-1||-1|-1||1||||||0|"));
 									ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
 									enet_peer_send(peer, 0, packet);
 									delete p.data;
