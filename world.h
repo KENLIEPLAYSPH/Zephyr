@@ -4341,14 +4341,14 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 }
 
 inline void SendXP(ENetPeer* peer, int amount) {
-	if (GrowganothEvent) {
+/*	if (GrowganothEvent) {
 		if ((rand() % 3000) <= 1) {
 			Player::OnConsoleMessage(peer, "`4Growganoth `olikes your work and rewards with `2Gift Of Growganoth`o!");
 			Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`4Growganoth `wlikes your work and rewards with `2Gift Of Growganoth`w!", 0, false);
 			auto success = true;
 			SaveItemMoreTimes(10386, 1, peer, success);
 		}
-	}
+	}*/
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_necklace == 9168) {
 		amount *= 2;
 	} 
