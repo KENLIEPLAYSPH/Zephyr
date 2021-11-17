@@ -7939,7 +7939,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 				if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 				GlobalMaintenance = true;
-				Player::OnConsoleMessage(currentPeer, "`5Server is saving and shutting down... (Maintenance)");
+				Player::OnConsoleMessage(currentPeer, "`oServer is saving and shutting down...");
 				Player::PlayAudio(currentPeer, "audio/boo_pke_warning_light.wav", 0);
 				enet_peer_disconnect_later(currentPeer, 0);
 			}
