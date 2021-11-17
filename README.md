@@ -1,6 +1,6 @@
 # Zephyr
 An open-source Growtopia server software project based on GTOS.
-![Zephyr](https://discordapp.com/api/guilds/909810446192758826/widget.png?style=banner2)
+- ![Zephyr](https://discordapp.com/api/guilds/909810446192758826/widget.png?style=banner2)
 #### Planned Features
 - 200 Max Items
 - Gems drop and merge
