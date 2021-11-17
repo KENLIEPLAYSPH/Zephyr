@@ -8697,6 +8697,14 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		{
 		Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
         }
+		else if (str == "/version", "/about", "/ver")
+		{
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+        }
+		else if (str == "/zephyr")
+		{
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+        }
 		else if (str == "/nuke") {
 			if (world->isNuked) {
 				world->isNuked = false;
@@ -10531,7 +10539,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			for (auto c : message) {
 				if (c < 0x18 || std::all_of(message.begin(), message.end(), static_cast<int(*)(int)>(isspace))) return;
 			} 
-			//if (webhooks) threads.push_back(std::thread(SendWebhook, static_cast<PlayerInfo*>(peer->data), message));
 			for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 				if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 				if (isHere(peer, currentPeer)) {

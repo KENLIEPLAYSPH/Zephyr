@@ -8,6 +8,7 @@ int main() {
 	DWORD prev_mode;
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
+	SendConsole("This server is running Zephyr version 0.8 git-cb15b1b", "WARN");
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -17,7 +18,7 @@ int main() {
 	srand(time(nullptr)); /*reset the seed*/
 	SendConsole("Loaded server configuration", "INFO"); 
 	try {
-		ifstream load_config("config/config.json"); /*load config info*/
+		ifstream load_config("config/config.json");
 		if (load_config.fail()) {
 			load_config.close();
 			SendConsole("Failed to load config.json make sure it exists and the permissions are correct", "ERROR");
