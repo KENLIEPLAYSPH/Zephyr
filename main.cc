@@ -8,7 +8,7 @@ int main() {
 	DWORD prev_mode;
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-	SendConsole("This server is running Zephyr version 0.8 git-cb15b1b", "NOTICE");
+	SendConsole("This server is running Zephyr version 0.8 git-fe04a64", "NOTICE");
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
