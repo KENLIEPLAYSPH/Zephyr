@@ -15,7 +15,7 @@ int main() {
 	bool xenonite_dialog = false;
 	string vipPub = "";
 	string vipid = "";
-	srand(time(nullptr)); /*reset the seed*/ //
+	srand(time(nullptr)); /*reset the seed*/
 	SendConsole("Loaded server configuration", "INFO"); 
 	try {
 		ifstream load_config("config/config.json");
