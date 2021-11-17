@@ -665,7 +665,7 @@ int main() {
 							}
 							if (cch == "action|enter_game\n" && pData->passed_data_check) {
 								if (GlobalMaintenance) {
-									FailLogin(peer, "action|log\nmsg|`5The game is currently undergoing maintenance. We will be back soon.", false);
+									FailLogin(peer, "action|log\nmsg|`oThe server is currently undergoing maintenance, we'll be back soon!", false);
 									continue;
 								}
 								if (!pData->haveGrowId) {
