@@ -22,13 +22,12 @@ inline void SendConsole(const string text, const string type) {
 	else if (type == "WARN") {
 		k = 14;
     } else if (type == "NOTICE") {
-		k = 11;
+		k = 11; //hehe blue
 	} else if (type == "ERROR") {
 		k = 12;
-	} else if (type == "HTTP") {
+	}
+	else if (type == "HTTP") {
 		k = 13;
-	} else if (type == "MYSQL") {
-		k = 11;
 	} else if (type == "CHAT") {
 		k = 15;
 	}

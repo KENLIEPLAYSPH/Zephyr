@@ -380,10 +380,7 @@ int main() {
 		system("PAUSE");
 		return -1;
 	}
-	/*atexit(CreateMessageBox123);
-	at_quick_exit(CreateMessageBox123);
-	set_terminate(CreateMessageBox123);*/
-	SetConsoleTitle(server_name.c_str());
+	SetConsoleTitle("Zephyr M9");
 	LoadEvents(true);
 	ValentineEvent = false;
 	LunarEvent = false;
@@ -429,7 +426,7 @@ int main() {
 	address.port = configPort; 
 	server = enet_host_create(&address, 1024, 10, 0, 0);
 	if (server == nullptr) {
-		SendConsole("Failed to start enet service, is port " + to_string(configPort) + " already taken?", "ERROR");
+		SendConsole("Failed to start ENet service, is the port " + to_string(configPort) + " already being used?", "ERROR");
 		system("PAUSE");
 		return -1;
 	}
@@ -446,7 +443,7 @@ int main() {
 				{
 					event.peer->data = new PlayerInfo;
 					sendData(event.peer, 1, nullptr, 0);
-					ofstream write_new_online("etc/online_count.zep");
+					ofstream write_new_online("etc/online.zep");
 					write_new_online << atoi(GetPlayerCountServer().c_str());
 					write_new_online.close();
 					break;

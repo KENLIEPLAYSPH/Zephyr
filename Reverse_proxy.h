@@ -22,7 +22,7 @@ bool disconnected = true;
 using namespace std;
 int m_user = 0;
 int m_token = 0;
-string m_server = "213.179.209.168";
+string m_server = "127.0.0.1";
 int m_port = 17198;
 #define MALLOC(type, ...) (type*)(malloc(sizeof(type) __VA_ARGS__))
 #define PRINTS(msg, ...) printf("[SERVER]: " msg, __VA_ARGS__);

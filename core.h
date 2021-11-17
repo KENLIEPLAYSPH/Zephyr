@@ -260,13 +260,6 @@ inline string space2underscore(std::string text)
 	return text;
 }
 
-inline void SendDiscordNotification(const string text, const string webhook) {
-	const auto superrealtext = space2underscore(text);
-	const auto themessage = "php system.php " + superrealtext + " " + webhook + "";
-	const auto c = themessage.c_str();
-	system(c);
-}
-
 string json_to_string(json info) {
 	string new_data = info;
 	return new_data;

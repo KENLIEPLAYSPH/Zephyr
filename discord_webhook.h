@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <wininet.h>
 #include <tchar.h>
+#include "player.h"
 
 inline void SendWebhook(PlayerInfo* pData, string message) {
 	if (!webhooks) {
@@ -9,8 +10,8 @@ inline void SendWebhook(PlayerInfo* pData, string message) {
 		return;
 	}
 	LPCTSTR szUserAgent = _T("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.74 Safari/537.36 Edg/79.0.309.43");
-	LPCTSTR szHost = _T("discordapp.com");
-	LPCTSTR szUrlPath = _T("api/webhooks/905867765376745542/YWHG6OvtkXC-FsHOAo-hJCL40J_HEtoJWvOmMNKK1xayKUytQDGq_evr-YpXH4DcZrZT");
+	LPCTSTR szHost = _T("discord.com");
+	LPCTSTR szUrlPath = _T("/api/webhooks/910482140305690654/cSjAOdbkxczTJUy43RT4qrL-3qxlyE8ou2JyYrYm76mgJdZjtZw9xjN8ejjzOed7GjGV	");
 	LPCTSTR szAcceptTypes[] = { _T("application/json"), NULL };
 	LPCTSTR szContentTypeHeader = _T("Content-Type: application/json");
 	LPCSTR szPostData = ("{ \"username\":\"" + pData->displayName + "\", \"avatar_url\": \"https://cdn.discordapp.com/attachments/844114352248586260/848015185054662727/20210524_121640.jpg\", \"content\": \"```" + message + "```\" }").c_str();
