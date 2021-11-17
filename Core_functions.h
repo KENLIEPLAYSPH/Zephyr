@@ -22,7 +22,7 @@ inline void SendConsole(const string text, const string type) {
 	else if (type == "WARN") {
 		k = 14;
     } else if (type == "NOTICE") {
-		k = 16;
+		k = 11;
 	} else if (type == "ERROR") {
 		k = 12;
 	} else if (type == "HTTP") {

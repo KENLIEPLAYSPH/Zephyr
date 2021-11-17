@@ -8,7 +8,7 @@ int main() {
 	DWORD prev_mode;
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-	SendConsole("This server is running Zephyr version 0.8 git-cb15b1b", "WARN");
+	SendConsole("This server is running Zephyr version 0.8 git-cb15b1b", "NOTICE");
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -625,7 +625,7 @@ int main() {
 											}
 											case -8:
 											{
-												FailLogin(peer, "action|log\nmsg|`4Sorry, this account, device or location has been temporarily suspended.<CR>`oIf you didn't do anything wrong, it could be because you're playing from the same place or on the same device as someone who did. Contact support at `5" + server_email + " `oif you have any questions. This is a temporary ban caused by `w" + pData->rawName + " `oand will be removed in `w" + OutputBanTime(calcBanDuration(pData->timeBanned)) + "`o. If that's not your name, try playing from another location or device to fix it.", false);
+												FailLogin(peer, "action|log\nmsg|`4Sorry, this account, device or location has been temporarily suspended.\n`oIf you didn't do anything wrong, it could be because you're playing from the same place or on the same device as someone who did. Contact support at `5" + server_email + " `oif you have any questions. This is a temporary ban caused by `w" + pData->rawName + " `oand will be removed in `w" + OutputBanTime(calcBanDuration(pData->timeBanned)) + "`o. If that's not your name, try playing from another location or device to fix it.", false);
 												break;
 											}
 											case -9:
@@ -19001,7 +19001,7 @@ int main() {
 							else {
 								cch.erase(std::remove(cch.begin(), cch.end(), '\n'), cch.end());
 								if (find(unknown_packets.begin(), unknown_packets.end(), cch) == unknown_packets.end()) {
-									SendConsole("Error processing packet: " + cch, "NOTICE");
+									SendConsole("Error processing packet: " + cch, "ERROR");
 									unknown_packets.push_back(cch);
 								}
 								break;

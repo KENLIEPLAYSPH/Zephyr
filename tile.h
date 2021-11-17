@@ -7231,14 +7231,6 @@ inline void handle_world(ENetPeer* peer, string act, bool sync = false, bool doo
 				return;
 			}
 		}
-		/*if (act == "CSN" && static_cast<PlayerInfo*>(peer->data)->level < 10 || act == "CSN" && atoi(static_cast<PlayerInfo*>(peer->data)->player_age.c_str()) < 18) {
-			if (!isMod(peer) && !static_cast<PlayerInfo*>(peer->data)->Subscriber) {
-				Player::OnConsoleMessage(peer, "You must have level 10 and be at least 18 years old to enter this world! (Or be a mod/subscriber) Currently you have level " + to_string(static_cast<PlayerInfo*>(peer->data)->level) + " and you are " + static_cast<PlayerInfo*>(peer->data)->player_age + " years old, work harder son!");
-				Player::OnFailedToEnterWorld(peer);
-				Player::PlayAudio(peer, "audio/fr2.wav", 0);
-				return;
-			}
-		}*/
 		if (act == "GROWGANOTH" && !GrowganothEvent && !isDev(peer)) {
 			Player::OnConsoleMessage(peer, "Growganoth is currently closed.");
 			Player::OnFailedToEnterWorld(peer);
@@ -8697,10 +8689,18 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		{
 		Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
         }
-		else if (str == "/version", "/about", "/ver")
+		else if (str == "/version")
 		{
 		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
         }
+		else if (str == "/about")
+		{
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		}
+		else if (str == "/ver")
+		{
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
+		}
 		else if (str == "/zephyr")
 		{
 		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 0.8 git-cb15b1b");
@@ -8780,10 +8780,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 5) == "/ban ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			if (world == nullptr || static_cast<PlayerInfo*>(peer->data)->currentWorld == "EXIT" || serverIsFrozen) return;
 			if (static_cast<PlayerInfo*>(peer->data)->haveGrowId && static_cast<PlayerInfo*>(peer->data)->rawName == world->owner || isMod(peer))
 			{
@@ -8991,10 +8987,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 6) == "/mute ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			ifstream read_player("save/players/_" + PlayerDB::getProperName(str.substr(6, cch.length() - 6 - 6)) + ".json");
 			if (!read_player.is_open()) {
 				Player::OnConsoleMessage(peer, "Player does not exist!");
@@ -9010,10 +9002,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/curse ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			ifstream read_player("save/players/_" + PlayerDB::getProperName(str.substr(6, cch.length() - 6 - 6)) + ".json");
 			if (!read_player.is_open()) {
 				Player::OnConsoleMessage(peer, "Player does not exist!");
@@ -9338,10 +9326,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 5) == "/gsm ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			string name = static_cast<PlayerInfo*>(peer->data)->displayName;
 			GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`4Global System Message: `o" + str.substr(4, cch.length() - 4 - 1)));
 			string text = "action|play_sfx\nfile|audio/sungate.wav\ndelayMS|0\n";
@@ -9454,10 +9438,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 8) == "/infoex ") {
 			string checknick = PlayerDB::getProperName(str.substr(8, cch.length() - 8 - 1));
-			if (!isMod(peer)) {
-				sendWrongCmd(peer);
-				return;
-			}
 			try {
 				ifstream read_player("save/players/_" + checknick + ".json");
 				if (!read_player.is_open()) {
@@ -9508,10 +9488,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/banip ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			string warn_info = str;
 			size_t extra_space = warn_info.find("  ");
 			if (extra_space != std::string::npos)
@@ -9742,10 +9718,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 
 		else if (str.substr(0, 10) == "/givegems ") {
-			if (!isMod(peer)) {
-				sendWrongCmd(peer);
-				return;
-			}
 			if (str.substr(10, cch.length() - 10 - 1) == "") return;
 			string ban_info = str;
 			size_t extra_space = ban_info.find("  ");
@@ -9801,11 +9773,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		else if (str.substr(0, 11) == "/givelevel ") {
-		if (!isMod(peer))
-		{
-			sendWrongCmd(peer);
-			return;
-		}
 		string ban_info = str;
 		size_t extra_space = ban_info.find("  ");
 		if (extra_space != std::string::npos)
@@ -9927,11 +9894,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 10) == "/giverank ") 
 		{
-				if (!isMod(peer))
-			{
-				sendWrongCmd(peer);
-				return;
-			}
 			if (str.substr(10, cch.length() - 10 - 1) == "") return;
 			string ban_info = str;
 			size_t extra_space = ban_info.find("  ");
@@ -9980,10 +9942,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		else if (str.substr(0, 6) == "/nick ") {
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			string name2 = str.substr(6, cch.length() - 6 - 1);
 			if ((str.substr(6, cch.length() - 6 - 1).find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != string::npos)) return;
 			if (name2.length() < 3) return;
@@ -10034,10 +9992,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		else if (str == "/invis" || str == "/invisible") {
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			if (static_cast<PlayerInfo*>(peer->data)->isinv == false) {
 				static_cast<PlayerInfo*>(peer->data)->isinv = true;
 				Player::OnConsoleMessage(peer, "`oYou are now ninja, invisible to all.");
@@ -10256,10 +10210,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		}
 		else if (str.substr(0, 7) == "/schat ")
 		{
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			if (static_cast<PlayerInfo*>(peer->data)->isDuctaped == true)
 			{
 				GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`@Staff Chat is not `4allowed `@when you're `9Duct-taped`@!"));
@@ -10496,10 +10446,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		} 
 		else if (str.substr(0, 7) == "/color ") {
-		if (!isMod(peer)) {
-			sendWrongCmd(peer);
-			return;
-		}
 			if (str.substr(7, cch.length() - 7 - 1).size() >= 20 || str.substr(7, cch.length() - 7 - 1).size() <= 0) return;
 			int color = atoi(str.substr(7, cch.length() - 7 - 1).c_str());
 			static_cast<PlayerInfo*>(peer->data)->skinColor = color;
