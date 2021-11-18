@@ -117,6 +117,8 @@ inline void SendConsoleProxy(string text, const string type) {
 }
 
 #include <experimental/filesystem>
+#include "proton/variant.hpp"
+#include ""
 namespace fs = std::experimental::filesystem;
 
 #define fnv32(s) (cexpr<uint32_t, hs::hash32(s)>::value)
@@ -272,7 +274,7 @@ gameupdatepacket_t* utils::get_struct(ENetPacket* packet) {
 	return gamepacket;
 }
 
-void proxy_send(variantlist_t& list, int32_t netid = -1, int32_t delay = 0) {
+void proxy_send(variantlist_t& list, netid = -1, int32_t delay = 0) {
 
 	uint32_t data_size = 0;
 	void* data = list.serialize_to_mem(&data_size, nullptr);
@@ -504,7 +506,7 @@ void handle_incoming() {
 			}
 			if (!client)
 				return;
-			enet_peer_send(proxy_peer, 0, event.packet);
+			enet_peer_send(proxy_peer, 0, std::ios_base::event.packet);
 			enet_host_flush(client);
 		} break;
 		default: PRINTS("UNKNOWN event: %d\n", event.type); break;

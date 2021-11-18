@@ -171,7 +171,6 @@
     <ClInclude Include="enet\include\win32.h" />
     <ClInclude Include="http.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="antiproxy.h" />
     <ClInclude Include="sandbird\sandbird.h" />
     <ClInclude Include="save.h" />
     <ClInclude Include="core.h" />

@@ -28,9 +28,6 @@
     <Filter Include="Source Files\enet">
       <UniqueIdentifier>{1f56f4b3-e667-4af3-bf5e-161f85e9e258}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bot">
-      <UniqueIdentifier>{363f6056-81a4-4798-bcf8-7ccb81dfdd94}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="http.h">
@@ -56,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files\http</Filter>
-    </ClInclude>
-    <ClInclude Include="antiproxy.h">
-      <Filter>Header Files\bot</Filter>
     </ClInclude>
     <ClInclude Include="save.h">
       <Filter>Header Files\server</Filter>

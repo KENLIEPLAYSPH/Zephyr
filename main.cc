@@ -54,7 +54,6 @@ int main() {
 			system("PAUSE");
 			return -1;
 		} if (antiproxy) {
-            #include "antiproxy.h"
 			SendConsole("You're using anti-proxy, disable it if you have issues with logging in", "WARN");
 		}
 		threads.push_back(std::thread(http::run, http_port, server_ip, configPort));
