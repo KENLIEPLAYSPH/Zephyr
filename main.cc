@@ -18130,7 +18130,7 @@ int main() {
 									json j;
 									read_guild >> j;
 									read_guild.close();
-									Player::OnDialogRequest(peer, "\nadd_label_with_icon|big|`wGuild Information! ``|left|3524|\nadd_spacer|small|\nadd_textbox|`oWe are very sorry about this `wShow Guild Member`o we gonna fix it very `4ASAP!`o Please be patient don't wory! ~ `6@iVend|");
+									Player::OnTextOverlay(peer, "`4Coming Soon");
 								}
 								if (btn == "ipbanwrench") {
 									if (isMod(peer)) {
