@@ -7944,7 +7944,6 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 				enet_peer_disconnect_later(currentPeer, 0);
 			}
 			SendConsole("Saving all worlds before shutdown, please wait...", "WARN");
-			//saveAll();
 		}
 		else if (str.substr(0, 9) == "/weather ") {
 			if (!isOwner(peer))
@@ -8411,6 +8410,14 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			sendWrongCmd(peer);
 			return;
 		}
+		for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+			if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
+			GlobalMaintenance = true;
+			Player::OnConsoleMessage(currentPeer, "`oServer is saving and restarting for an update!");
+			Player::PlayAudio(currentPeer, "audio/boo_pke_warning_light.wav", 0);
+			enet_peer_disconnect_later(currentPeer, 0);
+		}
+		SendConsole("Saving all worlds before shutdown, please wait...", "WARN");
 		GamePacket p = packetEnd(appendInt(appendString(appendString(appendString(appendString(createPacket(), "OnAddNotification"), "interface/atomic_button.rttex"), "`4WARNING!: `wServer is `4UPDATING"), "audio/already_used.wav"), 0));
 		ENetPacket* packet = enet_packet_create(p.data,
 			p.len,
