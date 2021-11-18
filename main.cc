@@ -973,30 +973,53 @@ int main() {
 								playerRespawn(world, peer, false);
 								break;
 							}
-							else if (cch == "action|friends\n") {
-								string GuildButtonDialog = "";
-								if (pData->guild != "") {
-									GuildButtonDialog = "\nadd_button|showguild|`wShow Guild Members``|noflags";
-								} else {
-									GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
-								}
-								Player::OnDialogRequest(peer, "\nadd_label_with_icon|big|`wPlayer Portal|left|1366|\nadd_spacer|small|\nadd_button|backsocialportal|`wSocial Portal|noflags|0|0|\nadd_button|marmission|`wMarvelous Missions|noflags|0|0|\nadd_button|gazette|`wGazette|noflags|0|0|\nadd_button|communityhub|`wCommunity Hub|\nend_dialog||`wOK||\nadd_quick_exit|");
-								break;
+							else if (cch.find("action|friends\n") == 0) {
+							string GuildButtonDialog = "";
+							if (pData->guild != "") {
+								GuildButtonDialog = "\nadd_button|showguild|`wShow Guild Members``|noflags";
+							}
+							else {
+								GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
+							}
+							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big| `wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|\nadd_button|communityhub|`wCommunity Hub``|noflags|0|0|\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
+							break;
 							}
 							else if (cch == "action|growid\n") {
 								SendRegisterDialog(peer);
 								enet_host_flush(server);
 								break;
 							}
-							else if (cch == "action|eventmenu\n") {
-								// ReSharper disable once CppUnreachableCode
-								if (pData->haveGrowId == false) {
-									SendRegisterDialog(peer);
+                            else if (cch == "action|eventmenu\n") {
+							if (((PlayerInfo*)(peer->data))->haveGrowId == true)
+							{
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|\nadd_textbox|`3Under Construction!|\nend_dialog|store|Close|\n"));
+								ENetPacket* packet = enet_packet_create(p.data,
+									p.len,
+									ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+							break;
+							// ReSharper disable once CppUnreachableCode
+							if (pData->haveGrowId == false) {
+								SendRegisterDialog(peer);
+							}
+							else {
+								if (pData->guild == "") {
+									Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_spacer|small|\nadd_textbox|`5Join or Create a `^Guild `5In order to access `cGuild Rewards`5!|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
+									continue;
 								}
-								else {
-									return 0;
-									break;
-								}
+								int gpoints = 0;
+								ifstream guildstream1("save/guildrewards/guildpoints/" + pData->guild + ".txt");
+								guildstream1 >> gpoints;
+								guildstream1.close();
+								int personalpoints = 0;
+								ifstream guildstream3("save/guildrewards/contribution/" + pData->guild + "/" + pData->rawName + ".txt");
+								guildstream3 >> personalpoints;
+								guildstream3.close();
+								Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_label|small|`5Your guild currently have: `^" + std::to_string(gpoints) + " `5Points.|left|4||\nadd_label|small|`5Your personal contribution are: `^" + std::to_string(personalpoints) + " `5Points.|left|4||\nadd_spacer|small|\nadd_button|grewards|`wSpend Guild Points``|0|0|\nadd_button|gcontribution|`wMembers Contribution``|0|0|\nadd_spacer|small|\nadd_textbox|`2Guild `^Points `5Are `@Obtainable `5From those `9Activities`5: Usage of `9Magic Machine`5, Breaking `9Farmable Blocks`5, `6Harvesting `9Seeds`5.|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
+							}
+							break;
 							}
 							else if (cch == "action|trade_cancel\n") {
 								end_trade(peer, false, true);
@@ -18366,34 +18389,8 @@ int main() {
 									if (pData->guild != "") {
 										ShowGuildDialog = "Show Guild Members";
 									}
-									Player::OnDialogRequest(peer, "set_default_color|`w\n\nadd_label_with_icon|big|Social Portal``|left|1366|\n\nadd_spacer|small|\nadd_button|showfriend|Show Friends``|0|0|\nadd_button|appr|Show Apprentices``|0|0|\nadd_button|showguild|`w" + ShowGuildDialog + "``|0|0|\nadd_spacer|small|\nadd_button|back1232|`oBack|\nadd_quick_exit|");
+									Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big| `wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|\nadd_button|showguild|`w" + ShowGuildDialog + "``|noflags|0|0|\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
 								}
-								if (btn == "gazette")
-								{
-									sendnews(peer);
-								}
-								if (btn == "backplayerportal")
-								{
-									GamePacket p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\nadd_label_with_icon|big|`wPlayer Portal|left|1366|\nadd_spacer|small|\nadd_button|backsocialportal|`wSocial Portal|noflags|0|0|\nadd_button|marmission|`wMarvelous Missions|noflags|0|0|\nadd_button|gazette|`wGazette|noflags|0|0|\nadd_button|communityhub|`wCommunity Hub|\nend_dialog||`wOK||\nadd_quick_exit|"));
-									ENetPacket* packet2 = enet_packet_create(p2.data,
-										p2.len,
-										ENET_PACKET_FLAG_RELIABLE);
-
-									enet_peer_send(peer, 0, packet2);
-									delete p2.data;
-								}
-								if (btn == "appr")
-								{
-									Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`o0 of 0`w Apprentices Online``|left|1366|\nadd_spacer|small|\nadd_smalltext|`20`o Apprentices above level 20|\nadd_smalltext|`20`o Archived Apprentices|\nadd_spacer|small|\nadd_smalltext|`oTo add an apprentice, `wWrench`o a player, then choose `5Add as Apprentice`o.|\nadd_spacer|small|\nadd_button|mileS|`oMilestone Rewards|\nadd_button|helpS|`oHelp|\nadd_spacer|small|\nadd_button|backsocialportal|`oBack|\nadd_button||`oClose|\nadd_quick_exit|");
-								}
-								if (btn == "mileS")
-								{
-									Player::OnDialogRequest(peer, "set_default_color|`w\nadd_label_with_icon|big|Mentor Milestone Rewards|left|7786|\nadd_smalltext|`$Earn rewards by completing milestones. The more apprentices you have the more rewards you can get!|\nadd_spacer|small|\nadd_textbox|`oTotal number of apprentices above Level 20:`2 0|left|\nadd_spacer|small|\nadd_textbox|`s#1: Have 1 Apprentice (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s1,000 Gems|left|112|\nadd_spacer|small|\nadd_textbox|`s#2: Have 5 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s10,000 Gems|left|112|\nadd_spacer|small|\nadd_textbox|`s#3: Have 15 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s30,000 Gems|left|112|\nadd_spacer|small|\nadd_textbox|`s#4: Have 30 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s60,000 Gems|left|112|\nadd_spacer|small|\nadd_textbox|`s#5: Have 50 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s30 Days Subscription|left|6860|\nadd_spacer|small|\nadd_textbox|`s#6: Have 100 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s100,000 Gems|left|112|\nadd_spacer|small|\nadd_textbox|`s#7: Have 200 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`s1 Year Subscription|left|6862|\nadd_spacer|small|\nadd_textbox|`s#8: Have 500 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`sWacky Rocket Sled|left|9470|\nadd_spacer|small|\nadd_textbox|`s#9: Have 1000 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`sMentor Title|left|9472|\nadd_spacer|small|\nadd_textbox|`s#10: Have 2000 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`sSpecial mention in the 'Player Tribute' screen.|left|9474|\nadd_spacer|small|\nadd_textbox|`s#11: Have 4000 Apprentices (Level 20) to claim this reward:|\nadd_label_with_icon|small|`sAweasome reward to be announced soon.|left|9476|\nadd_quick_exit|\nadd_spacer|big|\nadd_button|appr|`$Back|\nadd_button||`$Close|");
-								}
-								if (btn == "back1232")
-								{
-									Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wPlayer Portal|left|1366|\nadd_spacer|small|\nadd_button|backsocialportal|`wSocial Portal|noflags|0|0|\nadd_button|marmission|`wMarvelous Missions|noflags|0|0|\nadd_button|gazette|`wGazette|noflags|0|0|\nadd_button|communityhub|`wCommunity Hub|\nend_dialog||`wOK||\nadd_quick_exit|");
-								}						
 								if (btn == "showfriend")
 								{
 									if (pData->currentWorld == "EXIT")
@@ -18419,7 +18416,7 @@ int main() {
 									}
 									if (totalcount == 0)
 									{
-										GamePacket p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`o" + std::to_string(onlinecount) + " of " + std::to_string(totalcount) + " `wFriends Online``|left|1366|\n\nadd_spacer|small|\nadd_label|small|`1To add friends in `4GTOS `1Click on someone's name and click add as a friend!`o.``|left|4|\n\nadd_spacer|small|\nadd_button||`5Close``|0|0|\nadd_quick_exit|"));
+										GamePacket p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`o" + std::to_string(onlinecount) + " of " + std::to_string(totalcount) + " `wFriends Online``|left|1366|\n\nadd_spacer|small|\nadd_label|small|`1To add friends in `9" + server_name + " `1Click on someone's name and click add as a friend!```|left|4|\n\nadd_spacer|small|\nadd_button||`5Close``|0|0|\nadd_quick_exit|"));
 										ENetPacket* packet2 = enet_packet_create(p2.data,
 											p2.len,
 											ENET_PACKET_FLAG_RELIABLE);
