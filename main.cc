@@ -611,7 +611,7 @@ int main() {
 											case -6:
 											{
 												FailLogin(peer, "action|log\nmsg|`4Advanced Account Protection: `oYou tried to log in from the new Device and IP. A verification email was sent to the email address registered with this GrowID (" + pData->email + "). Please follow the link in that email to whitelist this device and IP.", false);
-												//FailLogin(peer, "action|log\nmsg|`4Your account have been compromised, there was data breach which happened 2/28/2021 your account was in it to unlock this account message Jesen N#9071", false);
+												//FailLogin(peer, "action|log\nmsg|`4Your account have been compromised, there was data breach which happened 2/28/2021 your account was in it to unlock this account create a ticket in our Discord Server", false);
 												//threads.push_back(std::thread(SendAAPNotification, pData->email, pData->charIP, PlayerDB::getProperName(pData->tankIDName)));
 												break;
 											}
@@ -981,7 +981,7 @@ int main() {
 							else {
 								GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
 							}
-							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big| `wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|\nadd_button|communityhub|`wCommunity Hub``|noflags|0|0|\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
+							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`wGithub``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
 							break;
 							}
 							else if (cch == "action|growid\n") {
@@ -7551,7 +7551,7 @@ int main() {
 								}
 								break;
 							}
-							else if (cch.find("action|communitytabs") == 0) {
+						/*	else if (cch.find("action|communitytabs") == 0) {
 								if (cch.find("action|communitytabs\ntype|community_featured_worlds") == 0) {
 									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnCommunityHubRequest"), "set_description_text|These worlds are some of the most interesting, impressive, or downright cool worlds your fellow Growtopians have created! Can you top them?|\n\nadd_cmmnty_ft_wrld_bttn||`1THENATURETOWER`` by `5Cahtster``|noflags|OPENWORLD|THENATURETOWER|0|0|\nadd_cmmnty_ft_wrld_bttn||`1PARKOUR2`` by `5Artemis``|noflags|OPENWORLD|PARKOUR2|0|0|\nadd_cmmnty_ft_wrld_bttn||`1MRBUNNY`` by `5MostLike``|noflags|OPENWORLD|MRBUNNY|0|0|\nadd_cmmnty_ft_wrld_bttn||`1URANIUMKINGDOM`` by `5LFU``|noflags|OPENWORLD|URANIUMKINGDOM|0|0|\nadd_cmmnty_ft_wrld_bttn||`1KDERBY`` by `5Frarie``|noflags|OPENWORLD|KDERBY|0|0|\n\nadd_tab_button|community_featured_worlds|featured worlds|interface/large/btn_community_hub.rttex||0|0|0|0||\nadd_tab_button|community_worldoftheday|world of the day|interface/large/btn_community_hub.rttex||0|1|0|0||\nadd_tab_button|communityworlds_toprated|top rated|interface/large/btn_community_hub.rttex||0|4|0|0||\nadd_tab_button|communityworlds_toptoday|top today|interface/large/btn_community_hub.rttex||0|5|0|0||\nadd_tab_button|communityworlds_topoverall|topoverall|interface/large/btn_community_hub.rttex||0|6|0|0||\nadd_tab_button|community_growtorials|community growtorials|interface/large/btn_community_hub.rttex||0|2|0|0||\nadd_tab_button|community_influencervideos|influencer videos|interface/large/btn_community_hub.rttex||0|3|0|0||\ncommunity_hub_type|community_featured_worlds"));
 									ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
@@ -7595,7 +7595,7 @@ int main() {
 									delete p.data;
 								}
 								break;
-							}
+							}*/
 							else if (cch.find("action|dialog_return") == 0) {
 								if (pData->isIn == false || pData->wrenchsession < 0 || pData->wrenchsession > 6000 || world == nullptr || pData->currentWorld == "EXIT" || serverIsFrozen) break;
 								if (pData->wrenchsession == 0) {

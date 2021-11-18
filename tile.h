@@ -8406,7 +8406,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		delete p.data;
 							}
 		else if (str.substr(0, 4) == "/rs") {
-		if (!isOwner(peer))
+		if (!isDev(peer))
 		{
 			sendWrongCmd(peer);
 			return;
