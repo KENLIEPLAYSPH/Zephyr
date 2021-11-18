@@ -167,12 +167,11 @@
     <ClInclude Include="enet\include\protocol.h" />
     <ClInclude Include="enet\include\time.h" />
     <ClInclude Include="enet\include\types.h" />
-    <ClInclude Include="enet\include\unix.h" />
     <ClInclude Include="enet\include\utility.h" />
     <ClInclude Include="enet\include\win32.h" />
     <ClInclude Include="http.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Reverse_proxy.h" />
+    <ClInclude Include="antiproxy.h" />
     <ClInclude Include="sandbird\sandbird.h" />
     <ClInclude Include="save.h" />
     <ClInclude Include="core.h" />

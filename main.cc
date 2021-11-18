@@ -54,7 +54,8 @@ int main() {
 			system("PAUSE");
 			return -1;
 		} if (antiproxy) {
-			SendConsole("You're using experimental antiproxy setting, disable it if you have issues with logging in", "WARN");
+            #include "antiproxy.h"
+			SendConsole("You're using anti-proxy, disable it if you have issues with logging in", "WARN");
 		}
 		threads.push_back(std::thread(http::run, http_port, server_ip, configPort));
 		if (use_wuplog) {

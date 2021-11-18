@@ -10,4 +10,3 @@
 #define ENET_DIFFERENCE(x, y) ((x) < (y) ? (y) - (x) : (x) - (y))
 
 #endif /* __ENET_UTILITY_H__ */
-

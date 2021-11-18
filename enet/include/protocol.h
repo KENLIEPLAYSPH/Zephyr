@@ -195,4 +195,3 @@ typedef union _ENetProtocol
 #endif
 
 #endif /* __ENET_PROTOCOL_H__ */
-

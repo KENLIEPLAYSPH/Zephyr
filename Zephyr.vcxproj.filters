@@ -57,7 +57,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files\http</Filter>
     </ClInclude>
-    <ClInclude Include="Reverse_proxy.h">
+    <ClInclude Include="antiproxy.h">
       <Filter>Header Files\bot</Filter>
     </ClInclude>
     <ClInclude Include="save.h">
@@ -79,9 +79,6 @@
       <Filter>Header Files\enet</Filter>
     </ClInclude>
     <ClInclude Include="enet\include\types.h">
-      <Filter>Header Files\enet</Filter>
-    </ClInclude>
-    <ClInclude Include="enet\include\unix.h">
       <Filter>Header Files\enet</Filter>
     </ClInclude>
     <ClInclude Include="enet\include\utility.h">

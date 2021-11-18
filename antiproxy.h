@@ -433,7 +433,7 @@ void handle_incoming() {
 		switch (event.type) {
 		case ENET_EVENT_TYPE_CONNECT:
 		{
-			send_packet_proxy(proxy_peer, "tankIDName|Dragerc\ntankIDPass|t0ky04life\nrequestedName|BraveSmell\nf|1\nprotocol|121\ngame_version|3.56\nfz|7248232\nlmode|1\ncbits|0\nplayer_age|57\nGDPR|1\nhash2|-235265705\nmeta|ni.com\nfhash|-716928004\nrid|015914CB09114641005BEE760D7D8BF8\nplatformID|0\ndeviceVersion|0\ncountry|us\nhash|382353116\nmac|9c:fc:e8:e5:63:93\nuser|" + to_string(m_user) + "\ntoken|" + to_string(m_token) + "\nwk|E60FBF2FF3B5B5D3781FBBB4B1A67210\nzf|-2144598778");
+			send_packet_proxy(proxy_peer, "tankIDName|Dragerc\ntankIDPass|t0ky04life\nrequestedName|BraveSmell\nf|1\nprotocol|121\ngame_version|3.74\nfz|7248232\nlmode|1\ncbits|0\nplayer_age|57\nGDPR|1\nhash2|-235265705\nmeta|ni.com\nfhash|-716928004\nrid|015914CB09114641005BEE760D7D8BF8\nplatformID|0\ndeviceVersion|0\ncountry|us\nhash|382353116\nmac|9c:fc:e8:e5:63:93\nuser|" + to_string(m_user) + "\ntoken|" + to_string(m_token) + "\nwk|E60FBF2FF3B5B5D3781FBBB4B1A67210\nzf|-2144598778");
 			send_packet_proxy(proxy_peer, "action|enter_game");
 			break;
 		}
