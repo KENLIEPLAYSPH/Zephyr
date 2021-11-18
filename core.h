@@ -1,5 +1,5 @@
 #pragma once
-#include "Core_functions.h"
+#include "color.h"
 #include <cctype>
 #include <cstring>
 #include <ctime>

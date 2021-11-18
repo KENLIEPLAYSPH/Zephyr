@@ -1,5 +1,5 @@
 #pragma once
-#include "trade_system.h"
+#include "trading.h"
 
 struct WorldItem
 {

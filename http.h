@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string>
 #include <map>
-#include "Core_functions.h"
+#include "color.h"
 
 namespace http {
 	int handler(sb_Event* evt);

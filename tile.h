@@ -1,7 +1,7 @@
 #pragma once
 #include "player.h"
 #include "world.h"
-#include "trade_system.h"
+#include "trading.h"
 
 inline void playerRespawn(WorldInfo* world, ENetPeer* peer, const bool isDeadByTile) {
 	if (static_cast<PlayerInfo*>(peer->data)->trade) end_trade(peer);

@@ -51,7 +51,7 @@
     <ClInclude Include="tile.h">
       <Filter>Header Files\server</Filter>
     </ClInclude>
-    <ClInclude Include="Core_functions.h">
+    <ClInclude Include="color.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -60,7 +60,7 @@
     <ClInclude Include="Reverse_proxy.h">
       <Filter>Header Files\bot</Filter>
     </ClInclude>
-    <ClInclude Include="save_system.h">
+    <ClInclude Include="save.h">
       <Filter>Header Files\server</Filter>
     </ClInclude>
     <ClInclude Include="enet\include\callbacks.h">
@@ -90,7 +90,7 @@
     <ClInclude Include="enet\include\win32.h">
       <Filter>Header Files\enet</Filter>
     </ClInclude>
-    <ClInclude Include="trade_system.h">
+    <ClInclude Include="trading.h">
       <Filter>Header Files\server</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
