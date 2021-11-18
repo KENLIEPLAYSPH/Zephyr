@@ -588,7 +588,7 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 				}
 				if (world->items[x + (y * world->width)].foreground == 7482)
 				{
-					Player::OnDialogRequest(peer, "\nadd_label_with_icon|big|`wThe Nutcracker|left|7482|\nadd_spacer|small|\nadd_textbox|`oOh, hello I am The Nutcracker what i can help? Maybe no here to help i just controling the world! And welcome to `cStoroNet`o and enjoy the Private Server. I hope you enjoy thanks! Okay bye, i want to continue patroling and controling the world.|\nadd_spacer|small|\nend_dialog||Thanks!|");
+					Player::OnDialogRequest(peer, "\nadd_label_with_icon|big|`wThe Nutcracker|left|7482|\nadd_spacer|small|\nadd_textbox|`oOh, hello I am The Nutcracker how can I help? Maybe no here to help i just controling the world! And welcome to `cStoroNet`o and enjoy the Private Server. I hope you enjoy thanks! Okay bye, i want to continue patroling and controling the world.|\nadd_spacer|small|\nend_dialog||Thanks!|");
 				}
 				if (world->items[x + (y * world->width)].foreground == 3724)
 				{
@@ -601,7 +601,7 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 					SearchInventoryItem(peer, 3722, 40, iscontains);
 					if (!iscontains)
 					{
-						Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Spirit Storage Unit|left|3724|\nadd_spacer|small|\nadd_smalltext|`w" + to_string(cp) + "% Capacity|\nadd_textbox|`$Greeting Players, I am The Spirit Storage Unit, which i want 40 Ghost-In-A-Jar to open the Milestones!|\nadd_smalltext|`oYou have " + to_string(gij) + " Ghost-In-A-Jar.|\nend_dialog||Whatever|");
+						Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Spirit Storage Unit|left|3724|\nadd_spacer|small|\nadd_smalltext|`w" + to_string(cp) + "% Capacity|\nadd_textbox|`$Greeting Players, I am The Spirit Storage Unit, which I want 40 Ghost-In-A-Jar to open the Milestones!|\nadd_smalltext|`oYou have " + to_string(gij) + " Ghost-In-A-Jar.|\nend_dialog||Whatever|");
 					}
 					else
 					{
