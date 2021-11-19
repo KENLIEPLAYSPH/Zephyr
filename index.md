@@ -1,4 +1,4 @@
 #### Downloads
-64-bit executable | [download](placeholder)
+<td>64-bit executable [download](placeholder)</td>
 
-Source code | [download](https://github.com/mqhirr/Zephyr/archive/refs/heads/stable.zip)
+<td>Source code [download](https://github.com/mqhirr/Zephyr/archive/refs/heads/stable.zip)</td>
