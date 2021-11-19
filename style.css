@@ -11,7 +11,9 @@ html {
 body {
 	margin: 0
 }
-
+td {
+	border-style : hidden!important;
+   }
 article,
 aside,
 details,
