@@ -1,3 +1,2 @@
-## The Zephyr Project
-### Downloads
-Download the latest .exe [here](placeholder)
+## Releases:
+Latest .exe file can be downloaded [here](placeholder)
