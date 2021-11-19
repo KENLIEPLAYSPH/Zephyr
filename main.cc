@@ -617,7 +617,7 @@ int main() {
 											}
 											case -7:
 											{
-												FailLogin(peer, "action|log\nmsg|`5Server under maintenance we will be back soon!", true);
+												FailLogin(peer, "action|log\nmsg|`2Server under maintenance we will be back soon!", true);
 												break;
 											}
 											case -8:
@@ -981,7 +981,7 @@ int main() {
 							else {
 								GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
 							}
-							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`wGithub``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
+							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`w???``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
 							break;
 							}
 							else if (cch == "action|growid\n") {
@@ -1141,7 +1141,7 @@ int main() {
 										Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`2Trade`` `w" + getItemDef(id).name + "``|left|" + to_string(id) + "|\nadd_textbox|`2Trade how many?``|left|\nadd_text_input|count_" + to_string(id) + "||" + to_string(count) + "|5|\nend_dialog|trade_add|Cancel|OK|");
 									}
 									else {
-										Player::OnTextOverlay(peer, "Slow down!  Please wait a second between adding and removing items");
+										Player::OnTextOverlay(peer, "Slow down! Please wait a second between adding and removing items");
 									}
 								}
 								catch (const std::out_of_range& e) {
