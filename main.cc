@@ -287,6 +287,103 @@ int main() {
 		SendConsole("Failed to load performance.zep make sure the format is correct", "ERROR");
 		system("PAUSE");
 		return -1;
+	} try {
+		ifstream infile("config/items.zep");
+		int r_line = 0, working_with = 0;
+		bool read = false;
+		if (infile.fail()) {
+			infile.close();
+			SendConsole("Failed to load items.zep make sure it exists and the permissions are correct", "ERROR");
+			system("PAUSE");
+			return -1;
+		} for (string line; getline(infile, line);) {
+			if (line.length() > 3 && line.at(0) != '/' && line.at(1) != '/') {
+				auto ex = explode("|", line);
+				if (ex.at(0) == "<START>") {
+					read = true;
+					continue;
+				}
+				else if (ex.at(0) == "<SPACE>") {
+					r_line = 0;
+					continue;
+				}
+				else if (ex.at(0) == "<END>") {
+					break;
+				} if (read) {
+					switch (r_line) {
+					case 0:
+					{
+						if (ex.at(0) == "id") {
+							working_with = atoi(ex.at(1).c_str());
+						}
+						break;
+					}
+					case 1:
+					{
+						if (ex.at(0) == "multiplegems") {
+							if (atoi(ex.at(1).c_str()) > 1) {
+								item_multiplier.insert({ working_with, atoi(ex.at(1).c_str()) });
+							}
+						}
+						break;
+					}
+					case 2:
+					{
+						if (ex.at(0) == "onehit") {
+							if (ex.at(1) == "true") {
+								one_hit.insert({ working_with, true });
+							}
+						}
+						break;
+					}
+					case 3:
+					{
+						if (ex.at(0) == "triplepunch") {
+							if (ex.at(1) == "true") {
+								triple_punch.insert({ working_with, true });
+							}
+						}
+						break;
+					}
+					case 4:
+					{
+						if (ex.at(0) == "tripleplace") {
+							if (ex.at(1) == "true") {
+								triple_place.insert({ working_with, true });
+							}
+						}
+						break;
+					}
+					case 5:
+					{
+						if (ex.at(0) == "explosive") {
+							if (ex.at(1) == "true") {
+								explosive.insert({ working_with, true });
+								if (one_hit.find(working_with) == one_hit.end()) {
+									one_hit.insert({ working_with, true });
+								}
+							}
+						}
+						break;
+					}
+					case 6:
+					{
+						if (ex.at(0) == "breakeffect") {
+							break_effect.insert({ working_with, atoi(ex.at(1).c_str()) });
+						}
+						break;
+					}
+					}
+					r_line++;
+				}
+			}
+		}
+		infile.close();
+	}
+	catch (const std::out_of_range& e) {
+		SendConsole("Failed to load items.zep make sure the format is correct", "ERROR");
+		system("PAUSE");
+		return -1;
 	}
 	SetConsoleTitle("Zephyr 1.0-8c770d2");
 	LoadEvents(true);
