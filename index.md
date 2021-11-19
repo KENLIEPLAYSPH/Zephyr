@@ -4,6 +4,6 @@
 
 Source Code | [download](https://github.com/mqhirr/Zephyr/archive/refs/heads/stable.zip) |
 
-#### Repository
+#### Source Code
 
-View Repository | [GitHub](http://github.com/mqhirr/Zephyr)
+Explore Repository | [GitHub](http://github.com/mqhirr/Zephyr)
