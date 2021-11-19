@@ -9,9 +9,6 @@ int main() {
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
 	SendConsole("This server is running Zephyr version 1.0 git-8c770d2", "NOTICE");
-	if (git == false) {
-		SendConsole("You're running an unofficial version of Zephyr.", "WARN");
-	}
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -59,6 +56,9 @@ int main() {
 			return -1;
 		} if (antiproxy) {
 			SendConsole("You're using anti-proxy, disable it if you have issues with logging in", "WARN");
+		}
+		if (git == false) {
+			SendConsole("You're running an unofficial version of Zephyr.", "WARN");
 		}
 		threads.push_back(std::thread(http::run, http_port, server_ip, configPort));
 		if (use_wuplog) {
