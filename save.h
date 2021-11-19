@@ -1,6 +1,4 @@
 #pragma once
-
-
 inline void save_manager() {
 	while (true) {
 		Sleep(60000); 
@@ -151,7 +149,7 @@ inline void save_manager() {
 		catch (const std::out_of_range& e) {
 			std::cout << e.what() << std::endl;
 		} if (GlobalMaintenance) {
-			SendConsole("Worlds are now saved! server shutted down as requested by one player", "INFO");
+			SendConsole("Worlds are now saved! server shutted down as requested by a developer", "INFO");
 			system("PAUSE");
 			exit(0);
 		}
