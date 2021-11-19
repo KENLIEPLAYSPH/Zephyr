@@ -8,7 +8,7 @@ int main() {
 	DWORD prev_mode;
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-	SendConsole("This server is running Zephyr version 0.9 git-c627104", "NOTICE");
+	SendConsole("This server is running Zephyr version 1.0 git-a29328f", "NOTICE");
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -380,7 +380,7 @@ int main() {
 		system("PAUSE");
 		return -1;
 	}
-	SetConsoleTitle("Zephyr 0.9-c627104");
+	SetConsoleTitle("Zephyr 1.0-a29328f");
 	LoadEvents(true);
 	ValentineEvent = false;
 	LunarEvent = false;
