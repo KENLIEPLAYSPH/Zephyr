@@ -49,6 +49,7 @@ int main() {
 		server_email = json_to_string(config_json["server_email"]);
 		bool debug = json_to_bool(config_json["debug"]);
 		antiproxy = json_to_bool(config_json["block_proxy"]);
+		bool git = json_to_bool(config_json["git_build"]);
 		if (http_port == 0 || configPort == 0 || server_ip == "" || server_name == "" || server_discord == "" || server_website == "" || server_email == "") {
 			SendConsole("Misconfiguration detected please check config.json", "ERROR");
 			system("PAUSE");
