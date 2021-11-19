@@ -9,6 +9,9 @@ int main() {
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
 	SendConsole("This server is running Zephyr version 1.0 git-8c770d2", "NOTICE");
+	if (git == false) {
+		SendConsole("You're running an unofficial version of Zephyr.", "WARN");
+	}
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -49,7 +52,7 @@ int main() {
 		server_email = json_to_string(config_json["server_email"]);
 		bool debug = json_to_bool(config_json["debug"]);
 		antiproxy = json_to_bool(config_json["block_proxy"]);
-		bool git = json_to_bool(config_json["git_build"]);
+		git = json_to_bool(config_json["gitbuild"]);
 		if (http_port == 0 || configPort == 0 || server_ip == "" || server_name == "" || server_discord == "" || server_website == "" || server_email == "") {
 			SendConsole("Misconfiguration detected please check config.json", "ERROR");
 			system("PAUSE");

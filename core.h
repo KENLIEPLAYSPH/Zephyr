@@ -66,6 +66,7 @@ int resultnbr1 = 0;
 int resultnbr2 = 0;
 int specialdrop = 0;
 bool antiproxy = false;
+bool git = false;
 bool clearpeer = true;
 bool DailyMaths = false;
 int hasil = 0;
