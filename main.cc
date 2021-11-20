@@ -467,7 +467,8 @@ int main() {
 							string cch = GetTextPointerFromPacket(event.packet);
 							if (cch.size() > 2048 || cch.size() <= 3 || cch == "" || cch == " " || cch == "  " || cch == "   " || cch == "    " || cch == "     " || cch == "      " || cch == "       " || cch == "        ") break;
 							if (!pData->passed_data_check) { /*login*/
-								try {								
+								try {		
+									Player::OnConsoleMessage(peer, "`2Connecting to Zephyr!");
 									stringstream ss(GetTextPointerFromPacket(event.packet));
 									string to = "";
 									while (std::getline(ss, to, '\n')) {
@@ -673,6 +674,7 @@ int main() {
 									FailLogin(peer, "action|log\nmsg|`oThe server is currently undergoing maintenance, we'll be back soon!", false);
 									continue;
 								}
+								
 								if (!pData->haveGrowId) {
 									pData->rawName = "" + PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
 									pData->msgName = std::to_string(peer->address.host);
@@ -1305,7 +1307,7 @@ int main() {
 									/*rift*/
 									items_here += "\nadd_button|rift_cape|`oRift Cape``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Rift Cape.<CR><CR>`5Description:`` Fully customizable cape, set your own colors, your own aura, or disable them!``|0|5|7500000|0|||-1|-1||-1|-1||1||||||0|";
 								//raymn
-									items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|12|200000|0|||-1|-1||-1|-1||1||||||0|";
+									items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|1|200000|0|||-1|-1||-1|-1||1||||||0|";
 									items_here += "\nadd_button|build_machine|`oBuilding Blocks Machine``|interface/large/store_buttons/store_buttons26.rttex|`2You Get:`` 1 Building Blocks Machine.<CR><CR>`5Description:`` This provider gives you random block from whole server each 24 hours, it can be anything except clothing items, it can be even blue gem lock!``|0|3|2500000|0|||-1|-1||-1|-1||1||||||0|";
 									/*royallock*/
 									items_here += "\nadd_button|diamond_lock|`oDiamond Lock``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Diamond Lock.<CR><CR>`5Description:`` Behaves the same as the world lock but shinier! `5it's a perma-item, is never lost when destroyed``|0|11|100000|0|||-1|-1||-1|-1||1||||||0|";
