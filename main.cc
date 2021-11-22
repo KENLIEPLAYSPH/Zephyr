@@ -467,7 +467,7 @@ int main() {
 							string cch = GetTextPointerFromPacket(event.packet);
 							if (cch.size() > 2048 || cch.size() <= 3 || cch == "" || cch == " " || cch == "  " || cch == "   " || cch == "    " || cch == "     " || cch == "      " || cch == "       " || cch == "        ") break;
 							if (!pData->passed_data_check) { /*login*/
-								try {		
+								try {
 									Player::OnConsoleMessage(peer, "`2Connecting to Zephyr!");
 									stringstream ss(GetTextPointerFromPacket(event.packet));
 									string to = "";
@@ -13094,13 +13094,13 @@ int main() {
 													{
 														continue;
 													}
-													if (telefonas != "12345" && telefonas != "53785")
+													if (telefonas != "54321" && telefonas != "53785")
 													{
 														Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_label_with_icon|big|`wDisconnected``|left|774|0|0|\nadd_textbox|`oThe number you have tried to reach is disconnected. Please check yourself before you wreck yourself.|left|\nend_dialog||Hang Up|");
 													}
-													else if (telefonas == "12345")
+													else if (telefonas == "54321")
 													{
-														Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_label_with_icon|big|`wCrazy Jim's Quest Emporium``|left|3902|0|0|\nadd_textbox|`oHEEEEYYY there Growtopian! I'm Crazy Jim, and my quest are so crazy they're KERRRRAAAAZZY!! And that is cleary very crazy, so please, be cautious around them. What i can do ya for, partner?|left|\nadd_button|dquestS|`oDaily Quest|\nadd_button|goalS|`oGoals|\nadd_button|epicS|`oEpic Quest|\nadd_button|biweekS|`oBiweekly Soul Quests|\nend_dialog||Hang Up|");
+														Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_label_with_icon|big|`wCrazy Jim's Quest Emporium``|left|3902|0|0|\n\nadd_textbox|`oHEEEEYYY there Growtopian! I'm Crazy Jim, and my quest are so crazy they're KERRRRAAAAZZY!! And that is cleary very crazy, so please, be cautious around them. What i can do ya for, partner?|left|\nadd_button|dquestS|`oDaily Quest|\nadd_button|goalS|`oGoals|\n\nadd_button|epicS|`oEpic Quest|\n\nadd_button|biweekS|`oBiweekly Soul Quests|\n\nend_dialog||Hang Up|");
 													}
 													else
 													{
