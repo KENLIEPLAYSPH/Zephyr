@@ -13,7 +13,7 @@ namespace http {
 	int handler(sb_Event* evt);
 	void run(int port, std::string ip, int w_port);
 	extern std::map<const std::string, long long> cooldown = {
-		
+
 	};
 }
 
@@ -72,24 +72,29 @@ int http::handler(sb_Event* evt) {
 				string info = "server|" + header_server_ip + "\nport|" + to_string(header_configPort) + "\ntype|1\n#maint|`4Oh no! `oWait 0 seconds before logging in again!\nbeta_server|%s\nbeta_port|1945\nbeta_type|1\nmeta|ni.com\nRTENDMARKERBS1001\n";
 				if (cooldown.find(address) == cooldown.end()) {
 					goto ok;
-				} else if (cooldown.at(address) > current_time) {
+				}
+				else if (cooldown.at(address) > current_time) {
 					info = "server|" + header_server_ip + "\nport|" + to_string(header_configPort) + "\ntype|1\nmaint|`4Oh no! `oWait " + to_string(cooldown.at(address) - current_time) + " seconds before logging in again!\nbeta_server|%s\nbeta_port|1945\nbeta_type|1\nmeta|ni.com\nRTENDMARKERBS1001\n";
 					memcpy(reply, info.c_str(), info.size() + 1);
 					sb_writef(evt->stream, format(reply, http_ip.c_str(), http_port.c_str(), http_ip.c_str()).c_str());
-				} else {
+				}
+				else {
 				ok:
 					if (cooldown.find(address) == cooldown.end()) {
 						cooldown.insert({ address, (GetCurrentTimeInternalSeconds() + (6)) });
-					} else {
+					}
+					else {
 						cooldown.at(address) = (GetCurrentTimeInternalSeconds() + (6));
 					}
 					memcpy(reply, info.c_str(), info.size() + 1);
 					sb_writef(evt->stream, format(reply, http_ip.c_str(), http_port.c_str(), http_ip.c_str()).c_str());
 				}
-			} catch (const std::out_of_range& e) {
+			}
+			catch (const std::out_of_range& e) {
 				cout << e.what() << endl;
 			}
-		} else if ((strstr(evt->path, "/game/") != NULL && request == "GET" || strstr(evt->path, "/social/") != NULL && request == "GET" || strstr(evt->path, "/interface/") != NULL && request == "GET" || strstr(evt->path, "/audio/") != NULL) && request == "GET") {
+		}
+		else if ((strstr(evt->path, "/game/") != NULL && request == "GET" || strstr(evt->path, "/social/") != NULL && request == "GET" || strstr(evt->path, "/interface/") != NULL && request == "GET" || strstr(evt->path, "/audio/") != NULL) && request == "GET") {
 			uint32_t size = 0;
 			const char* path = evt->path + 1;
 			uint8_t* content = read_file(path, &size);
@@ -101,8 +106,9 @@ int http::handler(sb_Event* evt) {
 				sb_send_header(evt->stream, "Connection", "keep-alive");
 				sb_send_header(evt->stream, "Accept-Ranges", "bytes");
 				sb_write(evt->stream, content, size);
-			} 
-		} else if (strstr(evt->path, "/render/") != NULL && request == "GET") {
+			}
+		}
+		else if (strstr(evt->path, "/render/") != NULL && request == "GET") {
 			string path = evt->path + 1;
 			ifstream read_map(path);
 			if (!read_map.is_open()) {
@@ -114,7 +120,8 @@ int http::handler(sb_Event* evt) {
 			sb_send_status(evt->stream, 200, "OK");
 			sb_send_header(evt->stream, "Content-Type", "text/html");
 			sb_writef(evt->stream, test.c_str());
-		} else {
+		}
+		else {
 			return SB_RES_CLOSE;
 		}
 	}
@@ -146,7 +153,8 @@ void http::run(int port, string ip, int w_port) {
 		SendConsole("HTTP failed to start service, is " + http_ip + ":" + http_port + " already running?", "HTTP");
 		system("PAUSE");
 		exit(0);
-	} else {
+	}
+	else {
 		SendConsole("HTTP service started", "HTTP");
 	} while (true) {
 		sb_poll_server(http_server, 10);
