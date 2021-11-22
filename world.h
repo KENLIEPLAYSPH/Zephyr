@@ -8790,7 +8790,6 @@ inline void LoadPlayerData(ENetPeer* peer) {
 			int xp = j["xp"];
 			string worldsowned = j["worldsowned"];
 			string notebook = j["notebook"];
-			int kills = j["kills"];
 			int inventorysize = j["inventorysize"];
 			string mac = j["mac"];
 			string rid = j["rid"];
@@ -8915,7 +8914,6 @@ inline void LoadPlayerData(ENetPeer* peer) {
 			pData->level = level;
 			pData->xp = xp;
 			pData->notebook = notebook;
-			pData->TotalKills = kills;
 			pData->SurgerySkill = surgeonlevel;
 			pData->effect = effect;
 			pData->lastworld = lastworld;

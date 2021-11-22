@@ -129,7 +129,6 @@ struct PlayerInfo {
 	int totalpunch = 0;
 	int lastPunchBackground = 0;
 	bool usedCP = false;
-	int TotalKills = 0;
 	string sid = "none";
 	bool isIn = false;
 	string notebook = "";
@@ -1761,7 +1760,6 @@ inline void save_playerinfo(PlayerInfo* pData) {
 		j["lastnormalworld"] = pData->lastnormalworld;
 		j["lastvisitedworlds"] = visited;
 		j["xp"] = pData->xp;
-		j["kills"] = pData->TotalKills;
 		if (update_inv) j["inventory"] = inv_items;
 		j["firefighterlevel"] = pData->firefighterlevel;
 		j["firefighterxp"] = pData->firefighterxp;
@@ -1961,7 +1959,6 @@ inline int PlayerDB::playerRegister(ENetPeer* peer, string username, string pass
 		j["xp"] = 0;
 		j["worldsowned"] = "";
 		j["notebook"] = "";
-		j["kills"] = 0;
 		j["inventorysize"] = 30;
 		j["dailyrewards"] = 0;
 		j["mac"] = static_cast<PlayerInfo*>(peer->data)->mac;

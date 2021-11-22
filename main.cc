@@ -18470,7 +18470,6 @@ int main() {
 															if (punchJammer) break;
 														}
 														if (static_cast<PlayerInfo*>(currentPeer->data)->cloth_hand == 3466) {
-															static_cast<PlayerInfo*>(currentPeer->data)->TotalKills++;
 															if (static_cast<PlayerInfo*>(currentPeer->data)->quest_active && static_cast<PlayerInfo*>(currentPeer->data)->lastquest == "honor" && static_cast<PlayerInfo*>(currentPeer->data)->quest_step == 2 && static_cast<PlayerInfo*>(currentPeer->data)->quest_progress < 100) {
 																static_cast<PlayerInfo*>(currentPeer->data)->quest_progress++;
 																if (static_cast<PlayerInfo*>(currentPeer->data)->quest_progress >= 100) {
