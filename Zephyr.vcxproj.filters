@@ -30,9 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="http.h">
-      <Filter>Header Files\http</Filter>
-    </ClInclude>
     <ClInclude Include="sandbird\sandbird.h">
       <Filter>Header Files\http</Filter>
     </ClInclude>
@@ -86,6 +83,9 @@
     </ClInclude>
     <ClInclude Include="world.h">
       <Filter>Header Files\server</Filter>
+    </ClInclude>
+    <ClInclude Include="http.h">
+      <Filter>Header Files\http</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

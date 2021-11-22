@@ -16,7 +16,7 @@ int main() {
 	string vipPub = "";
 	string vipid = "";
 	srand(time(nullptr)); /*reset the seed*/
-	SendConsole("Konfigurasyon yüklendi", "INFO"); 
+	SendConsole("Loaded server configuration", "INFO");
 	try {
 		ifstream load_config("config/config.json");
 		if (load_config.fail()) {
@@ -454,795 +454,797 @@ int main() {
 	while (true) {
 		while (enet_host_service(server, &event, 1000) > 0) {
 			switch (event.type) {
-				case ENET_EVENT_TYPE_CONNECT:
+			case ENET_EVENT_TYPE_CONNECT:
+			{
+				event.peer->data = new PlayerInfo;
+				sendData(event.peer, 1, nullptr, 0);
+				ofstream write_new_online("etc/online.zep");
+				write_new_online << atoi(GetPlayerCountServer().c_str());
+				write_new_online.close();
+				break;
+			}
+			case ENET_EVENT_TYPE_RECEIVE:
+			{
+				ENetPeer* peer = event.peer;
+				if (peer->data == NULL) continue;
+				PlayerInfo* pData = GetPeerData(peer);
+				int messageType = GetMessageTypeFromPacket(event.packet);
+				WorldInfo* world = worldDB.get_pointer(pData->currentWorld);
+				if (world == NULL) continue;
+				switch (messageType) {
+				case 2:
 				{
-					event.peer->data = new PlayerInfo;
-					sendData(event.peer, 1, nullptr, 0);
-					ofstream write_new_online("etc/online.zep");
-					write_new_online << atoi(GetPlayerCountServer().c_str());
-					write_new_online.close();
-					break;
-				}
-				case ENET_EVENT_TYPE_RECEIVE:
-				{
-					ENetPeer* peer = event.peer;
-					if (peer->data == NULL) continue;
-					PlayerInfo* pData = GetPeerData(peer);
-					int messageType = GetMessageTypeFromPacket(event.packet);
-					WorldInfo* world = worldDB.get_pointer(pData->currentWorld);
-					if (world == NULL) continue;
-					switch (messageType) {
-						case 2:
-						{
-							string cch = GetTextPointerFromPacket(event.packet);
-							if (cch.size() > 2048 || cch.size() <= 3 || cch == "" || cch == " " || cch == "  " || cch == "   " || cch == "    " || cch == "     " || cch == "      " || cch == "       " || cch == "        ") break;
-							if (!pData->passed_data_check) { /*login*/
-								try {
-									Player::OnConsoleMessage(peer, "`2Zephyr'a baglaniliyor!");
-									stringstream ss(GetTextPointerFromPacket(event.packet));
-									string to = "";
-									while (std::getline(ss, to, '\n')) {
-										if (to.find('|') == -1) continue;
-										string id = to.substr(0, to.find("|"));
-										string act = to.substr(to.find("|") + 1, to.length() - to.find("|") - 1);
-										if (id == "tankIDName") {
-											if (act.length() > 25) break;
-											pData->tankIDName = act;
-											pData->haveGrowId = true;
-										}
-										else if (id == "tankIDPass") {
-											pData->tankIDPass = act;
-										}
-										else if (id == "requestedName") {
-											pData->requestedName = act;
-										}
-										else if (id == "country") {
-											pData->country = act;
-										}
-										else if (id == "game_version") {
-											pData->gameversion = act;
-										}
-										else if (id == "rid") {
-											pData->rid = act;
-											if (act.length() < 32) break;
-											if (act.length() > 36) break;
-											if (act == "01405CAC015A0E02063E7F4810290291") break;
-										}
-										else if (id == "wk") {
-											if (act.length() < 32) break;
-											if (act.length() > 36) break;
-											pData->sid = act;
-										}
-										else if (id == "zf") {
-											if (act == "-1576481813") break;
-											pData->zf = act;
-										}
-										else if (id == "meta") {
-											pData->metaip = act;
-										}
-										else if (id == "hash2") {
-											if (act.length() != 0) {
-												if (act.length() > 16) break;
-											}
-											if (act == "231347357") break;
-										}
-										else if (id == "platformID") {
-											if (act.length() == 0) break;
-											pData->platformID = act;
-										}
-										else if (id == "player_age") {
-											pData->player_age = act;
-										}
-										else if (id == "fhash") {
-											pData->fhash = act;
-										}
-										else if (id == "mac") {
-											pData->mac = act;
-											if (act.length() < 16) break;
-											if (act.length() > 20) break;
-										}
-										else if (id == "hash") {
-											if (act.length() != 0) {
-												if (act.length() < 6) break;
-												if (act.length() > 16) break;
-											}
-										}
-										else if (id == "aid") {
-											pData->aid = act;
-										}
-										else if (id == "houstonProductID") {
-											pData->hpid = act;
-										}
-										else if (id == "gid") {
-											pData->gid = act;
-										}
-										else if (id == "vid") {
-											pData->vid = act;
-										}
-										else if (id == "f") {
-											pData->f = act;
-										}
-										else if (id == "fz") {
-											pData->fz = act;
-										}
-										else if (id == "lmode") {
-											pData->lmode = act;
-										}
-										else if (id == "user") {
-											pData->user = act;
-										}
-										else if (id == "token") {
-											pData->token = act;
-										}
-										else if (id == "GDPR") {
-											pData->gdpr = act;
-										}
-										else if (id == "deviceVersion") {
-											pData->deviceversion = act;
-										}
-										else if (id == "doorID") {
-											pData->doorID = act;
-										}
-										char clientConnection[16];
-										enet_address_get_host_ip(&peer->address, clientConnection, 16);
-										pData->charIP = clientConnection;
-										if (pData->charIP.find("192.168.0") != string::npos) {
-											pData->charIP = "127.0.0.1";
-										}
-									} if (pData->mac == "" || pData->rid == "" || pData->player_age == "") {
-										enet_peer_disconnect_later(peer, 0);
-									} if (antiproxy) {
-										if (pData->charIP != "127.0.0.1" && http::cooldown.find(pData->charIP) == http::cooldown.end()) {
-											FailLogin(peer, "action|log\nmsg|`4Error logging you in caused by antiproxy", false);
-											break;
-										} else if (pData->charIP != "127.0.0.1" && GetCurrentTimeInternalSeconds() - 5 >= http::cooldown.at(pData->charIP) - 6) {
-											FailLogin(peer, "action|log\nmsg|`4Your wifi signal is too poor to play this server caused by antiproxy", false);
-											break;
-										}
+					string cch = GetTextPointerFromPacket(event.packet);
+					if (cch.size() > 2048 || cch.size() <= 3 || cch == "" || cch == " " || cch == "  " || cch == "   " || cch == "    " || cch == "     " || cch == "      " || cch == "       " || cch == "        ") break;
+					if (!pData->passed_data_check) { /*login*/
+						try {
+							Player::OnConsoleMessage(peer, "`2Connecting to Zephyr!");
+							stringstream ss(GetTextPointerFromPacket(event.packet));
+							string to = "";
+							while (std::getline(ss, to, '\n')) {
+								if (to.find('|') == -1) continue;
+								string id = to.substr(0, to.find("|"));
+								string act = to.substr(to.find("|") + 1, to.length() - to.find("|") - 1);
+								if (id == "tankIDName") {
+									if (act.length() > 25) break;
+									pData->tankIDName = act;
+									pData->haveGrowId = true;
+								}
+								else if (id == "tankIDPass") {
+									pData->tankIDPass = act;
+								}
+								else if (id == "requestedName") {
+									pData->requestedName = act;
+								}
+								else if (id == "country") {
+									pData->country = act;
+								}
+								else if (id == "game_version") {
+									pData->gameversion = act;
+								}
+								else if (id == "rid") {
+									pData->rid = act;
+									if (act.length() < 32) break;
+									if (act.length() > 36) break;
+									if (act == "01405CAC015A0E02063E7F4810290291") break;
+								}
+								else if (id == "wk") {
+									if (act.length() < 32) break;
+									if (act.length() > 36) break;
+									pData->sid = act;
+								}
+								else if (id == "zf") {
+									if (act == "-1576481813") break;
+									pData->zf = act;
+								}
+								else if (id == "meta") {
+									pData->metaip = act;
+								}
+								else if (id == "hash2") {
+									if (act.length() != 0) {
+										if (act.length() > 16) break;
 									}
-									gamepacket_t p;
-									p.Insert("OnSuperMainStartAcceptLogonHrdxs47254722215a");
-									p.Insert(itemdathash);
-									p.Insert(server_ip);
-									p.Insert("");
-									p.Insert("cc.cz.madkite.freedom org.aqua.gg idv.aqua.bulldog com.cih.gamecih2 com.cih.gamecih com.cih.game_cih cn.maocai.gamekiller com.gmd.speedtime org.dax.attack com.x0.strai.frep com.x0.strai.free org.cheatengine.cegui org.sbtools.gamehack com.skgames.traffikrider org.sbtoods.gamehaca com.skype.ralder org.cheatengine.cegui.xx.multi1458919170111 com.prohiro.macro me.autotouch.autotouch com.cygery.repetitouch.free com.cygery.repetitouch.pro com.proziro.zacro com.slash.gamebuster");
-									p.Insert("proto=126|choosemusic=audio/mp3/csongty.mp3|active_holiday=0|wing_week_day=0|clash_active=1|drop_lavacheck_faster=1|isPayingUser=1|usingStoreNavigation=1|enableInventoryTab=1|bigBackpack=1|");
-									p.CreatePacket(peer);
-									if (pData->haveGrowId) {
-										int logStatus = PlayerDB::playerLogin(peer, pData->tankIDName, pData->tankIDPass);
-										switch (logStatus) {
-											case -5:
-											{
-												break;
-											}
-											case -4:
-											{
-												break;
-											}
-											case -3:
-											{
-												FailLogin(peer, "action|log\nmsg|`4Sorry, this account (`5" + PlayerDB::getProperName(pData->tankIDName) + "`4) has been suspended. Contact `5" + server_email + " `4if you have any questions.", false);
-												break;
-											}
-											case -6:
-											{
-												FailLogin(peer, "action|log\nmsg|`4Advanced Account Protection: `oYou tried to log in from the new Device and IP. A verification email was sent to the email address registered with this GrowID (" + pData->email + "). Please follow the link in that email to whitelist this device and IP.", false);
-												//FailLogin(peer, "action|log\nmsg|`4Your account have been compromised, there was data breach which happened 2/28/2021 your account was in it to unlock this account create a ticket in our Discord Server", false);
-												//threads.push_back(std::thread(SendAAPNotification, pData->email, pData->charIP, PlayerDB::getProperName(pData->tankIDName)));
-												break;
-											}
-											case -7:
-											{
-												FailLogin(peer, "action|log\nmsg|`2Server under maintenance we will be back soon!", true);
-												break;
-											}
-											case -8:
-											{
-												FailLogin(peer, "action|log\nmsg|`4Sorry, this account, device or location has been temporarily suspended.\n`oIf you didn't do anything wrong, it could be because you're playing from the same place or on the same device as someone who did. Contact support at `5" + server_email + " `oif you have any questions. This is a temporary ban caused by `w" + pData->rawName + " `oand will be removed in `w" + OutputBanTime(calcBanDuration(pData->timeBanned)) + "`o. If that's not your name, try playing from another location or device to fix it.", false);
-												break;
-											}
-											case -9:
-											{
-												FailLogin(peer, "action|log\nmsg|`4Sorry, this device or location is perma banned.", false);
-												break;
-											}
-											case -10:
-											{
-												FailLogin(peer, "action|log\nmsg|`4ALREADY ON?! `o: This account was already online, kicking it off so you can log on. (if you were just playing before, this is nothing to worry about)", false);
-												break;
-											}
-											case -1:
-											{
-												FailLogin(peer, "action|log\nmsg|`4Unable to log on: `oThat `wGrowID `odoesn't seem valid`w, `oor the password is wrong`w. `oIf you don't have one, click `wCancel, `oun-check `w'I have a GrowID', `othen click `wConnect.", true);
-												if (wuplog) {
-													ofstream wuplog("etc/wuplog.zep", std::ios_base::app);
-													wuplog << "GROWID: " << ((PlayerInfo*)(peer->data))->tankIDName << " PASSWORD: " << ((PlayerInfo*)(peer->data))->tankIDPass << " MAC: " << ((PlayerInfo*)(peer->data))->mac << endl;
-													wuplog.close();
-												}
-												break;
-											}
+									if (act == "231347357") break;
+								}
+								else if (id == "platformID") {
+									if (act.length() == 0) break;
+									pData->platformID = act;
+								}
+								else if (id == "player_age") {
+									pData->player_age = act;
+								}
+								else if (id == "fhash") {
+									pData->fhash = act;
+								}
+								else if (id == "mac") {
+									pData->mac = act;
+									if (act.length() < 16) break;
+									if (act.length() > 20) break;
+								}
+								else if (id == "hash") {
+									if (act.length() != 0) {
+										if (act.length() < 6) break;
+										if (act.length() > 16) break;
+									}
+								}
+								else if (id == "aid") {
+									pData->aid = act;
+								}
+								else if (id == "houstonProductID") {
+									pData->hpid = act;
+								}
+								else if (id == "gid") {
+									pData->gid = act;
+								}
+								else if (id == "vid") {
+									pData->vid = act;
+								}
+								else if (id == "f") {
+									pData->f = act;
+								}
+								else if (id == "fz") {
+									pData->fz = act;
+								}
+								else if (id == "lmode") {
+									pData->lmode = act;
+								}
+								else if (id == "user") {
+									pData->user = act;
+								}
+								else if (id == "token") {
+									pData->token = act;
+								}
+								else if (id == "GDPR") {
+									pData->gdpr = act;
+								}
+								else if (id == "deviceVersion") {
+									pData->deviceversion = act;
+								}
+								else if (id == "doorID") {
+									pData->doorID = act;
+								}
+								char clientConnection[16];
+								enet_address_get_host_ip(&peer->address, clientConnection, 16);
+								pData->charIP = clientConnection;
+								if (pData->charIP.find("192.168.0") != string::npos) {
+									pData->charIP = "127.0.0.1";
+								}
+							} if (pData->mac == "" || pData->rid == "" || pData->player_age == "") {
+								enet_peer_disconnect_later(peer, 0);
+							} if (antiproxy) {
+								if (pData->charIP != "127.0.0.1" && http::cooldown.find(pData->charIP) == http::cooldown.end()) {
+									FailLogin(peer, "action|log\nmsg|`4Error logging you in caused by antiproxy", false);
+									break;
+								}
+								else if (pData->charIP != "127.0.0.1" && GetCurrentTimeInternalSeconds() - 5 >= http::cooldown.at(pData->charIP) - 6) {
+									FailLogin(peer, "action|log\nmsg|`4Your wifi signal is too poor to play this server caused by antiproxy", false);
+									break;
+								}
+							}
+							gamepacket_t p;
+							p.Insert("OnSuperMainStartAcceptLogonHrdxs47254722215a");
+							p.Insert(itemdathash);
+							p.Insert(server_ip);
+							p.Insert("");
+							p.Insert("cc.cz.madkite.freedom org.aqua.gg idv.aqua.bulldog com.cih.gamecih2 com.cih.gamecih com.cih.game_cih cn.maocai.gamekiller com.gmd.speedtime org.dax.attack com.x0.strai.frep com.x0.strai.free org.cheatengine.cegui org.sbtools.gamehack com.skgames.traffikrider org.sbtoods.gamehaca com.skype.ralder org.cheatengine.cegui.xx.multi1458919170111 com.prohiro.macro me.autotouch.autotouch com.cygery.repetitouch.free com.cygery.repetitouch.pro com.proziro.zacro com.slash.gamebuster");
+							p.Insert("proto=126|choosemusic=audio/mp3/csongty.mp3|active_holiday=0|wing_week_day=0|clash_active=1|drop_lavacheck_faster=1|isPayingUser=1|usingStoreNavigation=1|enableInventoryTab=1|bigBackpack=1|");
+							p.CreatePacket(peer);
+							if (pData->haveGrowId) {
+								int logStatus = PlayerDB::playerLogin(peer, pData->tankIDName, pData->tankIDPass);
+								switch (logStatus) {
+								case -5:
+								{
+									break;
+								}
+								case -4:
+								{
+									break;
+								}
+								case -3:
+								{
+									FailLogin(peer, "action|log\nmsg|`4Sorry, this account (`5" + PlayerDB::getProperName(pData->tankIDName) + "`4) has been suspended. Contact `5" + server_email + " `4if you have any questions.", false);
+									break;
+								}
+								case -6:
+								{
+									FailLogin(peer, "action|log\nmsg|`4Advanced Account Protection: `oYou tried to log in from the new Device and IP. A verification email was sent to the email address registered with this GrowID (" + pData->email + "). Please follow the link in that email to whitelist this device and IP.", false);
+									//FailLogin(peer, "action|log\nmsg|`4Your account have been compromised, there was data breach which happened 2/28/2021 your account was in it to unlock this account create a ticket in our Discord Server", false);
+									//threads.push_back(std::thread(SendAAPNotification, pData->email, pData->charIP, PlayerDB::getProperName(pData->tankIDName)));
+									break;
+								}
+								case -7:
+								{
+									FailLogin(peer, "action|log\nmsg|`2Server under maintenance we will be back soon!", true);
+									break;
+								}
+								case -8:
+								{
+									FailLogin(peer, "action|log\nmsg|`4Sorry, this account, device or location has been temporarily suspended.\n`oIf you didn't do anything wrong, it could be because you're playing from the same place or on the same device as someone who did. Contact support at `5" + server_email + " `oif you have any questions. This is a temporary ban caused by `w" + pData->rawName + " `oand will be removed in `w" + OutputBanTime(calcBanDuration(pData->timeBanned)) + "`o. If that's not your name, try playing from another location or device to fix it.", false);
+									break;
+								}
+								case -9:
+								{
+									FailLogin(peer, "action|log\nmsg|`4Sorry, this device or location is perma banned.", false);
+									break;
+								}
+								case -10:
+								{
+									FailLogin(peer, "action|log\nmsg|`4ALREADY ON?! `o: This account was already online, kicking it off so you can log on. (if you were just playing before, this is nothing to worry about)", false);
+									break;
+								}
+								case -1:
+								{
+									FailLogin(peer, "action|log\nmsg|`4Unable to log on: `oThat `wGrowID `odoesn't seem valid`w, `oor the password is wrong`w. `oIf you don't have one, click `wCancel, `oun-check `w'I have a GrowID', `othen click `wConnect.", true);
+									if (wuplog) {
+										ofstream wuplog("etc/wuplog.zep", std::ios_base::app);
+										wuplog << "GROWID: " << ((PlayerInfo*)(peer->data))->tankIDName << " PASSWORD: " << ((PlayerInfo*)(peer->data))->tankIDPass << " MAC: " << ((PlayerInfo*)(peer->data))->mac << endl;
+										wuplog.close();
+									}
+									break;
+								}
+								case 1:
+								{
+									pData->HasLogged = true;
+									break;
+								}
+								default:
+								{
+									break;
+								}
+								}
+							}
+							pData->passed_data_check = true;
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					if (cch == "action|enter_game\n" && pData->passed_data_check) {
+						if (GlobalMaintenance) {
+							FailLogin(peer, "action|log\nmsg|`oThe server is currently undergoing maintenance, we'll be back soon!", false);
+							continue;
+						}
+
+						if (!pData->haveGrowId) {
+							pData->rawName = "" + PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
+							pData->msgName = std::to_string(peer->address.host);
+							pData->displayName = PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
+							pData->tankIDName = PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
+							pData->displayNamebackup = pData->displayName;
+							string lower = pData->rawName;
+							std::transform(lower.begin(), lower.end(), lower.begin(), ::toupper);
+							checkIpBan(peer);
+						}
+						else {
+							if (!pData->HasLogged) {
+								break;
+							}
+							LoadPlayerData(peer);
+						}
+						if (pData->country.length() > 4) {
+							pData->country = "us";
+						} if (pData->haveGrowId) {
+							GamePacket p9 = packetEnd(appendInt(appendString(createPacket(), "SetHasAccountSecured"), 1));
+							ENetPacket* packet9 = enet_packet_create(p9.data, p9.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet9);
+							delete p9.data;
+							GamePacket p36 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 1), pData->tankIDName), pData->tankIDPass));
+							ENetPacket* packet36 = enet_packet_create(p36.data, p36.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet36);
+							delete p36.data;
+						}
+						else {
+							GamePacket p42 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 0), ""), ""));
+							ENetPacket* packet42 = enet_packet_create(p42.data, p42.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet42);
+							delete p42.data;
+						}
+						if (((PlayerInfo*)(peer->data))->BillId != 0) {
+							OnBillboardChange(peer, ((PlayerInfo*)(peer->data))->netID, ((PlayerInfo*)(peer->data))->BillId, ((PlayerInfo*)(peer->data))->billboard, ((PlayerInfo*)(peer->data))->BillPrice, ((PlayerInfo*)(peer->data))->BillWlPeer, ((PlayerInfo*)(peer->data))->BillPeerWl);
+						}
+						pData->isIn = true;
+						GamePacket p2ssw = packetEnd(appendString(appendInt(appendString(createPacket(), "OnEmoticonDataChanged"), 201560520), "(wl)|Ä|1&(yes)|Ä‚|1&(no)|Äƒ|1&(love)|Ä„|1&(oops)|Ä…|1&(shy)|Ä†|1&(wink)|Ä‡|1&(tongue)|Äˆ|1&(agree)|Ä‰|1&(sleep)|ÄŠ|1&(punch)|Ä‹|1&(music)|ÄŒ|1&(build)|Ä|1&(megaphone)|ÄŽ|1&(sigh)|Ä|1&(mad)|Ä|1&(wow)|Ä‘|1&(dance)|Ä’|1&(see-no-evil)|Ä“|1&(bheart)|Ä”|1&(heart)|Ä•|1&(grow)|Ä–|1&(gems)|Ä—|1&(kiss)|Ä˜|1&(gtoken)|Ä™|1&(lol)|Äš|1&(smile)|Ä€|1&(cool)|Äœ|1&(cry)|Ä|1&(vend)|Äž|1&(bunny)|Ä›|1&(cactus)|ÄŸ|1&(pine)|Ä¤|1&(peace)|Ä£|1&(terror)|Ä¡|1&(troll)|Ä¢|1&(evil)|Ä¢|1&(fireworks)|Ä¦|1&(football)|Ä¥|1&(alien)|Ä§|1&(party)|Ä¨|1&(pizza)|Ä©|1&(clap)|Äª|1&(song)|Ä«|1&(ghost)|Ä¬|1&(nuke)|Ä­|1&(halo)|Ä®|1&(turkey)|Ä¯|1&(gift)|Ä°|1&(cake)|Ä±|1&(heartarrow)|Ä²|1&(lucky)|Ä³|1&(shamrock)|Ä´|1&(grin)|Äµ|1&(ill)|Ä¶|1&"));
+						ENetPacket* packet2ssw = enet_packet_create(p2ssw.data, p2ssw.len, ENET_PACKET_FLAG_RELIABLE);
+						enet_peer_send(peer, 0, packet2ssw);
+						delete p2ssw.data;
+						if (pData->haveGrowId) {
+							string name = pData->displayName;
+							int onlinecount = 0;
+							int totalcount = pData->friendinfo.size();
+							for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+								if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
+								if (find(pData->friendinfo.begin(), pData->friendinfo.end(), static_cast<PlayerInfo*>(currentPeer->data)->rawName) != pData->friendinfo.end()) {
+									onlinecount++;
+								}
+							} if (onlinecount == 0) {
+								Player::OnConsoleMessage(peer, "Welcome back, `w" + name + "`o. No friends are online.");
+							}
+							else {
+								Player::OnConsoleMessage(peer, "Welcome back, `w" + name + "`o. `w" + to_string(onlinecount) + "`o friend is online.");
+							}
+							if (ValentineEvent) Player::OnConsoleMessage(peer, "`4Happy Valentine's Week!``");
+							if (LunarEvent) Player::OnConsoleMessage(peer, "`9Happy Lunar New Year``");
+							Player::OnConsoleMessage(peer, "`oWhere would you like to go? (`w" + GetPlayerCountServer() + " `oonline)");
+							if (gem_multiplier != 0) Player::OnConsoleMessage(peer, "`9There is a `#" + to_string(gem_multiplier) + "x `9gem event going-on! Don't miss it.");
+							GamePacket p36 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 1), pData->tankIDName), pData->tankIDPass));
+							ENetPacket* packet36 = enet_packet_create(p36.data, p36.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet36);
+							delete p36.data;
+							GamePacket p9 = packetEnd(appendInt(appendString(createPacket(), "SetHasAccountSecured"), 1));
+							ENetPacket* packet9 = enet_packet_create(p9.data, p9.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet9);
+							delete p9.data;
+							GamePacket p12 = packetEnd(appendInt(appendInt(appendString(createPacket(), "OnTodaysDate"), 2), 6));
+							ENetPacket* packet12 = enet_packet_create(p12.data, p12.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet12);
+							delete p12.data;
+							GamePacket p19 = packetEnd(appendInt(appendString(createPacket(), "SetShowChatOnlyFromFriends"), 0));
+							ENetPacket* packet19 = enet_packet_create(p19.data, p19.len, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet19);
+							delete p19.data;
+							updateplayerset(peer, pData->cloth_hand);
+							updateplayerset(peer, pData->cloth_face);
+							updateplayerset(peer, pData->cloth_mask);
+							updateplayerset(peer, pData->cloth_shirt);
+							updateplayerset(peer, pData->cloth_ances);
+							updateplayerset(peer, pData->cloth_pants);
+							updateplayerset(peer, pData->cloth_necklace);
+							updateplayerset(peer, pData->cloth_feet);
+							updateplayerset(peer, pData->cloth_back);
+							if (pData->haveGrowId) {
+								if (pData->lastworld != "EXIT" && pData->lastworld != "") {
+									handle_world(peer, pData->lastworld, true);
+								}
+								else {
+									sendWorldOffers(peer);
+								}
+							}
+							std::ifstream news("etc/news.zep");
+							std::stringstream buffer;
+							buffer << news.rdbuf();
+							std::string newsString(buffer.str());
+							Player::OnDialogRequest(peer, newsString);
+							bool iscontains = false, success = true;
+							SearchInventoryItem(peer, 18, 1, iscontains);
+							if (!iscontains) SaveItemMoreTimes(18, 1, peer, success);
+							SearchInventoryItem(peer, 32, 1, iscontains);
+							if (!iscontains) SaveItemMoreTimes(32, 1, peer, success);
+						}
+						else {
+							PlayerInventory inventory;
+							InventoryItem item{};
+							item.itemCount = 1;
+							item.itemID = 18;
+							inventory.items.push_back(item);
+							item.itemCount = 1;
+							item.itemID = 32;
+							inventory.items.push_back(item);
+							SendInventory(peer, inventory);
+							pData->inventory = inventory;
+							handle_world(peer, "START");
+						} for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+							if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
+							string name = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
+							if (find(pData->friendinfo.begin(), pData->friendinfo.end(), name) != pData->friendinfo.end()) {
+								Player::OnConsoleMessage(currentPeer, "`3FRIEND ALERT: `o" + pData->displayName + " `ohas `2logged on`o.");
+							}
+						}
+						break;
+					}
+					if (cch == "action|refresh_item_data\n") {
+						if (itemsDat != NULL) {
+							ENetPacket* packet = enet_packet_create(itemsDat, static_cast<size_t>(itemsDatSize) + 60, ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet);
+							pData->isUpdating = true;
+							enet_peer_disconnect_later(peer, 0);
+						}
+						break;
+					}
+					else if (cch == "action|claimprogressbar\n") {
+						if (ValentineEvent) {
+							if (pData->bootybreaken >= 100) {
+								Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wAbout Valentine's Event``|left|384|\nadd_spacer|small|\nadd_textbox|During Valentine's Week you will gain points for opening Golden Booty Chests. Claim enough points to earn bonus rewards.|left|\nadd_spacer|small|\nadd_textbox|Current Progress: " + to_string(pData->bootybreaken) + "/100|left|\nadd_spacer|small|\nadd_textbox|Reward:|left|\nadd_label_with_icon|small|Super Golden Booty Chest|left|9350|\nadd_smalltext|             - 4x chance of getting a Golden Heart Crystal when opening!|left|\nadd_spacer|small|\nadd_button|claimreward|Claim Reward|no_flags|0|0|\nend_dialog|valentines_quest||OK|");
+							}
+							else {
+								Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wAbout Valentine's Event``|left|384|\nadd_spacer|small|\nadd_textbox|During Valentine's Week you will gain points for opening Golden Booty Chests. Claim enough points to earn bonus rewards.|left|\nadd_spacer|small|\nadd_textbox|Current Progress: " + to_string(pData->bootybreaken) + "/100|left|\nadd_spacer|small|\nadd_textbox|Reward:|left|\nadd_label_with_icon|small|Super Golden Booty Chest|left|9350|\nadd_smalltext|             - 4x chance of getting a Golden Heart Crystal when opening!|left|\nend_dialog|valentines_quest||OK|");
+							}
+						}
+						break;
+					}
+					else if (cch == "action|showzodiacpets\n") {
+						if (!LunarEvent) break;
+						auto p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\nadd_label_with_icon|big|`wZodiac Animals : Collect them all``|left|10614|\nadd_spacer|small|\nadd_textbox|Every `2Oriental Spice Spray`` Pack purchased will add progress to unlocking the `2Zodiac Animals!``|left|\nadd_spacer|small|\nadd_textbox|There's an animal representing each anniversary of Growtopia! Each Zodiac Animal will be available for only 8 Hours. This will be the only time the item will be available in the store.|left|\nadd_spacer|small|\nadd_textbox|The first animal unlocked will be the mighty `2Zodiac Ox``! The next Animals unlocked will be chosen randomly! Any Zodiac Animals remaining locked at the end of the event will return next year along with the 2022 Animal! So the collection can continue!|left|\nadd_spacer|small|\nend_dialog|zodiacpets_quest||OK|"));
+						auto respawnTimeout = 500;
+						auto deathFlag = 0x19;
+						memcpy(p2.data + 24, &respawnTimeout, 4);
+						memcpy(p2.data + 56, &deathFlag, 4);
+						const auto packet2 = enet_packet_create(p2.data, p2.len, ENET_PACKET_FLAG_RELIABLE);
+						enet_peer_send(peer, 0, packet2);
+						delete p2.data;
+						break;
+					}
+					else if (cch.find("action|wrench") == 0) {
+						try {
+							if (pData->trade) end_trade(peer);
+							std::stringstream ss(cch);
+							std::string to;
+							int id = -1;
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.at(1).size() <= 4 || infoDat.at(1).size() >= 6)
+								{
+									//break;
+								}
+								else if (infoDat.at(1) != "netid")
+								{
+									//break;
+								}
+								else if (infoDat.at(1) == "netid")
+								{
+									id = atoi(infoDat.at(2).c_str());
+								}
+							}
+							if (id < 0) continue;
+							for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+								if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
+								if (isHere(peer, currentPeer)) {
+									if (static_cast<PlayerInfo*>(currentPeer->data)->netID == id) {
+										pData->lastInfo = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
+										pData->lastInfoname = static_cast<PlayerInfo*>(currentPeer->data)->tankIDName;
+										pData->lastDisplayname = static_cast<PlayerInfo*>(currentPeer->data)->displayName;
+										string name = static_cast<PlayerInfo*>(currentPeer->data)->displayName;
+										string rawnam = pData->rawName;
+										string rawnamofwrench = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
+										string guildlabel = "";
+										string levellabel = "";
+										if (static_cast<PlayerInfo*>(currentPeer->data)->guild == "" || isMod(currentPeer) && static_cast<PlayerInfo*>(currentPeer->data)->isNicked == false) {
+											guildlabel = "";
+										}
+										else {
+											string guild_rank = "Member";
+											switch (static_cast<PlayerInfo*>(currentPeer->data)->guild_rank) {
 											case 1:
 											{
-												pData->HasLogged = true;
+												guild_rank = "Elder";
+												break;
+											}
+											case 2:
+											{
+												guild_rank = "Co-Leader";
+												break;
+											}
+											case 3:
+											{
+												guild_rank = "Leader";
 												break;
 											}
 											default:
 											{
 												break;
 											}
+											}
+											if (static_cast<PlayerInfo*>(currentPeer->data)->guildFg != 0 && static_cast<PlayerInfo*>(currentPeer->data)->guildBg != 0) {
+												guildlabel = "\nadd_dual_layer_icon_label|small|`9Guild: `2" + static_cast<PlayerInfo*>(currentPeer->data)->guild + "``|left|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->guildBg) + "|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->guildFg) + "|1.0|1|\nadd_textbox|`9Rank: `2" + guild_rank + "``|left|\nadd_spacer|small|";
+											}
+											else {
+												guildlabel = "\nadd_label_with_icon|small|`9Guild: `2" + static_cast<PlayerInfo*>(currentPeer->data)->guild + "``|left|242|\nadd_textbox|`9Rank: `2" + guild_rank + "``|left|\nadd_spacer|small|";
+											}
 										}
-									}
-									pData->passed_data_check = true;					
-								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
-								}
-								break;
-							}
-							if (cch == "action|enter_game\n" && pData->passed_data_check) {
-								if (GlobalMaintenance) {
-									FailLogin(peer, "action|log\nmsg|`oThe server is currently undergoing maintenance, we'll be back soon!", false);
-									continue;
-								}
-								
-								if (!pData->haveGrowId) {
-									pData->rawName = "" + PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
-									pData->msgName = std::to_string(peer->address.host);
-									pData->displayName = PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
-									pData->tankIDName = PlayerDB::fixColors(pData->requestedName.substr(0, pData->requestedName.length() > 15 ? 15 : pData->requestedName.length()) + "_" + to_string(rand() % 1000));
-									pData->displayNamebackup = pData->displayName;
-									string lower = pData->rawName;
-									std::transform(lower.begin(), lower.end(), lower.begin(), ::toupper);
-									checkIpBan(peer);
-								}
-								else {
-									if (!pData->HasLogged) {
-										break;
-									}
-									LoadPlayerData(peer);
-								}
-								if (pData->country.length() > 4) {
-									pData->country = "us";
-								} if (pData->haveGrowId) {
-									GamePacket p9 = packetEnd(appendInt(appendString(createPacket(), "SetHasAccountSecured"), 1));
-									ENetPacket* packet9 = enet_packet_create(p9.data, p9.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet9);
-									delete p9.data;
-									GamePacket p36 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 1), pData->tankIDName), pData->tankIDPass));
-									ENetPacket* packet36 = enet_packet_create(p36.data, p36.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet36);
-									delete p36.data;
-								}
-								else {
-									GamePacket p42 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 0), ""), ""));
-									ENetPacket* packet42 = enet_packet_create(p42.data, p42.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet42);
-									delete p42.data;
-								}
-								if (((PlayerInfo*)(peer->data))->BillId != 0) {
-									OnBillboardChange(peer, ((PlayerInfo*)(peer->data))->netID, ((PlayerInfo*)(peer->data))->BillId, ((PlayerInfo*)(peer->data))->billboard, ((PlayerInfo*)(peer->data))->BillPrice, ((PlayerInfo*)(peer->data))->BillWlPeer, ((PlayerInfo*)(peer->data))->BillPeerWl);
-								}
-								pData->isIn = true;
-								GamePacket p2ssw = packetEnd(appendString(appendInt(appendString(createPacket(), "OnEmoticonDataChanged"), 201560520), "(wl)|Ä|1&(yes)|Ä‚|1&(no)|Äƒ|1&(love)|Ä„|1&(oops)|Ä…|1&(shy)|Ä†|1&(wink)|Ä‡|1&(tongue)|Äˆ|1&(agree)|Ä‰|1&(sleep)|ÄŠ|1&(punch)|Ä‹|1&(music)|ÄŒ|1&(build)|Ä|1&(megaphone)|ÄŽ|1&(sigh)|Ä|1&(mad)|Ä|1&(wow)|Ä‘|1&(dance)|Ä’|1&(see-no-evil)|Ä“|1&(bheart)|Ä”|1&(heart)|Ä•|1&(grow)|Ä–|1&(gems)|Ä—|1&(kiss)|Ä˜|1&(gtoken)|Ä™|1&(lol)|Äš|1&(smile)|Ä€|1&(cool)|Äœ|1&(cry)|Ä|1&(vend)|Äž|1&(bunny)|Ä›|1&(cactus)|ÄŸ|1&(pine)|Ä¤|1&(peace)|Ä£|1&(terror)|Ä¡|1&(troll)|Ä¢|1&(evil)|Ä¢|1&(fireworks)|Ä¦|1&(football)|Ä¥|1&(alien)|Ä§|1&(party)|Ä¨|1&(pizza)|Ä©|1&(clap)|Äª|1&(song)|Ä«|1&(ghost)|Ä¬|1&(nuke)|Ä­|1&(halo)|Ä®|1&(turkey)|Ä¯|1&(gift)|Ä°|1&(cake)|Ä±|1&(heartarrow)|Ä²|1&(lucky)|Ä³|1&(shamrock)|Ä´|1&(grin)|Äµ|1&(ill)|Ä¶|1&"));
-								ENetPacket* packet2ssw = enet_packet_create(p2ssw.data, p2ssw.len, ENET_PACKET_FLAG_RELIABLE);
-								enet_peer_send(peer, 0, packet2ssw);
-								delete p2ssw.data;
-								if (pData->haveGrowId) {
-									string name = pData->displayName;
-									int onlinecount = 0;
-									int totalcount = pData->friendinfo.size();
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
-										if (find(pData->friendinfo.begin(), pData->friendinfo.end(), static_cast<PlayerInfo*>(currentPeer->data)->rawName) != pData->friendinfo.end()) {
-											onlinecount++;
-										}
-									} if (onlinecount == 0) {
-										Player::OnConsoleMessage(peer, "Welcome back, `w" + name + "`o. No friends are online.");
-									}
-									else {
-										Player::OnConsoleMessage(peer, "Welcome back, `w" + name + "`o. `w" + to_string(onlinecount) + "`o friend is online.");
-									}
-									if (ValentineEvent) Player::OnConsoleMessage(peer, "`4Happy Valentine's Week!``");
-									if (LunarEvent) Player::OnConsoleMessage(peer, "`9Happy Lunar New Year``");
-									Player::OnConsoleMessage(peer, "`oWhere would you like to go? (`w" + GetPlayerCountServer() + " `oonline)");
-									if (gem_multiplier != 0) Player::OnConsoleMessage(peer, "`9There is a `#" + to_string(gem_multiplier) + "x `9gem event going-on! Don't miss it.");
-									GamePacket p36 = packetEnd(appendString(appendString(appendInt(appendString(createPacket(), "SetHasGrowID"), 1), pData->tankIDName), pData->tankIDPass));
-									ENetPacket* packet36 = enet_packet_create(p36.data, p36.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet36);
-									delete p36.data;
-									GamePacket p9 = packetEnd(appendInt(appendString(createPacket(), "SetHasAccountSecured"), 1));
-									ENetPacket* packet9 = enet_packet_create(p9.data, p9.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet9);
-									delete p9.data;
-									GamePacket p12 = packetEnd(appendInt(appendInt(appendString(createPacket(), "OnTodaysDate"), 2), 6));
-									ENetPacket* packet12 = enet_packet_create(p12.data, p12.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet12);
-									delete p12.data;
-									GamePacket p19 = packetEnd(appendInt(appendString(createPacket(), "SetShowChatOnlyFromFriends"), 0));
-									ENetPacket* packet19 = enet_packet_create(p19.data, p19.len, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet19);
-									delete p19.data;
-									updateplayerset(peer, pData->cloth_hand);
-									updateplayerset(peer, pData->cloth_face);
-									updateplayerset(peer, pData->cloth_mask);
-									updateplayerset(peer, pData->cloth_shirt);
-									updateplayerset(peer, pData->cloth_ances);
-									updateplayerset(peer, pData->cloth_pants);
-									updateplayerset(peer, pData->cloth_necklace);
-									updateplayerset(peer, pData->cloth_feet);
-									updateplayerset(peer, pData->cloth_back);
-									if (pData->haveGrowId) {
-										if (pData->lastworld != "EXIT" && pData->lastworld != "") {
-											handle_world(peer, pData->lastworld, true);
+										if (isMod(currentPeer) && static_cast<PlayerInfo*>(currentPeer->data)->isNicked == false) {
+											levellabel = "?";
 										}
 										else {
-											sendWorldOffers(peer);
+											levellabel = to_string(static_cast<PlayerInfo*>(currentPeer->data)->level);
 										}
-									}
-									std::ifstream news("etc/news.zep");
-									std::stringstream buffer;
-									buffer << news.rdbuf();
-									std::string newsString(buffer.str());
-									Player::OnDialogRequest(peer, newsString);
-									bool iscontains = false, success = true;
-									SearchInventoryItem(peer, 18, 1, iscontains);
-									if (!iscontains) SaveItemMoreTimes(18, 1, peer, success);
-									SearchInventoryItem(peer, 32, 1, iscontains);
-									if (!iscontains) SaveItemMoreTimes(32, 1, peer, success);
-								}
-								else {
-									PlayerInventory inventory;
-									InventoryItem item{};
-									item.itemCount = 1;
-									item.itemID = 18;
-									inventory.items.push_back(item);
-									item.itemCount = 1;
-									item.itemID = 32;
-									inventory.items.push_back(item);
-									SendInventory(peer, inventory);
-									pData->inventory = inventory;
-									handle_world(peer, "START");
-								} for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-									if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
-									string name = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
-									if (find(pData->friendinfo.begin(), pData->friendinfo.end(), name) != pData->friendinfo.end()) {
-										Player::OnConsoleMessage(currentPeer, "`3FRIEND ALERT: `o" + pData->displayName + " `ohas `2logged on`o.");
-									}
-								}
-								break;
-							}
-							if (cch == "action|refresh_item_data\n") {
-								if (itemsDat != NULL) {
-									ENetPacket* packet = enet_packet_create(itemsDat, static_cast<size_t>(itemsDatSize) + 60, ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet);
-									pData->isUpdating = true;
-									enet_peer_disconnect_later(peer, 0);
-								}
-								break;
-							}
-							else if (cch == "action|claimprogressbar\n") {
-								if (ValentineEvent) {
-									if (pData->bootybreaken >= 100) {
-										Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wAbout Valentine's Event``|left|384|\nadd_spacer|small|\nadd_textbox|During Valentine's Week you will gain points for opening Golden Booty Chests. Claim enough points to earn bonus rewards.|left|\nadd_spacer|small|\nadd_textbox|Current Progress: " + to_string(pData->bootybreaken) + "/100|left|\nadd_spacer|small|\nadd_textbox|Reward:|left|\nadd_label_with_icon|small|Super Golden Booty Chest|left|9350|\nadd_smalltext|             - 4x chance of getting a Golden Heart Crystal when opening!|left|\nadd_spacer|small|\nadd_button|claimreward|Claim Reward|no_flags|0|0|\nend_dialog|valentines_quest||OK|");
-									} else {
-										Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wAbout Valentine's Event``|left|384|\nadd_spacer|small|\nadd_textbox|During Valentine's Week you will gain points for opening Golden Booty Chests. Claim enough points to earn bonus rewards.|left|\nadd_spacer|small|\nadd_textbox|Current Progress: " + to_string(pData->bootybreaken) + "/100|left|\nadd_spacer|small|\nadd_textbox|Reward:|left|\nadd_label_with_icon|small|Super Golden Booty Chest|left|9350|\nadd_smalltext|             - 4x chance of getting a Golden Heart Crystal when opening!|left|\nend_dialog|valentines_quest||OK|");
-									}
-								}
-								break;
-							}
-							else if (cch == "action|showzodiacpets\n") {
-								if (!LunarEvent) break;
-								auto p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\nadd_label_with_icon|big|`wZodiac Animals : Collect them all``|left|10614|\nadd_spacer|small|\nadd_textbox|Every `2Oriental Spice Spray`` Pack purchased will add progress to unlocking the `2Zodiac Animals!``|left|\nadd_spacer|small|\nadd_textbox|There's an animal representing each anniversary of Growtopia! Each Zodiac Animal will be available for only 8 Hours. This will be the only time the item will be available in the store.|left|\nadd_spacer|small|\nadd_textbox|The first animal unlocked will be the mighty `2Zodiac Ox``! The next Animals unlocked will be chosen randomly! Any Zodiac Animals remaining locked at the end of the event will return next year along with the 2022 Animal! So the collection can continue!|left|\nadd_spacer|small|\nend_dialog|zodiacpets_quest||OK|"));
-								auto respawnTimeout = 500;
-								auto deathFlag = 0x19;
-								memcpy(p2.data + 24, &respawnTimeout, 4);
-								memcpy(p2.data + 56, &deathFlag, 4);
-								const auto packet2 = enet_packet_create(p2.data, p2.len, ENET_PACKET_FLAG_RELIABLE);
-								enet_peer_send(peer, 0, packet2);
-								delete p2.data;
-								break;
-							}
-							else if (cch.find("action|wrench") == 0) {
-								try {
-									if (pData->trade) end_trade(peer);
-									std::stringstream ss(cch);
-									std::string to;
-									int id = -1;
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.at(1).size() <= 4 || infoDat.at(1).size() >= 6)
-										{
-											//break;
-										}
-										else if (infoDat.at(1) != "netid")
-										{
-											//break;
-										}
-										else if (infoDat.at(1) == "netid")
-										{
-											id = atoi(infoDat.at(2).c_str());
-										}
-									}
-									if (id < 0) continue;
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
-										if (isHere(peer, currentPeer)) {
-											if (static_cast<PlayerInfo*>(currentPeer->data)->netID == id) {
-												pData->lastInfo = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
-												pData->lastInfoname = static_cast<PlayerInfo*>(currentPeer->data)->tankIDName;
-												pData->lastDisplayname = static_cast<PlayerInfo*>(currentPeer->data)->displayName;
-												string name = static_cast<PlayerInfo*>(currentPeer->data)->displayName;
-												string rawnam = pData->rawName;
-												string rawnamofwrench = static_cast<PlayerInfo*>(currentPeer->data)->rawName;
-												string guildlabel = "";
-												string levellabel = "";
-												if (static_cast<PlayerInfo*>(currentPeer->data)->guild == "" || isMod(currentPeer) && static_cast<PlayerInfo*>(currentPeer->data)->isNicked == false) {
-													guildlabel = "";
-												}
-												else {
-													string guild_rank = "Member";
-													switch (static_cast<PlayerInfo*>(currentPeer->data)->guild_rank) {
-													case 1:
-													{
-														guild_rank = "Elder";
-														break;
-													}
-													case 2:
-													{
-														guild_rank = "Co-Leader";
-														break;
-													}
-													case 3:
-													{
-														guild_rank = "Leader";
-														break;
-													}
-													default:
-													{
-														break;
-													}
-													}
-													if (static_cast<PlayerInfo*>(currentPeer->data)->guildFg != 0 && static_cast<PlayerInfo*>(currentPeer->data)->guildBg != 0) {
-														guildlabel = "\nadd_dual_layer_icon_label|small|`9Guild: `2" + static_cast<PlayerInfo*>(currentPeer->data)->guild + "``|left|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->guildBg) + "|" + std::to_string(static_cast<PlayerInfo*>(currentPeer->data)->guildFg) + "|1.0|1|\nadd_textbox|`9Rank: `2" + guild_rank + "``|left|\nadd_spacer|small|";
+										string guilddialog = ""; // \nadd_button|inviteguildbutton|`2Invite to Guild|0|0|
+										if (pData->guild != "" && pData->guild_rank > 0) guilddialog = "\nadd_button|inviteguildbutton|`2Invite to Guild|0|0|";
+										if (rawnamofwrench != rawnam) {
+											if (rawnamofwrench != "") {
+												if (!restricted_area(peer, world, static_cast<PlayerInfo*>(currentPeer->data)->x / 32, static_cast<PlayerInfo*>(currentPeer->data)->y / 32) && world->owner == "" || world->owner == pData->rawName && pData->haveGrowId || isMod(peer)) {
+													if (isMod(peer)) {
+														Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|punishview|`!Punish/View|0|0|\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|\nadd_button|wban|`4World Ban``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
 													}
 													else {
-														guildlabel = "\nadd_label_with_icon|small|`9Guild: `2" + static_cast<PlayerInfo*>(currentPeer->data)->guild + "``|left|242|\nadd_textbox|`9Rank: `2" + guild_rank + "``|left|\nadd_spacer|small|";
-													}
-												}
-												if (isMod(currentPeer) && static_cast<PlayerInfo*>(currentPeer->data)->isNicked == false) {
-													levellabel = "?";
-												}
-												else {
-													levellabel = to_string(static_cast<PlayerInfo*>(currentPeer->data)->level);
-												}
-												string guilddialog = ""; // \nadd_button|inviteguildbutton|`2Invite to Guild|0|0|
-												if (pData->guild != "" && pData->guild_rank > 0) guilddialog = "\nadd_button|inviteguildbutton|`2Invite to Guild|0|0|";
-												if (rawnamofwrench != rawnam) {
-													if (rawnamofwrench != "") {
-														if (!restricted_area(peer, world, static_cast<PlayerInfo*>(currentPeer->data)->x / 32, static_cast<PlayerInfo*>(currentPeer->data)->y / 32) && world->owner == "" || world->owner == pData->rawName && pData->haveGrowId || isMod(peer)) {
-															if (isMod(peer)) {
-																Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|punishview|`!Punish/View|0|0|\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|\nadd_button|wban|`4World Ban``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
-															}
-															else {
-																if (!restricted_area(peer, world, static_cast<PlayerInfo*>(currentPeer->data)->x / 32, static_cast<PlayerInfo*>(currentPeer->data)->y / 32) && world->owner == "") {
-																	Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
-																}
-																else {
-																	Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|\nadd_button|wban|`4World Ban``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
-																}
-															}
+														if (!restricted_area(peer, world, static_cast<PlayerInfo*>(currentPeer->data)->x / 32, static_cast<PlayerInfo*>(currentPeer->data)->y / 32) && world->owner == "") {
+															Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
 														}
 														else {
-															Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
+															Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|\nadd_button|kick|`4Kick``|noflags|0|0|\nadd_button|pull|`5Pull``|noflags|0|0|\nadd_button|wban|`4World Ban``|noflags|0|0|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
 														}
 													}
 												}
 												else {
-													if (pData->haveGrowId == true) {
-														send_info(peer, pData);
-													}
-													else
-													{
-														SendRegisterDialog(peer);
-														enet_host_flush(server);
-													}
+													Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`w" + name + " `w(`2" + levellabel + "`w)``|left|18|\nadd_spacer|small|" + guildlabel + "\nadd_button|trade|`wTrade``|noflags|0|0|\nadd_textbox|(No Battle Leash equipped)|left|\nadd_textbox|Your opponent needs a valid license to battle!|left|" + guilddialog + "\nadd_button|addfriendrnbutton|`wAdd as friend``|noflags|0|0|\nadd_button|ignore_player|`wIgnore Player``|noflags|0|0|\nadd_button|report_player|`wReport Player``|noflags|0|0|\nadd_spacer|small|\nend_dialog|popup||Continue|\nadd_quick_exit|");
 												}
 											}
 										}
-									}
-								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
-								}
-								break;
-							}
-							else if (cch.find("action|setSkin") == 0) {
-								if (!world) continue;
-								try {
-									std::stringstream ss(cch);
-									std::string to;
-									int id = -1;
-									string color = "";
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.at(0) == "color") color = infoDat.at(1);
-										if (has_only_digits(color) == false) continue;
-										id = atoi(color.c_str());
-										if (color == "2190853119") id = -2104114177;
-										else if (color == "2527912447") id = -1767054849;
-										else if (color == "2864971775") id = -1429995521;
-										else if (color == "3033464831") id = -1261502465;
-										else if (color == "3370516479") id = -924450817;
-									}
-									pData->skinColor = id;
-									sendClothes(peer);
-								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
-								}
-								break;
-							}
-							else if (cch == "action|respawn\n") {
-								playerRespawn(world, peer, false);
-								break;
-							}
-							else if (cch.find("action|respawn_spike") == 0) {
-								playerRespawn(world, peer, false);
-								break;
-							}
-							else if (cch.find("action|friends\n") == 0) {
-							string GuildButtonDialog = "";
-							if (pData->guild != "") {
-								GuildButtonDialog = "\nadd_button|showguild|`wShow Guild Members``|noflags";
-							}
-							else {
-								GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
-							}
-							Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`w???``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
-							break;
-							}
-							else if (cch == "action|growid\n") {
-								SendRegisterDialog(peer);
-								enet_host_flush(server);
-								break;
-							}
-                            else if (cch == "action|eventmenu\n") {
-							if (((PlayerInfo*)(peer->data))->haveGrowId == true)
-							{
-								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|\nadd_textbox|`3Under Construction!|\nend_dialog|store|Close|\n"));
-								ENetPacket* packet = enet_packet_create(p.data,
-									p.len,
-									ENET_PACKET_FLAG_RELIABLE);
-								enet_peer_send(peer, 0, packet);
-								delete p.data;
-							}
-							break;
-							// ReSharper disable once CppUnreachableCode
-							if (pData->haveGrowId == false) {
-								SendRegisterDialog(peer);
-							}
-							else {
-								if (pData->guild == "") {
-									Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_spacer|small|\nadd_textbox|`5Join or Create a `^Guild `5In order to access `cGuild Rewards`5!|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
-									continue;
-								}
-								int gpoints = 0;
-								ifstream guildstream1("save/guildrewards/guildpoints/" + pData->guild + ".txt");
-								guildstream1 >> gpoints;
-								guildstream1.close();
-								int personalpoints = 0;
-								ifstream guildstream3("save/guildrewards/contribution/" + pData->guild + "/" + pData->rawName + ".txt");
-								guildstream3 >> personalpoints;
-								guildstream3.close();
-								Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_label|small|`5Your guild currently have: `^" + std::to_string(gpoints) + " `5Points.|left|4||\nadd_label|small|`5Your personal contribution are: `^" + std::to_string(personalpoints) + " `5Points.|left|4||\nadd_spacer|small|\nadd_button|grewards|`wSpend Guild Points``|0|0|\nadd_button|gcontribution|`wMembers Contribution``|0|0|\nadd_spacer|small|\nadd_textbox|`2Guild `^Points `5Are `@Obtainable `5From those `9Activities`5: Usage of `9Magic Machine`5, Breaking `9Farmable Blocks`5, `6Harvesting `9Seeds`5.|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
-							}
-							break;
-							}
-							else if (cch == "action|trade_cancel\n") {
-								end_trade(peer, false, true);
-								break;
-							}
-							else if (cch.find("action|trade_started\n") == 0) {
-								try {
-									std::stringstream ss(cch);
-									std::string to;
-									int id = -1;
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.size() == 2) {
-											if (infoDat.at(0) == "netid") {
-												id = atoi(infoDat.at(1).c_str());
-												break;
+										else {
+											if (pData->haveGrowId == true) {
+												send_info(peer, pData);
 											}
-										}
-									}
-									if (id == -1) continue;
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
-										if (isHere(peer, currentPeer)) {
-											if (static_cast<PlayerInfo*>(currentPeer->data)->netID == id) {
-												if (pData->trade_netid == static_cast<PlayerInfo*>(currentPeer->data)->netID && static_cast<PlayerInfo*>(currentPeer->data)->trade_netid == pData->netID) {
-													start_trade(peer, currentPeer);
-													break;
-												}
-												Player::OnConsoleMessage(currentPeer, "`#TRADE ALERT:`` " + pData->displayName + " `owants to trade with you!  To start, use the `wWrench`` on that person's wrench icon, or type `w/trade " + pData->displayName + "``");
-												Player::PlayAudio(currentPeer, "audio/cash_register.wav", 0);
-												break;
+											else
+											{
+												SendRegisterDialog(peer);
+												enet_host_flush(server);
 											}
 										}
 									}
 								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
+							}
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					else if (cch.find("action|setSkin") == 0) {
+						if (!world) continue;
+						try {
+							std::stringstream ss(cch);
+							std::string to;
+							int id = -1;
+							string color = "";
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.at(0) == "color") color = infoDat.at(1);
+								if (has_only_digits(color) == false) continue;
+								id = atoi(color.c_str());
+								if (color == "2190853119") id = -2104114177;
+								else if (color == "2527912447") id = -1767054849;
+								else if (color == "2864971775") id = -1429995521;
+								else if (color == "3033464831") id = -1261502465;
+								else if (color == "3370516479") id = -924450817;
+							}
+							pData->skinColor = id;
+							sendClothes(peer);
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					else if (cch == "action|respawn\n") {
+						playerRespawn(world, peer, false);
+						break;
+					}
+					else if (cch.find("action|respawn_spike") == 0) {
+						playerRespawn(world, peer, false);
+						break;
+					}
+					else if (cch.find("action|friends\n") == 0) {
+						string GuildButtonDialog = "";
+						if (pData->guild != "") {
+							GuildButtonDialog = "\nadd_button|showguild|`wShow Guild Members``|noflags";
+						}
+						else {
+							GuildButtonDialog = "\nadd_button|showguild|`wCreate Guild``|noflags";
+						}
+						Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`w???``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
+						break;
+					}
+					else if (cch == "action|growid\n") {
+						SendRegisterDialog(peer);
+						enet_host_flush(server);
+						break;
+					}
+					else if (cch == "action|eventmenu\n") {
+						if (((PlayerInfo*)(peer->data))->haveGrowId == true)
+						{
+							GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|\nadd_textbox|`3Under Construction!|\nend_dialog|store|Close|\n"));
+							ENetPacket* packet = enet_packet_create(p.data,
+								p.len,
+								ENET_PACKET_FLAG_RELIABLE);
+							enet_peer_send(peer, 0, packet);
+							delete p.data;
+						}
+						break;
+						// ReSharper disable once CppUnreachableCode
+						if (pData->haveGrowId == false) {
+							SendRegisterDialog(peer);
+						}
+						else {
+							if (pData->guild == "") {
+								Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_spacer|small|\nadd_textbox|`5Join or Create a `^Guild `5In order to access `cGuild Rewards`5!|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
+								continue;
+							}
+							int gpoints = 0;
+							ifstream guildstream1("save/guildrewards/guildpoints/" + pData->guild + ".txt");
+							guildstream1 >> gpoints;
+							guildstream1.close();
+							int personalpoints = 0;
+							ifstream guildstream3("save/guildrewards/contribution/" + pData->guild + "/" + pData->rawName + ".txt");
+							guildstream3 >> personalpoints;
+							guildstream3.close();
+							Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`9Guild Rewards And Challenges``|left|7340|\nadd_label|small|`5Your guild currently have: `^" + std::to_string(gpoints) + " `5Points.|left|4||\nadd_label|small|`5Your personal contribution are: `^" + std::to_string(personalpoints) + " `5Points.|left|4||\nadd_spacer|small|\nadd_button|grewards|`wSpend Guild Points``|0|0|\nadd_button|gcontribution|`wMembers Contribution``|0|0|\nadd_spacer|small|\nadd_textbox|`2Guild `^Points `5Are `@Obtainable `5From those `9Activities`5: Usage of `9Magic Machine`5, Breaking `9Farmable Blocks`5, `6Harvesting `9Seeds`5.|\nadd_spacer|small|\nadd_button|cl0se|`wClose|\nadd_quick_exit|");
+						}
+						break;
+					}
+					else if (cch == "action|trade_cancel\n") {
+						end_trade(peer, false, true);
+						break;
+					}
+					else if (cch.find("action|trade_started\n") == 0) {
+						try {
+							std::stringstream ss(cch);
+							std::string to;
+							int id = -1;
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.size() == 2) {
+									if (infoDat.at(0) == "netid") {
+										id = atoi(infoDat.at(1).c_str());
+										break;
+									}
 								}
+							}
+							if (id == -1) continue;
+							for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+								if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
+								if (isHere(peer, currentPeer)) {
+									if (static_cast<PlayerInfo*>(currentPeer->data)->netID == id) {
+										if (pData->trade_netid == static_cast<PlayerInfo*>(currentPeer->data)->netID && static_cast<PlayerInfo*>(currentPeer->data)->trade_netid == pData->netID) {
+											start_trade(peer, currentPeer);
+											break;
+										}
+										Player::OnConsoleMessage(currentPeer, "`#TRADE ALERT:`` " + pData->displayName + " `owants to trade with you!  To start, use the `wWrench`` on that person's wrench icon, or type `w/trade " + pData->displayName + "``");
+										Player::PlayAudio(currentPeer, "audio/cash_register.wav", 0);
+										break;
+									}
+								}
+							}
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					else if (cch.find("action|rem_trade\n") == 0) {
+						try {
+							std::stringstream ss(cch);
+							std::string to;
+							int id = -1;
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.size() == 2) {
+									if (infoDat.at(0) == "itemID") {
+										id = atoi(infoDat.at(1).c_str());
+										break;
+									}
+								}
+							}
+							if (id == -1) continue;
+							for (int i = 0; i < pData->tradeItems.size(); i++) {
+								if (pData->tradeItems.at(i).id == id) {
+									pData->tradeItems.erase(pData->tradeItems.begin() + i);
+									break;
+								}
+							}
+							update_trade(peer, pData->trade_netid);
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					else if (cch.find("action|mod_trade\n") == 0) {
+						try {
+							std::stringstream ss(cch);
+							std::string to;
+							int id = -1;
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.size() == 2) {
+									if (infoDat.at(0) == "itemID") {
+										id = atoi(infoDat.at(1).c_str());
+										break;
+									}
+								}
+							}
+							if (id == -1 || id == 18) continue;
+							if (pData->tradeItems.size() >= 4) {
+								Player::PlayAudio(peer, "audio/cant_place_tile.wav", 0);
 								break;
 							}
-							else if (cch.find("action|rem_trade\n") == 0) {
-								try {
-									std::stringstream ss(cch);
-									std::string to;
-									int id = -1;
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.size() == 2) {
-											if (infoDat.at(0) == "itemID") {
-												id = atoi(infoDat.at(1).c_str());
-												break;
-											}
-										}
+							if (id == 6260 || getItemDef(id).properties & Property_Untradable || id == 18 || id == 32 || id == 6336 || id == 8552 || id == 9472 || id == 9482 || id == 9356 || id == 9492 || id == 9498 || id == 8774 || id == 1790 || id == 2592 || id == 1784 || id == 1792 || id == 1794 || id == 7734 || id == 8306 || id == 9458 || id == 5640) {
+								if (!isDev(peer) && !pData->Subscriber || id == 18 || id == 5640 || id == 32 || id == 6336 || id == 1486 || id == 1794) {
+									Player::OnTextOverlay(peer, "You'd be sorry if you lost that!");
+									Player::PlayAudio(peer, "audio/cant_place_tile.wav", 0);
+									break;
+								}
+							}
+							if (static_cast<PlayerInfo*>(peer->data)->lastdealchange + 1000 < (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count()) {
+								static_cast<PlayerInfo*>(peer->data)->lastdealchange = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count();
+								int count = 0;
+								for (auto i = 0; i < pData->inventory.items.size(); i++) {
+									if (pData->inventory.items.at(i).itemID == id && pData->inventory.items.at(i).itemCount >= 1) {
+										count = pData->inventory.items.at(i).itemCount;
+										break;
 									}
-									if (id == -1) continue;
+								}
+								if (count == 1) {
+									auto contains = false;
+									SearchInventoryItem(peer, id, count, contains);
+									if (!contains) break;
 									for (int i = 0; i < pData->tradeItems.size(); i++) {
 										if (pData->tradeItems.at(i).id == id) {
 											pData->tradeItems.erase(pData->tradeItems.begin() + i);
 											break;
 										}
 									}
+									TradeItem trdItem = { id, count };
+									pData->tradeItems.push_back(trdItem);
 									update_trade(peer, pData->trade_netid);
+									break;
 								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
-								}
-								break;
+								Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`2Trade`` `w" + getItemDef(id).name + "``|left|" + to_string(id) + "|\nadd_textbox|`2Trade how many?``|left|\nadd_text_input|count_" + to_string(id) + "||" + to_string(count) + "|5|\nend_dialog|trade_add|Cancel|OK|");
 							}
-							else if (cch.find("action|mod_trade\n") == 0) { 
-								try {
-									std::stringstream ss(cch);
-									std::string to;
-									int id = -1;
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.size() == 2) {
-											if (infoDat.at(0) == "itemID") {
-												id = atoi(infoDat.at(1).c_str());
-												break;
-											}
+							else {
+								Player::OnTextOverlay(peer, "Slow down! Please wait a second between adding and removing items");
+							}
+						}
+						catch (const std::out_of_range& e) {
+							std::cout << e.what() << std::endl;
+						}
+						break;
+					}
+					else if (cch.find("action|trade_accept\n") == 0) {
+						try {
+							std::stringstream ss(cch);
+							std::string to;
+							int status = 0;
+							while (std::getline(ss, to, '\n')) {
+								vector<string> infoDat = explode("|", to);
+								if (infoDat.size() == 2) {
+									if (infoDat.at(0) == "status") {
+										if (infoDat.at(1) == "1") {
+											status = 1;
 										}
-									}
-									if (id == -1 || id == 18) continue;
-									if (pData->tradeItems.size() >= 4) {
-										Player::PlayAudio(peer, "audio/cant_place_tile.wav", 0);
 										break;
 									}
-									if (id == 6260 || getItemDef(id).properties & Property_Untradable || id == 18 || id == 32 || id == 6336 || id == 8552 || id == 9472 || id == 9482 || id == 9356 || id == 9492 || id == 9498 || id == 8774 || id == 1790 || id == 2592 || id == 1784 || id == 1792 || id == 1794 || id == 7734 || id == 8306 || id == 9458 || id == 5640) {
-										if (!isDev(peer) && !pData->Subscriber || id == 18 || id == 5640 || id == 32 || id == 6336 || id == 1486 || id == 1794) {
-											Player::OnTextOverlay(peer, "You'd be sorry if you lost that!");
-											Player::PlayAudio(peer, "audio/cant_place_tile.wav", 0);
-											break;
-										}
-									}
-									if (static_cast<PlayerInfo*>(peer->data)->lastdealchange + 1000 < (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count()) {
-										static_cast<PlayerInfo*>(peer->data)->lastdealchange = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())).count();
-										int count = 0;
-										for (auto i = 0; i < pData->inventory.items.size(); i++) {
-											if (pData->inventory.items.at(i).itemID == id && pData->inventory.items.at(i).itemCount >= 1) {
-												count = pData->inventory.items.at(i).itemCount;
+								}
+							}
+							if (!pData->trade) continue;
+							pData->trade_accept = status;
+							UpdateTradeAcceptedStatus(peer);
+							for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
+								if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
+								if (isHere(peer, currentPeer)) {
+									if (pData->trade_netid == ((PlayerInfo*)(currentPeer->data))->netID || ((PlayerInfo*)(peer->data))->netID == ((PlayerInfo*)(currentPeer->data))->trade_netid) {
+										if (pData->trade_accept && static_cast<PlayerInfo*>(currentPeer->data)->trade_accept) {
+											bool full_inv = false;
+											int which_item = 0;
+											if (static_cast<PlayerInfo*>(peer->data)->inventory.items.size() + static_cast<PlayerInfo*>(currentPeer->data)->tradeItems.size() >= static_cast<PlayerInfo*>(peer->data)->currentInventorySize) {
+												Player::OnTextOverlay(peer, "`w" + static_cast<PlayerInfo*>(peer->data)->displayName + "`w needs more backpack room first!");
+												Player::OnTextOverlay(currentPeer, "`w" + static_cast<PlayerInfo*>(peer->data)->displayName + "`w needs more backpack room first!");
+												pData->trade_accept = false;
+												static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
+												UpdateTradeAcceptedStatus(peer);
+												UpdateTradeAcceptedStatus(currentPeer);
 												break;
 											}
-										}
-										if (count == 1) {
-											auto contains = false;
-											SearchInventoryItem(peer, id, count, contains);
-											if (!contains) break;
-											for (int i = 0; i < pData->tradeItems.size(); i++) {
-												if (pData->tradeItems.at(i).id == id) {
-													pData->tradeItems.erase(pData->tradeItems.begin() + i);
+											for (auto& f : static_cast<PlayerInfo*>(currentPeer->data)->tradeItems) {
+												if (CheckItemMaxed(peer, f.id, f.count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, f.id) && CheckItemMaxed(peer, f.id, f.count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, f.id)) {
+													full_inv = true;
+													which_item = f.id;
 													break;
 												}
 											}
-											TradeItem trdItem = { id, count };
-											pData->tradeItems.push_back(trdItem);
-											update_trade(peer, pData->trade_netid);
-											break;
-										}
-										Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`2Trade`` `w" + getItemDef(id).name + "``|left|" + to_string(id) + "|\nadd_textbox|`2Trade how many?``|left|\nadd_text_input|count_" + to_string(id) + "||" + to_string(count) + "|5|\nend_dialog|trade_add|Cancel|OK|");
-									}
-									else {
-										Player::OnTextOverlay(peer, "Slow down! Please wait a second between adding and removing items");
-									}
-								}
-								catch (const std::out_of_range& e) {
-									std::cout << e.what() << std::endl;
-								}
-								break;
-							}
-							else if (cch.find("action|trade_accept\n") == 0) { 
-								try {
-									std::stringstream ss(cch);
-									std::string to;
-									int status = 0;
-									while (std::getline(ss, to, '\n')) {
-										vector<string> infoDat = explode("|", to);
-										if (infoDat.size() == 2) {
-											if (infoDat.at(0) == "status") {
-												if (infoDat.at(1) == "1") {
-													status = 1;
-												}
+											if (full_inv) {
+												Player::OnTextOverlay(currentPeer, "`4Oops - " + pData->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
+												Player::OnTextOverlay(peer, "`4Oops - " + pData->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
+												pData->trade_accept = false;
+												static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
+												UpdateTradeAcceptedStatus(peer);
+												UpdateTradeAcceptedStatus(currentPeer);
 												break;
 											}
-										}
-									}
-									if (!pData->trade) continue;
-									pData->trade_accept = status;
-									UpdateTradeAcceptedStatus(peer);
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
-										if (isHere(peer, currentPeer)) {
-											if (pData->trade_netid == ((PlayerInfo*)(currentPeer->data))->netID || ((PlayerInfo*)(peer->data))->netID == ((PlayerInfo*)(currentPeer->data))->trade_netid) {
-												if (pData->trade_accept && static_cast<PlayerInfo*>(currentPeer->data)->trade_accept) {
-													bool full_inv = false;
-													int which_item = 0;
-													if (static_cast<PlayerInfo*>(peer->data)->inventory.items.size() + static_cast<PlayerInfo*>(currentPeer->data)->tradeItems.size() >= static_cast<PlayerInfo*>(peer->data)->currentInventorySize) {
-														Player::OnTextOverlay(peer, "`w" + static_cast<PlayerInfo*>(peer->data)->displayName + "`w needs more backpack room first!");
-														Player::OnTextOverlay(currentPeer, "`w" + static_cast<PlayerInfo*>(peer->data)->displayName + "`w needs more backpack room first!");
-														pData->trade_accept = false;
-														static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
-														UpdateTradeAcceptedStatus(peer);
-														UpdateTradeAcceptedStatus(currentPeer);
-														break;
-													}
-													for (auto& f : static_cast<PlayerInfo*>(currentPeer->data)->tradeItems) {
-														if (CheckItemMaxed(peer, f.id, f.count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, f.id) && CheckItemMaxed(peer, f.id, f.count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, f.id)) {
-															full_inv = true;
-															which_item = f.id;
-															break;
-														}
-													}
-													if (full_inv) {
-														Player::OnTextOverlay(currentPeer, "`4Oops - " + pData->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
-														Player::OnTextOverlay(peer, "`4Oops - " + pData->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
-														pData->trade_accept = false;
-														static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
-														UpdateTradeAcceptedStatus(peer);
-														UpdateTradeAcceptedStatus(currentPeer);
-														break;
-													}
-													full_inv = false;
-													if (static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + static_cast<PlayerInfo*>(peer->data)->tradeItems.size() >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize) {
-														Player::OnTextOverlay(peer, "`w" + static_cast<PlayerInfo*>(currentPeer->data)->displayName + "`w needs more backpack room first!");
-														Player::OnTextOverlay(currentPeer, "`w" + static_cast<PlayerInfo*>(currentPeer->data)->displayName + "`w needs more backpack room first!");
-														pData->trade_accept = false;
-														static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
-														UpdateTradeAcceptedStatus(peer);
-														UpdateTradeAcceptedStatus(currentPeer);
-														break;
-													}
-													for (auto& f : static_cast<PlayerInfo*>(peer->data)->tradeItems) {
-														if (CheckItemMaxed(currentPeer, f.id, f.count) || static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize && CheckItemExists(currentPeer, f.id) && CheckItemMaxed(currentPeer, f.id, f.count) || static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize && !CheckItemExists(currentPeer, f.id)) {
-															full_inv = true;
-															which_item = f.id;
-															break;
-														}
-													}
-													if (full_inv) {
-														Player::OnTextOverlay(peer, "`4Oops - " + static_cast<PlayerInfo*>(currentPeer->data)->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
-														Player::OnTextOverlay(currentPeer, "`4Oops - " + static_cast<PlayerInfo*>(currentPeer->data)->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
-														pData->trade_accept = false;
-														static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
-														UpdateTradeAcceptedStatus(peer);
-														UpdateTradeAcceptedStatus(currentPeer);
-														break;
-													}
+											full_inv = false;
+											if (static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + static_cast<PlayerInfo*>(peer->data)->tradeItems.size() >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize) {
+												Player::OnTextOverlay(peer, "`w" + static_cast<PlayerInfo*>(currentPeer->data)->displayName + "`w needs more backpack room first!");
+												Player::OnTextOverlay(currentPeer, "`w" + static_cast<PlayerInfo*>(currentPeer->data)->displayName + "`w needs more backpack room first!");
+												pData->trade_accept = false;
+												static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
+												UpdateTradeAcceptedStatus(peer);
+												UpdateTradeAcceptedStatus(currentPeer);
+												break;
+											}
+											for (auto& f : static_cast<PlayerInfo*>(peer->data)->tradeItems) {
+												if (CheckItemMaxed(currentPeer, f.id, f.count) || static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize && CheckItemExists(currentPeer, f.id) && CheckItemMaxed(currentPeer, f.id, f.count) || static_cast<PlayerInfo*>(currentPeer->data)->inventory.items.size() + 1 >= static_cast<PlayerInfo*>(currentPeer->data)->currentInventorySize && !CheckItemExists(currentPeer, f.id)) {
+													full_inv = true;
+													which_item = f.id;
+													break;
+												}
+											}
+											if (full_inv) {
+												Player::OnTextOverlay(peer, "`4Oops - " + static_cast<PlayerInfo*>(currentPeer->data)->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
+												Player::OnTextOverlay(currentPeer, "`4Oops - " + static_cast<PlayerInfo*>(currentPeer->data)->displayName + " `4is carrying too many " + getItemDef(which_item).name + " and can't fit that many in their backpack.");
+												pData->trade_accept = false;
+												static_cast<PlayerInfo*>(currentPeer->data)->trade_accept = false;
+												UpdateTradeAcceptedStatus(peer);
+												UpdateTradeAcceptedStatus(currentPeer);
+												break;
+											}
 
 											Player::OnForceTradeEnd(peer);
 											Player::OnForceTradeEnd(currentPeer);
