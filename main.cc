@@ -11082,45 +11082,6 @@ int main() {
 											}
 										}
 									}
-									if (isSongDialog) {
-										if (infoDat.at(0) == "checkbox_ahrix") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Ahrix Nova");
-												Player::PlayAudio(peer, "audio/ogg/ahrix_nova.ogg", 0);
-												break;
-											}
-										} if (infoDat.at(0) == "checkbox_phut") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Phut Hon");
-												Player::PlayAudio(peer, "audio/ogg/phut_hon.ogg", 0);
-												break;
-											}
-										} if (infoDat.at(0) == "checkbox_stopme") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Dont't stop me now");
-												Player::PlayAudio(peer, "audio/ogg/dont_stop_me_now.ogg", 0);
-												break;
-											}
-										} if (infoDat.at(0) == "checkbox_feelit") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Can you feel it");
-												Player::PlayAudio(peer, "audio/ogg/feel_it.ogg", 0);
-												break;
-											}
-										} if (infoDat.at(0) == "checkbox_sayso") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Say so");
-												Player::PlayAudio(peer, "audio/ogg/say_so.ogg", 0);
-												break;
-											}
-										} if (infoDat.at(0) == "checkbox_bealone") {
-											if (infoDat.at(1) == "1") {
-												Player::OnConsoleMessage(peer, "Playing now `$Never be alone");
-												Player::PlayAudio(peer, "audio/ogg/be_alone.ogg", 0);
-												break;
-											}
-										}
-									}
 									if (isRolesDialog) {
 										if (infoDat.at(1) == "back") {
 											int firefighterxp = 1500;
