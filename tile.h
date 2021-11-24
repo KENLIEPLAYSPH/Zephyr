@@ -8675,6 +8675,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 			}
 		}
 		}
+		// to be worked on
 		else if (str == "/beta")
 		{
 		Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
