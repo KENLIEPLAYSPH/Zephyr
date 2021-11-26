@@ -3898,7 +3898,7 @@ inline void sendWorldOffers(ENetPeer* peer) {
 			if (lastworld != "EXIT" && lastworld != "") worldOffers += lastworld;
 			else worldOffers += "START";
 		}
-		worldOffers += "\nadd_button|Showing: `wRandom Worlds``|_catselect_|0.6|3529161471|\n";
+		worldOffers += "\nadd_button|Showing: `wRandom Worlds``|_catselect_|0.6|3529161471|\nadd_floater|GROWGANOTH|0|0.5|3415414143|";
 		int added_worlds = 0;
 		for (int i = 0; i < local_worlds.size(); i++) {
 			if (jammers) {
@@ -4341,14 +4341,14 @@ inline void SyncPlayerRoles(ENetPeer* peer, int level, string type) {
 }
 
 inline void SendXP(ENetPeer* peer, int amount) {
-/*	if (GrowganothEvent) {
+	if (GrowganothEvent) {
 		if ((rand() % 3000) <= 1) {
-			Player::OnConsoleMessage(peer, "`4Growganoth `olikes your work and rewards with `2Gift Of Growganoth`o!");
-			Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`4Growganoth `wlikes your work and rewards with `2Gift Of Growganoth`w!", 0, false);
+	//		Player::OnConsoleMessage(peer, "`4Growganoth `olikes your work and rewards with `2Gift Of Growganoth`o!");
+	//		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`4Growganoth `wlikes your work and rewards with `2Gift Of Growganoth`w!", 0, false);
 			auto success = true;
-			SaveItemMoreTimes(10386, 1, peer, success);
+	//		SaveItemMoreTimes(10386, 1, peer, success);
 		}
-	}*/
+	}
 	if (static_cast<PlayerInfo*>(peer->data)->cloth_necklace == 9168) {
 		amount *= 2;
 	} 
@@ -6802,7 +6802,7 @@ inline void LoadEvents(bool ignore = false)
 		lastday = "1";
 		DailyItem = 5040;
 		DailyItemCount = 200;
-		//GrowganothEvent = true;
+		GrowganothEvent = true;
 		specialdrop = 5040;
 		break;
 	}

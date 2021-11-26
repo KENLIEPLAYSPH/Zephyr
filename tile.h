@@ -3431,8 +3431,8 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 						int itemid = itemuMas[randIndex];
 						bool success = true;
 						SaveItemMoreTimes(itemid, 1, peer, success, pData->rawName + " from " + getItemDef(tile).name + "");
-						Player::OnConsoleMessage(peer, "`oYou received `21 " + getItemDef(itemid).name + " `ofrom the Gift of Growganoth.");
-						Player::OnTalkBubble(peer, pData->netID, "`wYou received `21 " + getItemDef(itemid).name + " `wfrom the Gift of Growganoth.", 0, true);
+				//		Player::OnConsoleMessage(peer, "`oYou received `21 " + getItemDef(itemid).name + " `ofrom the Gift of Growganoth.");
+				//		Player::OnTalkBubble(peer, pData->netID, "`wYou received `21 " + getItemDef(itemid).name + " `wfrom the Gift of Growganoth.", 0, true);
 					}
 				}
 
@@ -7320,6 +7320,8 @@ inline void SendSacrifice(WorldInfo* world, ENetPeer* peer, int itemid, int coun
 	else if (itemid == 1506) itemid = 1968;
 	else if (itemid == 1746) itemid = 1960;
 	else if (itemid == 1252) itemid = 1948;
+	else if (itemid == 98) itemid = 1438; // custom growganoth drop (pickaxe to gpickaxe)
+	else if (itemid == 1438) itemid = 4956; // custom growganoth drop (pickaxe to gpickaxe)
 	else if (itemid == 1830) itemid = 1966;
 	else if (itemid == 2722) itemid = 3114;
 	else if (itemid == 2984) itemid = 3118;
