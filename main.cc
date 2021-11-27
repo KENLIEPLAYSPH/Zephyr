@@ -1002,10 +1002,6 @@ int main() {
 						}
 						Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`w???``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
 						break;
-						if (!static_cast<PlayerInfo*>(peer->data)->haveGrowId) {
-							Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "Please create a GrowID first!", 0, true);
-							return;
-						}
 					}
 					else if (cch == "action|growid\n") {
 						SendRegisterDialog(peer);
