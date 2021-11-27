@@ -1002,6 +1002,10 @@ int main() {
 						}
 						Player::OnDialogRequest(peer, " set_default_color|`o\nadd_label_with_icon|big|`wSocial Portal`` |left|1366|\nadd_spacer|small|\nadd_button|showfriend|`wShow Friends``|noflags|0|0|" + GuildButtonDialog + "|0|0|"/*"\nadd_button|communityhub|`w???``|noflags|0|0|"*/ + "\nadd_quick_exit|\nend_dialog|friends_guilds|OK||");
 						break;
+						if (!static_cast<PlayerInfo*>(peer->data)->haveGrowId) {
+							Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "Please create a GrowID first!", 0, true);
+							return;
+						}
 					}
 					else if (cch == "action|growid\n") {
 						SendRegisterDialog(peer);
@@ -18147,7 +18151,7 @@ int main() {
 								auto it = std::unique(pData->worldsowned.begin(), pData->worldsowned.end());
 								pData->worldsowned.erase(it, pData->worldsowned.end());
 								for (int i = 0; i < pData->worldsowned.size(); i++) {
-									worldOffers += "add_floater|" + pData->worldsowned.at(i) + "|0|0.5|3417414143|\n";
+									worldOffers += "add_floater|" + pData->worldsowned.at(i) + "|0|0.5|5417514943|\n";
 								}
 								auto p3 = packetEnd(appendString(appendString(createPacket(), "OnRequestWorldSelectMenu"), worldOffers));
 								const auto packet3 = enet_packet_create(p3.data, p3.len, ENET_PACKET_FLAG_RELIABLE);
@@ -18384,7 +18388,7 @@ int main() {
 											}
 										} if (droppedItem.id != 112) {
 											if (CheckItemMaxed(peer, droppedItem.id, droppedItem.count)) {
-												if (atoi(GetItemCount(peer, droppedItem.id).c_str()) < 200 && droppedItem.count > (250 - atoi(GetItemCount(peer, droppedItem.id).c_str()))) {
+												if (atoi(GetItemCount(peer, droppedItem.id).c_str()) < 200 && droppedItem.count > (200 - atoi(GetItemCount(peer, droppedItem.id).c_str()))) {
 													int xdrop = droppedItem.x;
 													int ydrop = droppedItem.y;
 													int iddrop = droppedItem.id;

@@ -3646,7 +3646,7 @@ inline void SaveDroppedItem(int fItemid, int fQuantity, ENetPeer* peer, bool& su
 		auto isInInv = false;
 		for (auto i = 0; i < static_cast<PlayerInfo*>(peer->data)->inventory.items.size(); i++) {
 			if (static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemID == fItemid && static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemCount + fQuantity > 200) isFullStock = true;
-			if (static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemID == fItemid && static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemCount <= 250) isInInv = true;
+			if (static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemID == fItemid && static_cast<PlayerInfo*>(peer->data)->inventory.items.at(i).itemCount <= 200) isInInv = true;
 		}
 		if (isFullStock == true || alreadyhave == true) {
 			success = false;
@@ -3898,7 +3898,7 @@ inline void sendWorldOffers(ENetPeer* peer) {
 			if (lastworld != "EXIT" && lastworld != "") worldOffers += lastworld;
 			else worldOffers += "START";
 		}
-		worldOffers += "\nadd_button|Showing: `wRandom Worlds``|_catselect_|0.6|3529161471|\nadd_floater|GROWGANOTH|0|0.5|3415414143|";
+		worldOffers += "\nadd_button|Showing: `wRandom Worlds``|_catselect_|0.6|3529161471|\nadd_floater|GROWGANOTH|0|0.5|3415618193|";
 		int added_worlds = 0;
 		for (int i = 0; i < local_worlds.size(); i++) {
 			if (jammers) {
@@ -6724,7 +6724,7 @@ inline void restore_prices() {
 					drop_k++;
 				}	
 				kaina = past_price;
-				if (kaina > 200 && itemid != 9498 && itemid != 5154 && itemid != 5140 && itemid != 5138 && itemid != 5136 && itemid != 7382 && itemid != 4762) kaina = 250;
+				if (kaina > 200 && itemid != 9498 && itemid != 5154 && itemid != 5140 && itemid != 5138 && itemid != 5136 && itemid != 7382 && itemid != 4762) kaina = 200;
 				if (kaina < 1) kaina = 1;
 				if (itemid == 7188) kaina = 100;
 			} else {
