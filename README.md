@@ -1,4 +1,5 @@
 # Zephyr
+#### The 2.0 update is scheduled to saturday!
 An open-source Growtopia server software project based on GTOS ![Zephyr](https://discordapp.com/api/guilds/911158088717971478/widget.png?style=shield)
 #### To-Do's
 <pre>
