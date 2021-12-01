@@ -5,7 +5,8 @@
 An open-source Growtopia server software project based on GTOS ![Zephyr](https://discordapp.com/api/guilds/911158088717971478/widget.png?style=shield)
 #### To-Do's
 <pre>
-200 Max Items (has a very small bug)
+Achievements (only 4 available)
+200 Max Items (done)
 Gems drop and merge (done)
 Tutorial (coming soon)
 Improved speed (done)
