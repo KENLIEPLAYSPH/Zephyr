@@ -415,7 +415,6 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 							else if (pData->providerlevel >= 4 && rand() % 100 <= 1) {
 								bool success = true;
 								SaveItemMoreTimes(5136, 1, peer, success, "");
-								Player::OnConsoleMessage(peer, "Obtained Smaraged Block");
 							}
 							else if (pData->providerlevel >= 7 && rand() % 100 <= 1) {
 								bool success = true;
@@ -4593,7 +4592,7 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 				if (getItemDef(tile).blockType == BlockTypes::LOCK && world->items.at(x + (y * world->width)).foreground == 0) {
 					if (tile == 202 || tile == 204 || tile == 206 || tile == 4994) {
 						if (!restricted_area_check(world, x, y)) {
-							Player::OnTalkBubble(peer, pData->netID, "Cant place " + getItemDef(tile).name + " here!", 0, false);
+							Player::OnTalkBubble(peer, pData->netID, "Can't place " + getItemDef(tile).name + " here!", 0, false);
 							return;
 						}
 						world->items.at(x + (y * world->width)).monitorname = pData->rawName;
@@ -4612,6 +4611,30 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 						for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 							if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 							if (isHere(peer, currentPeer)) {
+								bool achieve = std::experimental::filesystem::exists("save/achievements/lock/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
+								if (achieve == false)
+								{
+									int effect = 48;
+									int x = ((PlayerInfo*)(currentPeer->data))->x;
+									int y = ((PlayerInfo*)(currentPeer->data))->y;
+									GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
+
+									ENetPacket* packetd = enet_packet_create(psp.data,
+										psp.len,
+										ENET_PACKET_FLAG_RELIABLE);
+									enet_peer_send(peer, 0, packetd);
+									GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement This Is My Land!"));
+									ENetPacket* packet3 = enet_packet_create(p3.data,
+										p3.len,
+										ENET_PACKET_FLAG_RELIABLE);
+									enet_peer_send(currentPeer, 0, packet3);
+									delete p3.data;
+
+									ofstream myfile;
+									myfile.open("save/achievements/lock/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
+									myfile << "true";
+									myfile.close();
+								}
 								Player::OnConsoleMessage(currentPeer, "`3[`w" + world->name + " `ohas been `$World Locked `oBy " + pData->displayName + "`3]");
 								Player::PlayAudio(currentPeer, "audio/use_lock.wav", 0);
 							}
@@ -7560,7 +7583,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 	try {
 		if (message.length() >= 120 || message.length() == 0 || message == " " || !static_cast<PlayerInfo*>(peer->data)->isIn || static_cast<PlayerInfo*>(peer->data)->currentWorld == "EXIT" || 1 > (message.size() - countSpaces(message))) return;
 		if (!static_cast<PlayerInfo*>(peer->data)->haveGrowId) {
-			Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "Please create growid first!", 0, true);
+			Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "Please create a GrowID first!", 0, true);
 			return;
 		}
 		removeExtraSpaces(message);
@@ -8680,23 +8703,12 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		// to be worked on
 		else if (str == "/beta")
 		{
+	// test function Player::OnSendToServer(peer, 1, 1, "127.0.0.1", 17092, 0, true);
 		Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
         }
-		else if (str == "/version")
+		else if (str == "/version" || str == "/zephyr" || str == "/ver" || str == "/about") // optimize by having less command functions
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 1.0 git-8c770d2");
-        }
-		else if (str == "/about")
-		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 1.0 git-8c770d2");
-		}
-		else if (str == "/ver")
-		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 1.0 git-8c770d2");
-		}
-		else if (str == "/zephyr")
-		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 1.0 git-8c770d2");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 2.0 git-8c770d2");
         }
 		else if (str == "/nuke") {
 			if (world->isNuked) {
