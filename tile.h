@@ -8708,7 +8708,7 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
         }
 		else if (str == "/version" || str == "/zephyr" || str == "/ver" || str == "/about") // optimize by having less command functions
 		{
-		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 2.0 git-8c770d2");
+		Player::OnConsoleMessage(peer, "`9This server is running Zephyr version 2.0 git-54cf936");
         }
 		else if (str == "/nuke") {
 			if (world->isNuked) {
