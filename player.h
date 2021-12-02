@@ -2690,6 +2690,7 @@ inline void Player::OnNameChanged(ENetPeer* peer, int netID, string name) {
 
 inline void Player::OnSendToServer(ENetPeer* peer, int userID, int token, string ip, int port, string doorId, int lmode)
 {
+	
 	auto p = packetEnd(appendInt(appendString(appendInt(appendInt(appendInt(appendString(createPacket(), "OnSendToServer"), port), token), userID), ip + "|" + doorId), lmode));
 	ENetPacket* packet = enet_packet_create(p.data,
 		p.len,
@@ -2851,7 +2852,7 @@ inline void SendRegisterDialog(ENetPeer* peer) {
 inline void FailLogin(ENetPeer* peer, string text, bool withurl) {
 	if (withurl) {
 		const string dc = server_discord;
-		const auto url = "action|set_url\nurl|" + dc + "\nlabel|Join " + server_name + " Discord\n";
+		const auto url = "action|set_url\nurl|" + dc + "\nlabel|Join" + server_name + "Discord\n";
 		const auto data = new BYTE[5 + text.length()];
 		const auto dataurl = new BYTE[5 + url.length()];
 		BYTE zero = 0;

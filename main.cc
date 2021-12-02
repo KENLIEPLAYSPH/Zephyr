@@ -8,7 +8,7 @@ int main() {
 	DWORD prev_mode;
 	GetConsoleMode(hInput, &prev_mode);
 	SetConsoleMode(hInput, ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-	SendConsole("This server is running Zephyr version 2.0 git-8c770d2", "NOTICE");
+	SendConsole("This server is running Zephyr version 1.0 git-8c770d2", "NOTICE");
 	bool isVipDialog = false;
 	bool VipAccess = false;
 	bool RemoveVipAccess = false;
@@ -59,7 +59,7 @@ int main() {
 			SendConsole("You're using anti-proxy, disable it if you have issues with logging in", "WARN");
 		}
 		if (git == false) {
-			SendConsole("You're running an unofficial version of Zephyr", "WARN");
+			SendConsole("You're running an unofficial version of Zephyr.", "WARN");
 		}
 		threads.push_back(std::thread(http::run, http_port, server_ip, configPort));
 		if (use_wuplog) {
@@ -394,7 +394,7 @@ int main() {
 		system("PAUSE");
 		return -1;
 	}
-	SetConsoleTitle("Zephyr 2.0-8c770d2");
+	SetConsoleTitle("Zephyr 1.0-8c770d2");
 	LoadEvents(true);
 	ValentineEvent = false;
 	LunarEvent = false;
@@ -665,32 +665,6 @@ int main() {
 								case 1:
 								{
 									pData->HasLogged = true;
-									bool achieve = std::experimental::filesystem::exists("save/achievements/grow/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-									if (achieve == false)
-									{
-										int effect = 48;
-										int x = ((PlayerInfo*)(peer->data))->x;
-										int y = ((PlayerInfo*)(peer->data))->y;
-										GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-										ENetPacket* packetd = enet_packet_create(psp.data,
-											psp.len,
-											ENET_PACKET_FLAG_RELIABLE);
-										enet_peer_send(peer, 0, packetd);
-										GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement This Is My Land!"));
-										ENetPacket* packet3 = enet_packet_create(p3.data,
-											p3.len,
-											ENET_PACKET_FLAG_RELIABLE);
-										enet_peer_send(peer, 0, packet3);
-										delete p3.data;
-
-										ofstream myfile;
-										myfile.open("save/achievements/grow/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										myfile << "true";
-										myfile.close();
-									}
-
-
 									break;
 								}
 								default:
@@ -1014,10 +988,6 @@ int main() {
 						playerRespawn(world, peer, false);
 						break;
 					}
-					else if (cch == "action|respawn\n") {
-				     	continue;
-				     	break;
-					}
 					else if (cch.find("action|respawn_spike") == 0) {
 						playerRespawn(world, peer, false);
 						break;
@@ -1327,12 +1297,13 @@ int main() {
 						}
 						break;
 					}
-					else if (cch == "action|store\nlocation|gem\n" || cch == "action|store\nlocation|bottommenu\n" || cch == "action|buy\nitem|main\n" || cch == "action|storenavigate\nitem|main\nselection|gems_rain\n" || cch == "action|store\nlocation|pausemenu\n") {
+					else if (cch == "action|store\nlocation|gem\n" || cch == "action|store\nlocation|bottommenu\n" || cch == "action|buy\nitem|main\n" || cch == "action|storenavigate\nitem|main\nselection|gems_rain\n") {
 						if (!pData->haveGrowId) {
 							SendRegisterDialog(peer);
 							break;
 						}
 						try {
+							int dark_stone_price = 0, amethyst_price = 0, onyx_price = 0, smaraged_price = 0, diamond_stone = 0, pink_diamond = 0, citrine_block = 0, hellstone_price = 0;
 							ifstream infile("etc/etc/price/prdata.zep");
 							for (string line; getline(infile, line);) {
 								if (line.length() > 3 && line.at(0) != '/' && line.at(1) != '/') {
@@ -1391,6 +1362,44 @@ int main() {
 							/*Fast Item Setup*/
 							auto Price = 7500000;
 							auto ItemID = 10424;
+							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
+							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
+							auto gembux = atoi(content.c_str());
+							if (gembux >= Price) {
+								if (CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, ItemID) && CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, ItemID)) {
+									Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You don't have enough space in your inventory that. You may be carrying to many of one of the items you are trying to purchase or you don't have enough free spaces to fit them all in your backpack!"));
+									ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+									enet_peer_send(peer, 0, packet);
+									delete p.data;
+									break;
+								}
+								gembux -= Price;
+								ofstream myfile;
+								myfile.open("save/gemdb/_" + pData->rawName + ".zep");
+								myfile << gembux;
+								myfile.close();
+								Player::OnSetBux(peer, gembux, 0);
+								bool success = true;
+								SaveItemMoreTimes(ItemID, 1, peer, success, "Purchased from store");
+								Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You've purchased `o" + getItemDef(ItemID).name + " `wfor `$" + to_string(Price) + " `wGems.\nYou have `$" + to_string(gembux) + " `wGems left.\n\n`5Received: ``" + getItemDef(ItemID).name + ""));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+							else {
+								Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You can't afford `o" + getItemDef(ItemID).name + "``!  You're `$" + to_string(Price - gembux) + "`` Gems short."));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+						}
+						if (cch == "action|buy\nitem|diamond_machine\n") {
+							/*Fast Item Setup*/
+							auto Price = 10000000;
+							auto ItemID = 10450;
 							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
 							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
 							auto gembux = atoi(content.c_str());
@@ -1733,6 +1742,45 @@ int main() {
 							/*Fast Item Setup*/
 							auto Price = 200000;
 							auto ItemID = 5480;
+							auto count = 1;
+							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
+							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
+							auto gembux = atoi(content.c_str());
+							if (gembux >= Price) {
+								if (CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, ItemID) && CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, ItemID)) {
+									Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You don't have enough space in your inventory that. You may be carrying to many of one of the items you are trying to purchase or you don't have enough free spaces to fit them all in your backpack!"));
+									ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+									enet_peer_send(peer, 0, packet);
+									delete p.data;
+									break;
+								}
+								gembux -= Price;
+								ofstream myfile;
+								myfile.open("save/gemdb/_" + pData->rawName + ".zep");
+								myfile << gembux;
+								myfile.close();
+								Player::OnSetBux(peer, gembux, 0);
+								bool success = true;
+								SaveItemMoreTimes(ItemID, count, peer, success, "Purchased from store");
+								Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You've purchased " + to_string(count) + " `o" + getItemDef(ItemID).name + " `wfor `$" + to_string(Price) + " `wGems.\nYou have `$" + to_string(gembux) + " `wGems left.\n\n`5Received: ``" + to_string(count) + " " + getItemDef(ItemID).name + ""));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+							else {
+								Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You can't afford `o" + getItemDef(ItemID).name + "``!  You're `$" + to_string(Price - gembux) + "`` Gems short."));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+						}
+						if (cch == "action|buy\nitem|razorwings\n") {
+							/*Fast Item Setup*/
+							auto Price = 200000;
+							auto ItemID = 4534;
 							auto count = 1;
 							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
 							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
@@ -3393,31 +3441,6 @@ int main() {
 								myfile.close();
 								Player::OnSetBux(peer, gembux, 0);
 								bool success = true;
-								bool achieve = std::experimental::filesystem::exists("save/achievements/1kgem/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-								if (achieve == false)
-								{
-									int effect = 48;
-									int x = ((PlayerInfo*)(peer->data))->x;
-									int y = ((PlayerInfo*)(peer->data))->y;
-									GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-									ENetPacket* packetd = enet_packet_create(psp.data,
-										psp.len,
-										ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packetd);
-									GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement Big Spender!"));
-									ENetPacket* packet3 = enet_packet_create(p3.data,
-										p3.len,
-										ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(peer, 0, packet3);
-									delete p3.data;
-
-									ofstream myfile;
-									myfile.open("save/achievements/1kgem/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-									myfile << "true";
-									myfile.close();
-								}
-
 								SaveItemMoreTimes(ItemID, 10, peer, success, "Purchased from store");
 								Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
 								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You've purchased `o100 " + getItemDef(ItemID).name + " Pack `wfor `$" + to_string(Price) + " `wGems.\nYou have `$" + to_string(gembux) + " `wGems left.\n\n`5Received: ``100 " + getItemDef(ItemID).name + ""));
@@ -8233,28 +8256,6 @@ int main() {
 															pData->quest_progress = 0;
 															pData->quest_step++;
 															Player::OnTextOverlay(peer, "`9Quest step complete!!");
-															bool achileg = std::experimental::filesystem::exists("save/achievements/legen/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-															if (achileg == false)
-															{
-																int effect = 48;
-																GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-																ENetPacket* packetd = enet_packet_create(psp.data,
-																	psp.len,
-																	ENET_PACKET_FLAG_RELIABLE);
-																enet_peer_send(peer, 0, packetd);
-																GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement Legen...!"));
-																ENetPacket* packet3 = enet_packet_create(p3.data,
-																	p3.len,
-																	ENET_PACKET_FLAG_RELIABLE);
-																delete p3.data;
-
-																ofstream myfile;
-																myfile.open("save/achievements/legen/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-																myfile << "true";
-																myfile.close();
-															}
-
 															for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 																if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 																if (isHere(peer, currentPeer)) {
@@ -8473,28 +8474,6 @@ int main() {
 															pData->quest_progress = 0;
 															pData->quest_step++;
 															Player::OnTextOverlay(peer, "`9Quest step complete!!");
-															bool achiwfi = std::experimental::filesystem::exists("save/achievements/wfi/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-															if (achiwfi == false)
-															{
-																int effect = 48;
-																GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-																ENetPacket* packetd = enet_packet_create(psp.data,
-																	psp.len,
-																	ENET_PACKET_FLAG_RELIABLE);
-																enet_peer_send(peer, 0, packetd);
-																GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement Wait for It...!"));
-																ENetPacket* packet3 = enet_packet_create(p3.data,
-																	p3.len,
-																	ENET_PACKET_FLAG_RELIABLE);
-																delete p3.data;
-
-																ofstream myfile;
-																myfile.open("save/achievements/wfi/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-																myfile << "true";
-																myfile.close();
-															}
-
 															for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
 																if (currentPeer->state != ENET_PEER_STATE_CONNECTED || currentPeer->data == NULL) continue;
 																if (isHere(peer, currentPeer)) {
@@ -11343,30 +11322,6 @@ int main() {
 											if (getItemDef(pData->lasttrashitem).blockType == BlockTypes::FISH) {
 												gemtrashcount = (rand() % 4 + 1) * x;
 											}
-											bool achieve = std::experimental::filesystem::exists("save/achievements/recy/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-											if (achieve == false)
-											{
-												int effect = 48;
-												int x = ((PlayerInfo*)(peer->data))->x;
-												int y = ((PlayerInfo*)(peer->data))->y;
-												GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-												ENetPacket* packetd = enet_packet_create(psp.data,
-													psp.len,
-													ENET_PACKET_FLAG_RELIABLE);
-												enet_peer_send(peer, 0, packetd);
-												GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement Recyclist!"));
-												ENetPacket* packet3 = enet_packet_create(p3.data,
-													p3.len,
-													ENET_PACKET_FLAG_RELIABLE);
-												enet_peer_send(peer, 0, packet3);
-												delete p3.data;
-
-												ofstream myfile;
-												myfile.open("save/achievements/recy/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-												myfile << "true";
-												myfile.close();
-											}
 											Player::OnConsoleMessage(peer, "`w" + std::to_string(x) + " " + getItemDef(pData->lasttrashitem).name + " `orecycled, `w" + std::to_string(gemtrashcount) + " `ogems earned.");
 											RemoveInventoryItem(pData->lasttrashitem, x, peer, true);
 											sendSound(peer, "trash.wav");
@@ -13287,97 +13242,6 @@ int main() {
 											}
 										}
 									}
-									if (btn == "achievements")
-									{
-										//lock
-										string myland;
-										bool achi1 = std::experimental::filesystem::exists("save/achievements/lock/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (achi1 == true)
-										{
-											myland += "\nadd_achieve|This is my Land (Classic) |Earned by using a World lock!|left|26|";
-										}
-										else
-										{
-											myland += "\nadd_achieve|??? |Not achieved!|left|125|";
-										}
-										//recycle
-										string recy;
-										bool recyc = std::experimental::filesystem::exists("save/achievements/recy/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (recyc == true)
-										{
-											recy += "\nadd_achieve|Recyclist (Classic) |Earned by trashing an item!|left|17|";
-										}
-										else
-										{
-											recy += "\nadd_achieve|??? |Not achieved!|left|125|";
-										}
-										string bigs;
-										bool bigsp = std::experimental::filesystem::exists("save/achievements/1kgem/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (bigsp == true)
-										{
-											bigs += "\nadd_achieve|Big Spender (Classic) |Earned by buying a 10 World Lock Pack in the store!|left|12|";
-										}
-										else
-										{
-											bigs += "\nadd_achieve|??? |Not achieved!|left|126|";
-										}
-										//gid
-										string growwid;
-										bool gids = std::experimental::filesystem::exists("save/achievements/grow/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (gids == true)
-										{
-											growwid += "\nadd_achieve|Growtopian (Classic) |Earned by creating a GrowID!|left|54|";
-										}
-										else
-										{
-											growwid += "\nadd_achieve|??? |Not achieved!|left|124|";
-										}
-										//dary
-										string dary;
-										bool daryt = std::experimental::filesystem::exists("save/achievements/dary/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (daryt == true)
-										{
-											dary += "\nadd_achieve|DARY! (Classic) |Earned by completing a legendary quest!|left|69|";
-										}
-										else
-										{
-											dary += "\nadd_achieve|??? |Not achieved!|left|124|";
-										}
-										//legen
-										string legen;
-										bool achi4 = std::experimental::filesystem::exists("save/achievements/legen/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (achi4 == true)
-										{
-											dary += "\nadd_achieve|Legen... (Classic) |Earned by completing one step of a Legendary Quest.|left|67|";
-										}
-										else
-										{
-											dary += "\nadd_achieve|??? |Not achieved!|left|124|";
-										}
-										//wfi
-										string waitforit;
-										bool wfi = std::experimental::filesystem::exists("save/achievements/wfi/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (wfi == true)
-										{
-											waitforit += "\nadd_achieve|Wait For It... (Classic) |Earned by completing 10th Legendary Quest step.|left|68|";
-										}
-										else
-										{
-											waitforit += "\nadd_achieve|??? |Not achieved!|left|125|";
-										}
-										string devel;
-										bool devels = std::experimental::filesystem::exists(".vs/dev/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-										if (devels == true)
-										{
-											devel += "\nadd_achieve|Developer (Classic) |Earned by being a Zephyr developer!|left|2|";
-										}
-										else
-										{
-											devel += "\nadd_achieve|??? |Not achieved!|left|124|";
-										}
-										Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|small|`w" + static_cast<PlayerInfo*>(peer->data)->rawName + "`o's Achievements|left|982|\nadd_spacer|small|" + growwid + "" + myland + "" + recy + "" + bigs + "" + legen + "" + waitforit + "" + dary + "" + devel + "|\nadd_spacer|small|\nadd_button|back|`wBack|noflags|0|0|\nend_dialog|gayno||\nadd_quick_exit");
-									}
-
 									if (isCaveDialog) {
 										if (infoDat.at(0) == "cavename") {
 											string upsd = infoDat.at(1);
@@ -13670,31 +13534,6 @@ int main() {
 												pData->haveGrowId = true;
 												pData->HasLogged = true;
 												pData->effect = 8421376;
-												bool achieve = std::experimental::filesystem::exists("save/achievements/grow/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-												if (achieve == false)
-												{
-													int effect = 48;
-													int x = ((PlayerInfo*)(peer->data))->x;
-													int y = ((PlayerInfo*)(peer->data))->y;
-													GamePacket psp = packetEnd(appendFloat(appendIntx(appendString(createPacket(), "OnParticleEffect"), effect), x, y));
-
-													ENetPacket* packetd = enet_packet_create(psp.data,
-														psp.len,
-														ENET_PACKET_FLAG_RELIABLE);
-													enet_peer_send(peer, 0, packetd);
-													GamePacket p3 = packetEnd(appendString(appendIntx(appendString(createPacket(), "OnTalkBubble"), ((PlayerInfo*)(peer->data))->netID), ((PlayerInfo*)(peer->data))->displayName + " `5earned the achievement Growtopian!"));
-													ENetPacket* packet3 = enet_packet_create(p3.data,
-														p3.len,
-														ENET_PACKET_FLAG_RELIABLE);
-													enet_peer_send(peer, 0, packet3);
-													delete p3.data;
-
-													ofstream myfile;
-													myfile.open("save/achievements/grow/" + ((PlayerInfo*)(peer->data))->rawName + ".zep");
-													myfile << "true";
-													myfile.close();
-												}
-
 												Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wGrowID GET!``|left|1400|\nadd_textbox|A `wGrowID`` with the log on of `w" + pData->displayName + "`` created.  Write it and your password down as they will be required to log on from now on!|left|\nend_dialog|growid_apply|Continue||");
 												Player::PlayAudio(peer, "audio/piano_nice.wav", 150);
 												ofstream myfile;
@@ -14799,7 +14638,6 @@ int main() {
 								Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`wBlue Gem Lock``|left|7188|\nadd_textbox|`oExellent! I'm happy to sell you a Blue Gem Lock in exchange for 100 Diamond Lock..|\nadd_smalltext|`6You have " + to_string(bgl) + " Diamond Lock.|\nadd_button|bglbuy|`oThank you!|\nadd_button|bglback|`oBack|\nend_dialog||Hang Up|");
 							}
 						}
-
 						if (btn == "dquestS")
 						{
 							int dq1 = 0;
@@ -15006,7 +14844,7 @@ int main() {
 							if (((PlayerInfo*)(peer->data))->billboard != false) ShowBill = "\nadd_checkbox|ShowBill|`oShow Billboard|1|";
 							if (((PlayerInfo*)(peer->data))->BillPeerWl != false) PeerWl = "\nadd_checkbox|BillPeerWl|`oItems per World Lock|1|";
 							if (((PlayerInfo*)(peer->data))->BillWlPeer != false) WlPeer = "\nadd_checkbox|BillWlPeer|`oWorld Locks per item|1|";
-							Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`wTrade Billboard|left|8282|\nadd_spacer|small|" + HasTrue + "|\nadd_item_picker|EditBillItem|`wSelect Billboard Item|Choose an item to put on your Billboard!|\nadd_spacer|small|" + ShowBill + "|\nadd_text_input|BillboardPrice|`oPrice of them|" + to_string(((PlayerInfo*)(peer->data))->BillPrice) + "|5|" + WlPeer + "|" + PeerWl + "|\nend_dialog|BillboardUpdate|Close|Update|\nadd_quick_exit");
+							Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`wTrade Billboard|left|8282|\nadd_spacer|small|" + HasTrue + "|\nadd_item_picker|EditBillItem|`wSelect Billboard Item|Choose an item to put on your Billboard!|\nadd_spacer|small|" + ShowBill + "|\nadd_text_input|BillboardPrice|`oPrice of them|" + to_string(((PlayerInfo*)(peer->data))->BillPrice) + "|5|" + WlPeer + "|" + PeerWl + "|\nend_dialog|BillboardUpdate|Close|Update|");
 						}
 						if (btn == "trade") {
 							if (static_cast<PlayerInfo*>(peer->data)->isCursed == true) {
@@ -15089,8 +14927,7 @@ int main() {
 							Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label_with_icon|big|`wRift Cape``|left|10424|\nadd_spacer|small|\nadd_text_input|text_input_time_cycle|Time Dilation Cycle Time:|30|5|\nadd_checkbox|checkbox_time_cycle|Time Dilation On / Off|0\nadd_button|button_manual|Instructions|noflags|0|0|\nadd_spacer|small|\nadd_label|big|Cape Style 1|left\nadd_spacer|small|\nadd_label|small|Cape Color:|left\nadd_text_input|text_input_cape_color0|Cape - R,G,B:|" + to_string(pData->rift_cape_r) + "," + to_string(pData->rift_cape_g) + "," + to_string(pData->rift_cape_b) + "|11|\nadd_spacer|small|\nadd_checkbox|checkbox_cape_collar0|Cape Collar On / Off|1\nadd_label|small|Cape Collar Color:|left\nadd_text_input|text_input_collar_color0|Collar - R,G,B:|" + to_string(pData->rift_collar_r) + "," + to_string(pData->rift_collar_g) + "," + to_string(pData->rift_collar_b) + "|11|\nadd_spacer|small|\nadd_checkbox|checkbox_closed_cape0|Closed Cape|0\nadd_checkbox|checkbox_open_on_move0|Open Cape on Movement|1\nadd_checkbox|checkbox_aura0|Aura On / Off|" + aura_on + "\nadd_checkbox|checkbox_aura_1st0|      Portal Aura|" + portal_aura1 + "\nadd_checkbox|checkbox_aura_2nd0|      Starfield Aura|" + starfield_aura1 + "\nadd_checkbox|checkbox_aura_3rd0|      Electrical Aura|" + electrical_aura1 + "\nadd_label|big|Cape Style 2|left\nadd_spacer|small|\nadd_label|small|Cape Color:|left\nadd_text_input|text_input_cape_color1|Cape - R,G,B:|137,30,43|11|\nadd_spacer|small|\nadd_checkbox|checkbox_cape_collar1|Cape Collar On / Off|1\nadd_label|small|Cape Collar Color:|left\nadd_text_input|text_input_collar_color1|Collar - R,G,B:|34,35,63|11|\nadd_spacer|small|\nadd_checkbox|checkbox_closed_cape1|Closed Cape|1\nadd_checkbox|checkbox_open_on_move1|Open Cape on Movement|1\nadd_checkbox|checkbox_aura1|Aura On / Off|1\nadd_checkbox|checkbox_aura_1st1|      Portal Aura|" + portal_aura2 + "\nadd_checkbox|checkbox_aura_2nd1|      Starfield Aura|" + starfield_aura2 + "\nadd_checkbox|checkbox_aura_3rd1|      Electrical Aura|" + electrical_aura2 + "\nadd_spacer|small|\nadd_button|restore_default|Restore to Default|noflags|0|0|\nend_dialog|dialog_rift_cape|Cancel|Update|\nadd_quick_exit|");
 						}
 						if (btn == "goals") {
-							Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label|Coming Soon!|\nend_dialog|Back||\nadd_quick_exit");
-					/*		int firefighterxp = 1500;
+							int firefighterxp = 1500;
 							if (pData->firefighterlevel > 0) firefighterxp = firefighterxp * pData->firefighterlevel;
 							if (pData->firefighterlevel == 0) firefighterxp = 750;
 							int providerxp = 1300;
@@ -15102,7 +14939,263 @@ int main() {
 							int fishermanxp = 1600;
 							if (pData->fishermanlevel > 0) fishermanxp = fishermanxp * pData->fishermanlevel;
 							if (pData->fishermanlevel == 0) fishermanxp = 900;
-							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wRole Stats``|left|982|\nadd_spacer|small|\nadd_textbox|`9What prizes and powers have you unlocked in your Roles and what's left to discover? Find out here!``|left|\nadd_spacer|small|\nadd_player_info|Firefighter|" + to_string(pData->firefighterlevel) + "|" + to_string(pData->firefighterxp) + "|" + to_string(firefighterxp) + "|\nadd_spacer|small|\nadd_button|viewFirefighter|`0View Firefighter Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Provider|" + to_string(pData->providerlevel) + "|" + to_string(pData->providerxp) + "|" + to_string(providerxp) + "|\nadd_spacer|small|\nadd_button|viewProvider|`0View Provider Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Geiger Hunter|" + to_string(pData->geigerlevel) + "|" + to_string(pData->geigerxp) + "|" + to_string(geigerxp) + "|\nadd_spacer|small|\nadd_button|viewGeiger|`0View Geiger Hunter Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Fisherman|" + to_string(pData->fishermanlevel) + "|" + to_string(pData->fishermanxp) + "|" + to_string(fishermanxp) + "|\nadd_spacer|small|\nadd_button|viewFisherman|`0View Fisherman Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|mainwrenchpage|||\nadd_quick_exit|"); */
+							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wRole Stats``|left|982|\nadd_spacer|small|\nadd_textbox|`9What prizes and powers have you unlocked in your Roles and what's left to discover? Find out here!``|left|\nadd_spacer|small|\nadd_player_info|Firefighter|" + to_string(pData->firefighterlevel) + "|" + to_string(pData->firefighterxp) + "|" + to_string(firefighterxp) + "|\nadd_spacer|small|\nadd_button|viewFirefighter|`0View Firefighter Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Provider|" + to_string(pData->providerlevel) + "|" + to_string(pData->providerxp) + "|" + to_string(providerxp) + "|\nadd_spacer|small|\nadd_button|viewProvider|`0View Provider Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Geiger Hunter|" + to_string(pData->geigerlevel) + "|" + to_string(pData->geigerxp) + "|" + to_string(geigerxp) + "|\nadd_spacer|small|\nadd_button|viewGeiger|`0View Geiger Hunter Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_player_info|Fisherman|" + to_string(pData->fishermanlevel) + "|" + to_string(pData->fishermanxp) + "|" + to_string(fishermanxp) + "|\nadd_spacer|small|\nadd_button|viewFisherman|`0View Fisherman Rewards``|noflags|0|0|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|mainwrenchpage|||\nadd_quick_exit|");
+						}
+						if (btn == "viewFisherman") {
+							string level1 = "", level2 = "", level3 = "", level4 = "", level5 = "", level6 = "", level7 = "", level8 = "", level9 = "", level10 = "";
+							if (pData->fishermanlevel >= 1) {
+								level1 = "`oUnlocked: Licorice Rod``";
+							}
+							else {
+								level1 = "`a(Locked) Licorice Rod``";
+							}
+							if (pData->fishermanlevel >= 2) {
+								level2 = "`oUnlocked: Quantum: 1% chances of getting items as a bonus drop from from fishing``";
+							}
+							else {
+								level2 = "`a(Locked) Quantum: 1% chances of getting items as a bonus drop from from fishing``";
+							}
+							if (pData->fishermanlevel >= 3) {
+								level3 = "`oUnlocked: Adds a chance to get Golden Block as a bonus drop from fishing``";
+							}
+							else {
+								level3 = "`a(Locked) Adds a chance to get Golden Block as a bonus drop from fishing``";
+							}
+							if (pData->fishermanlevel >= 4) {
+								level4 = "`oUnlocked: Floating Leaf``|left|3074|\nadd_label_with_icon|sml|`oUnlocked: Quantum (level 2) - Chance increase to 2%``";
+							}
+							else {
+								level4 = "`a(Locked) Floating Leaf``|left|3074|\nadd_label_with_icon|sml|`a(Locked) Quantum (level 2) - Chance increase to 2%``";
+							}
+							if (pData->fishermanlevel >= 5) {
+								level5 = "`oUnlocked: Magical Rainbow Fishing Rod``";
+							}
+							else {
+								level5 = "`a(Locked) Magical Rainbow Fishing Rod``";
+							}
+							if (pData->fishermanlevel >= 6) {
+								level6 = "`oUnlocked: Quantum (level 3) - Chance increase to 3%``";
+							}
+							else {
+								level6 = "`a(Locked) Quantum (level 3) - Chance increase to 3%``";
+							}
+							if (pData->fishermanlevel >= 7) {
+								level7 = "`oUnlocked: Bubble Wings``";
+							}
+							else {
+								level7 = "`a(Locked) Bubble Wings``";
+							}
+							if (pData->fishermanlevel >= 8) {
+								level8 = "`oUnlocked: Quantum (level 4) - Chance increase to 4%``|left|7002|\nadd_label_with_icon|sml|`oUnlocked: Cursed Fishing Rod``|left|3100|";
+							}
+							else {
+								level8 = "`a(Locked) Quantum (level 4) - Chance increase to 4%``|left|7002|\nadd_label_with_icon|sml|`a(Locked) Cursed Fishing Rod``|left|3100|";
+							}
+							if (pData->fishermanlevel >= 9) {
+								level9 = "`oUnlocked: Ancestral Tesseract of Dimensions``";
+							}
+							else {
+								level9 = "`a(Locked) Ancestral Tesseract of Dimensions``";
+							}
+							if (pData->fishermanlevel >= 10) {
+								level10 = "`oUnlocked: Adds a chance to get double gems from fishing``|left|112|\nadd_label_with_icon|sml|`oUnlocked: Quantum (level 5) - Chance increase to 5%``|left|7002|\nadd_label_with_icon|sml|`oUnlocked: Goldenrod``";
+							}
+							else {
+								level10 = "`a(Locked) Adds a chance to get double gems from fishing``|left|112|\nadd_label_with_icon|sml|`a(Locked) Quantum (level 5) - Chance increase to 5%``|left|7002|\nadd_label_with_icon|sml|`a(Locked) Goldenrod``";
+							}
+							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wFisherman Rewards``|left|10262|\nadd_spacer|small|\nadd_textbox|`9Here are all the Fisherman rewards that you have earned so far!``|left|\nadd_spacer|small|\nadd_spacer|small|\nadd_smalltext|Level 1 rewards:|left|\nadd_label_with_icon|sml|" + level1 + "|left|3010|\nadd_spacer|small|\nadd_smalltext|Level 2 rewards:|left|\nadd_label_with_icon|sml|" + level2 + "|left|7002|\nadd_spacer|small|\nadd_smalltext|Level 3 rewards:|left|\nadd_label_with_icon|sml|" + level3 + "|left|260|\nadd_spacer|small|\nadd_smalltext|Level 4 rewards:|left|\nadd_label_with_icon|sml|" + level4 + "|left|7002|\nadd_spacer|small|\nadd_smalltext|Level 5 rewards:|left|\nadd_label_with_icon|sml|" + level5 + "|left|5740|\nadd_spacer|small|\nadd_smalltext|Level 6 rewards:|left|\nadd_label_with_icon|sml|" + level6 + "|left|7002|\nadd_spacer|small|\nadd_smalltext|Level 7 rewards:|left|\nadd_label_with_icon|sml|" + level7 + "|left|1550|\nadd_spacer|small|\nadd_smalltext|Level 8 rewards:|left|\nadd_label_with_icon|sml|" + level8 + "|left|10424|\nadd_spacer|small|\nadd_smalltext|Level 9 rewards:|left|\nadd_label_with_icon|sml|" + level9 + "|left|5080|\nadd_spacer|small|\nadd_smalltext|Level 10 rewards:|left|\nadd_label_with_icon|sml|" + level10 + "|left|3040|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|roleRewardsPage|||\nadd_quick_exit|");
+						}
+						if (btn == "viewGeiger") {
+							string level1 = "", level2 = "", level3 = "", level4 = "", level5 = "", level6 = "", level7 = "", level8 = "", level9 = "", level10 = "";
+							if (pData->geigerlevel >= 1) {
+								level1 = "`oUnlocked: Uranium Necklace``";
+							}
+							else {
+								level1 = "`a(Locked) Uranium Necklace``";
+							}
+							if (pData->geigerlevel >= 2) {
+								level2 = "`oUnlocked: Infusion: 1% chances of not gaining irradiated mod``";
+							}
+							else {
+								level2 = "`a(Locked) Infusion: 1% chances of not gaining irradiated mod``";
+							}
+							if (pData->geigerlevel >= 3) {
+								level3 = "`oUnlocked: Adds a chance to get Uranium Block as a bonus drop from geiger hunting``";
+							}
+							else {
+								level3 = "`a(Locked) Adds a chance to get Uranium Block as a bonus drop from geiger hunting``";
+							}
+							if (pData->geigerlevel >= 4) {
+								level4 = "`oUnlocked: Weil Magic: 1% chances of gaining extra bonus drop from geiger hunting``|left|3764|\nadd_label_with_icon|sml|`oUnlocked: Infusion (level 2) - Chance increase to 2%``";
+							}
+							else {
+								level4 = "`a(Locked) Weil Magic: 1% chances of gaining extra bonus drop from geiger hunting``|left|3764|\nadd_label_with_icon|sml|`a(Locked) Infusion (level 2) - Chance increase to 2%``";
+							}
+							if (pData->geigerlevel >= 5) {
+								level5 = "`oUnlocked: Adds a chance to get Electrical Power Cube as a bonus drop from geiger hunting``";
+							}
+							else {
+								level5 = "`a(Locked) Adds a chance to get Electrical Power Cube as a bonus drop from geiger hunting``";
+							}
+							if (pData->geigerlevel >= 6) {
+								level6 = "`oUnlocked: Infusion (level 3) - Chance increase to 3%``";
+							}
+							else {
+								level6 = "`a(Locked) Infusion (level 3) - Chance increase to 3%``";
+							}
+							if (pData->geigerlevel >= 7) {
+								level7 = "`oUnlocked: Unlocked: Weil Magic (level 2) - Chance increase to 2%``";
+							}
+							else {
+								level7 = "`a(Locked) Unlocked: Weil Magic (level 2) - Chance increase to 2%``";
+							}
+							if (pData->geigerlevel >= 8) {
+								level8 = "`oUnlocked: Infusion (level 4) - Chance increase to 4%``|left|9386|\nadd_label_with_icon|sml|`oUnlocked: Rift Cape``|left|10424|";
+							}
+							else {
+								level8 = "`a(Locked) Infusion (level 4) - Chance increase to 4%``|left|9386|\nadd_label_with_icon|sml|`a(Locked) Rift Cape``|left|10424|";
+							}
+							if (pData->geigerlevel >= 9) {
+								level9 = "`oUnlocked: Ancestral Lens of Riches``";
+							}
+							else {
+								level9 = "`a(Locked) Ancestral Lens of Riches``";
+							}
+							if (pData->geigerlevel >= 10) {
+								level10 = "`oUnlocked: Adds a chance to get Growtoken as a bonus drop from geiger hunting``|left|1486|\nadd_label_with_icon|sml|`oUnlocked: Infusion (level 5) - Chance increase to 5%``|left|9386|\nadd_label_with_icon|sml|`oUnlocked: Unique Prize``";
+							}
+							else {
+								level10 = "`a(Locked) Adds a chance to get Growtoken as a bonus drop from geiger hunting``|left|1486|\nadd_label_with_icon|sml|`a(Locked) Infusion (level 5) - Chance increase to 5%``|left|9386|\nadd_label_with_icon|sml|`a(Locked) Unique Prize``";
+							}
+							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wGeiger Hunter Rewards``|left|2204|\nadd_spacer|small|\nadd_textbox|`9Here are all the Geiger Hunter rewards that you have earned so far!``|left|\nadd_spacer|small|\nadd_spacer|small|\nadd_smalltext|Level 1 rewards:|left|\nadd_label_with_icon|sml|" + level1 + "|left|4656|\nadd_spacer|small|\nadd_smalltext|Level 2 rewards:|left|\nadd_label_with_icon|sml|" + level2 + "|left|9386|\nadd_spacer|small|\nadd_smalltext|Level 3 rewards:|left|\nadd_label_with_icon|sml|" + level3 + "|left|4658|\nadd_spacer|small|\nadd_smalltext|Level 4 rewards:|left|\nadd_label_with_icon|sml|" + level4 + "|left|9386|\nadd_spacer|small|\nadd_smalltext|Level 5 rewards:|left|\nadd_label_with_icon|sml|" + level5 + "|left|6976|\nadd_spacer|small|\nadd_smalltext|Level 6 rewards:|left|\nadd_label_with_icon|sml|" + level6 + "|left|9386|\nadd_spacer|small|\nadd_smalltext|Level 7 rewards:|left|\nadd_label_with_icon|sml|" + level7 + "|left|3764|\nadd_spacer|small|\nadd_smalltext|Level 8 rewards:|left|\nadd_label_with_icon|sml|" + level8 + "|left|10424|\nadd_spacer|small|\nadd_smalltext|Level 9 rewards:|left|\nadd_label_with_icon|sml|" + level9 + "|left|5084|\nadd_spacer|small|\nadd_smalltext|Level 10 rewards:|left|\nadd_label_with_icon|sml|" + level10 + "|left|2478|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|roleRewardsPage|||\nadd_quick_exit|");
+						}
+						if (btn == "viewProvider") {
+							string level1 = "", level2 = "", level3 = "", level4 = "", level5 = "", level6 = "", level7 = "", level8 = "", level9 = "", level10 = "";
+							if (pData->providerlevel >= 1) {
+								level1 = "`oUnlocked: Awkward Friendly Unicorn``";
+							}
+							else {
+								level1 = "`a(Locked) Awkward Friendly Unicorn``";
+							}
+							if (pData->providerlevel >= 2) {
+								level2 = "`oUnlocked: Weed Magic: 1% chances of providers dropping double items``";
+							}
+							else {
+								level2 = "`a(Locked) Weed Magic: 1% chances of providers dropping double items``";
+							}
+							if (pData->providerlevel >= 3) {
+								level3 = "`oUnlocked: 3 Growtokens``";
+							}
+							else {
+								level3 = "`a(Locked) 3 Growtokens``";
+							}
+							if (pData->providerlevel >= 4) {
+								level4 = "`oUnlocked: Adds a chance to get Smaraged Block as a bonus drop from harvesting providers``|left|5136|\nadd_label_with_icon|sml|`oUnlocked: Weed Magic (level 2) - Chance increase to 2%``";
+							}
+							else {
+								level4 = "`a(Locked) Adds a chance to get Smaraged Block as a bonus drop from harvesting providers``|left|5136|\nadd_label_with_icon|sml|`a(Locked) Weed Magic (level 2) - Chance increase to 2%``";
+							}
+							if (pData->providerlevel >= 5) {
+								level5 = "`oUnlocked: Ancestral Seed of Life``";
+							}
+							else {
+								level5 = "`a(Locked) Ancestral Seed of Life``";
+							}
+							if (pData->providerlevel >= 6) {
+								level6 = "`oUnlocked: Weed Magic (level 3) - Chance increase to 3%``";
+							}
+							else {
+								level6 = "`a(Locked) Weed Magic (level 3) - Chance increase to 3%``";
+							}
+							if (pData->providerlevel >= 7) {
+								level7 = "`oUnlocked: Adds a chance to get Emerald Shard as a bonus drop from harvesting providers``";
+							}
+							else {
+								level7 = "`a(Locked) Adds a chance to get Emerald Shard as a bonus drop from harvesting providers``";
+							}
+							if (pData->providerlevel >= 8) {
+								level8 = "`oUnlocked: 30-Day Premium Subscription Token``|left|6860|\nadd_label_with_icon|sml|`oUnlocked: Weed Magic (level 4) - Chance increase to 4%``";
+							}
+							else {
+								level8 = "`a(Locked) 30-Day Premium Subscription Token``|left|6860|\nadd_label_with_icon|sml|`a(Locked) Weed Magic (level 4) - Chance increase to 4%``";
+							}
+							if (pData->providerlevel >= 9) {
+								level9 = "`oUnlocked: 10 Growtokens``";
+							}
+							else {
+								level9 = "`a(Locked) 10 Growtokens``";
+							}
+							if (pData->providerlevel >= 10) {
+								level10 = "`oUnlocked: Adds a chance for providers to drop themself without losing one``|left|10072|\nadd_label_with_icon|sml|`oUnlocked: Weed Magic (level 5) - Chance increase to 5%``|left|954|\nadd_label_with_icon|sml|`oUnlocked: Unique Prize``";
+							}
+							else {
+								level10 = "`a(Locked) Adds a chance for providers to drop themself without losing one``|left|10072|\nadd_label_with_icon|sml|`a(Locked) Weed Magic (level 5) - Chance increase to 5%``|left|954|\nadd_label_with_icon|sml|`a(Locked) Unique Prize``";
+							}
+							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wProvider Rewards``|left|872|\nadd_spacer|small|\nadd_textbox|`9Here are all the Provider rewards that you have earned so far!``|left|\nadd_spacer|small|\nadd_spacer|small|\nadd_smalltext|Level 1 rewards:|left|\nadd_label_with_icon|sml|" + level1 + "|left|1636|\nadd_spacer|small|\nadd_smalltext|Level 2 rewards:|left|\nadd_label_with_icon|sml|" + level2 + "|left|954|\nadd_spacer|small|\nadd_smalltext|Level 3 rewards:|left|\nadd_label_with_icon|sml|" + level3 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 4 rewards:|left|\nadd_label_with_icon|sml|" + level4 + "|left|954|\nadd_spacer|small|\nadd_smalltext|Level 5 rewards:|left|\nadd_label_with_icon|sml|" + level5 + "|left|5082|\nadd_spacer|small|\nadd_smalltext|Level 6 rewards:|left|\nadd_label_with_icon|sml|" + level6 + "|left|954|\nadd_spacer|small|\nadd_smalltext|Level 7 rewards:|left|\nadd_label_with_icon|sml|" + level7 + "|left|2410|\nadd_spacer|small|\nadd_smalltext|Level 8 rewards:|left|\nadd_label_with_icon|sml|" + level8 + "|left|954|\nadd_spacer|small|\nadd_smalltext|Level 9 rewards:|left|\nadd_label_with_icon|sml|" + level9 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 10 rewards:|left|\nadd_label_with_icon|sml|" + level10 + "|left|2478|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|roleRewardsPage|||\nadd_quick_exit|");
+						}
+						if (btn == "viewFirefighter") {
+							string level1 = "", level2 = "", level3 = "", level4 = "", level5 = "", level6 = "", level7 = "", level8 = "", level9 = "", level10 = "";
+							if (pData->firefighterlevel >= 1) {
+								level1 = "`oUnlocked: Growtoken``";
+							}
+							else {
+								level1 = "`a(Locked) Growtoken``";
+							}
+							if (pData->firefighterlevel >= 2) {
+								level2 = "`oUnlocked: Fire King: 1% chances of receiving bonus gems when putting out fire``";
+							}
+							else {
+								level2 = "`a(Locked) Fire King: 1% chances of receiving bonus gems when putting out fire``";
+							}
+							if (pData->firefighterlevel >= 3) {
+								level3 = "`oUnlocked: Adds a chance to get Amethyst Block as a bonus drop from putting out fire``";
+							}
+							else {
+								level3 = "`a(Locked) Adds a chance to get Amethyst Block as a bonus drop from putting out fire``";
+							}
+							if (pData->firefighterlevel >= 4) {
+								level4 = "`oUnlocked: Adds a chance to get Fallen Pillar as a bonus drop from putting out fire``|left|7156|\nadd_label_with_icon|sml|`oUnlocked: Fire King (level 2) - Chance increase to 2%``";
+							}
+							else {
+								level4 = "`a(Locked) Adds a chance to get Fallen Pillar as a bonus drop from putting out fire``|left|7156|\nadd_label_with_icon|sml|`a(Locked) Fire King (level 2) - Chance increase to 2%``";
+							}
+							if (pData->firefighterlevel >= 5) {
+								level5 = "`oUnlocked: Burning Hands``";
+							}
+							else {
+								level5 = "`a(Locked) Burning Hands``";
+							}
+							if (pData->firefighterlevel >= 6) {
+								level6 = "`oUnlocked: Fire King (level 3) - Chance increase to 3%``";
+							}
+							else {
+								level6 = "`a(Locked) Fire King (level 3) - Chance increase to 3%``";
+							}
+							if (pData->firefighterlevel >= 7) {
+								level7 = "`oUnlocked: Adds a chance to get Diamond Stone as a bonus drop from putting out fire``";
+							}
+							else {
+								level7 = "`a(Locked) Adds a chance to get Diamond Stone as a bonus drop from putting out fire``";
+							}
+							if (pData->firefighterlevel >= 8) {
+								level8 = "`oUnlocked: 30-Day Premium Subscription Token``|left|6860|\nadd_label_with_icon|sml|`oUnlocked: Fire King (level 4) - Chance increase to 4%``";
+							}
+							else {
+								level8 = "`a(Locked) 30-Day Premium Subscription Token``|left|6860|\nadd_label_with_icon|sml|`a(Locked) Fire King (level 4) - Chance increase to 4%``";
+							}
+							if (pData->firefighterlevel >= 9) {
+								level9 = "`oUnlocked: 10 Growtokens``";
+							}
+							else {
+								level9 = "`a(Locked) 10 Growtokens``";
+							}
+							if (pData->firefighterlevel >= 10) {
+								level10 = "`oUnlocked: Adds a chance to get foreground block that was on fire as a bonus drop``|left|10072|\nadd_label_with_icon|sml|`oUnlocked: Fire King (level 5) - Chance increase to 5%``|left|3046|\nadd_label_with_icon|sml|`oUnlocked: Unique Prize``";
+							}
+							else {
+								level10 = "`a(Locked) Adds a chance to get foreground block that was on fire as a bonus drop``|left|10072|\nadd_label_with_icon|sml|`a(Locked) Fire King (level 5) - Chance increase to 5%``|left|3046|\nadd_label_with_icon|sml|`a(Locked) Unique Prize``";
+							}
+							Player::OnDialogRequest(peer, "add_label_with_icon|big|`wFirefighter Rewards``|left|3046|\nadd_spacer|small|\nadd_textbox|`9Here are all the Firefighter rewards that you have earned so far!``|left|\nadd_spacer|small|\nadd_spacer|small|\nadd_smalltext|Level 1 rewards:|left|\nadd_label_with_icon|sml|" + level1 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 2 rewards:|left|\nadd_label_with_icon|sml|" + level2 + "|left|3046|\nadd_spacer|small|\nadd_smalltext|Level 3 rewards:|left|\nadd_label_with_icon|sml|" + level3 + "|left|4762|\nadd_spacer|small|\nadd_smalltext|Level 4 rewards:|left|\nadd_label_with_icon|sml|" + level4 + "|left|3046|\nadd_spacer|small|\nadd_smalltext|Level 5 rewards:|left|\nadd_label_with_icon|sml|" + level5 + "|left|4996|\nadd_spacer|small|\nadd_smalltext|Level 6 rewards:|left|\nadd_label_with_icon|sml|" + level6 + "|left|3046|\nadd_spacer|small|\nadd_smalltext|Level 7 rewards:|left|\nadd_label_with_icon|sml|" + level7 + "|left|5138|\nadd_spacer|small|\nadd_smalltext|Level 8 rewards:|left|\nadd_label_with_icon|sml|" + level8 + "|left|3046|\nadd_spacer|small|\nadd_smalltext|Level 9 rewards:|left|\nadd_label_with_icon|sml|" + level9 + "|left|1486|\nadd_spacer|small|\nadd_smalltext|Level 10 rewards:|left|\nadd_label_with_icon|sml|" + level10 + "|left|2478|\nadd_spacer|small|\nadd_button|back|Back|noflags|0|0|\nend_dialog|roleRewardsPage|||\nadd_quick_exit|");
 						}
 						if (btn == "DigiVend") {
 							Player::OnDialogRequest(peer, "set_default_color|\nadd_label_with_icon|big|`wVending Machine|left|2978|\nadd_spacer|small|\nadd_textbox|`$Are you sure you want to upgrade to a DigiVend Machine for `44.000 Gems`$?|left|\nadd_spacer|small|\nend_dialog|updigi|Close|Upgrade|");
@@ -17025,7 +17118,7 @@ int main() {
 						}
 						if (btn == "change_password")
 						{
-							Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_label_with_icon|big|`oChange your password``|left|32|\nadd_textbox|`oEnter your old password, then enter a new password and confirm your new password. Your GrowID will be updated automatically, please remember `$not to share `oyour password, if you do so there is no way to recover lost data`o!|\nadd_spacer|small|\nadd_text_input|current_password|`$Current Password``||32|\nadd_text_input|new_password|`$New Password``||32|\nadd_text_input|confirm_new_password|`$Confirm New Password``||32|\nend_dialog|password_change|Cancel|Update|\nadd_quick_exit");
+							Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_label_with_icon|big|`oChange your password``|left|32|\nadd_textbox|`oEnter your old password, then enter a new password and confirm your new password. Your GrowID will be updated automatically, please remember `$not to share `oyour password, if you do so there is no way to recover lost data`o!|\nadd_spacer|small|\nadd_text_input|current_password|`$Current Password``||32|\nadd_text_input|new_password|`$New Password``||32|\nadd_text_input|confirm_new_password|`$Confirm New Password``||32|\nend_dialog|password_change|Cancel|Update|");
 						}
 						if (btn == "manage_title") {
 							string titlecreatedialog = "", bluenametitle = "", titles = "No Titles Obtained", ltitle = "";
@@ -17048,7 +17141,7 @@ int main() {
 							} if (pData->Subscriber) {
 								titlecreatedialog = "\nadd_button|edit_title|`oEdit Title``|";
 							}
-							Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label|big|" + titles + "|right|\nadd_spacer|small|" + bluenametitle + ltitle + titlecreatedialog + "\nadd_button||OK|noflags|0|0|\nend_dialog|title_edit||\nadd_quick_exit");
+							Player::OnDialogRequest(peer, "set_default_color|`o\nadd_label|big|" + titles + "|right|\nadd_spacer|small|" + bluenametitle + ltitle + titlecreatedialog + "\nadd_button||OK|noflags|0|0|\nend_dialog|title_edit||");
 						}
 						if (btn == "notebook_edit")
 						{
@@ -18021,13 +18114,11 @@ int main() {
 						}
 						break;
 					}
-					else if (cch != "action|getDRAnimations") {
+					else {
 						cch.erase(std::remove(cch.begin(), cch.end(), '\n'), cch.end());
 						if (find(unknown_packets.begin(), unknown_packets.end(), cch) == unknown_packets.end()) {
-							SendConsole("Packet response not found: " + cch, "ERROR");
-							// don't worry this isn't a bad thing
+							SendConsole("Error processing packet: " + cch, "ERROR");
 							unknown_packets.push_back(cch);
-							break;
 						}
 						break;
 					}
@@ -18051,7 +18142,7 @@ int main() {
 						}
 						else if (cch.find("action|world_button\nname|_16") == 0) {
 							try {
-								string worldOffers = "\nadd_button|Showing: `wYour Worlds``|_catselect_|0.6|3529161471|\nadd_floater|GROWGANOTH|0|0.5|3447414143|\n";
+								string worldOffers = "\nadd_button|Showing: `wYour Worlds``|_catselect_|0.6|3529161471|\n";
 								std::sort(pData->worldsowned.begin(), pData->worldsowned.end());
 								auto it = std::unique(pData->worldsowned.begin(), pData->worldsowned.end());
 								pData->worldsowned.erase(it, pData->worldsowned.end());
