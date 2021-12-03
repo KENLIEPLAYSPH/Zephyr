@@ -3,6 +3,7 @@
 # Zephyr
 An open-source Growtopia server software project based on GTOS ![Zephyr](https://discordapp.com/api/guilds/911158088717971478/widget.png?style=shield)
 <br> This software is licensed under **Mozilla Public License Version 2.0**
+
 #### To-Do's
 <pre>
 Achievements (added some)
