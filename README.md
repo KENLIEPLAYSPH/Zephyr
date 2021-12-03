@@ -1,4 +1,4 @@
-<img height="170" alt="image" src="https://cdn.discordapp.com/attachments/491980024229134346/915503634542903356/Baslksz1_20211201102342.png" align="left">
+<img height="160" alt="image" src="https://cdn.discordapp.com/attachments/491980024229134346/915503634542903356/Baslksz1_20211201102342.png" align="left">
 
 # Zephyr
 An open-source Growtopia server software project based on GTOS ![Zephyr](https://discordapp.com/api/guilds/911158088717971478/widget.png?style=shield)
