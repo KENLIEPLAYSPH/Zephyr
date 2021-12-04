@@ -14,5 +14,9 @@ Tutorial (coming soon)
 Improved speed (done)
 User-friendly folder structure on core files (will release core files soon)
 </pre>
+#### Screenshots
+<img src="https://cdn.discordapp.com/attachments/491980024229134346/916631691924230224/unknown.png"></img>
+<img src="https://cdn.discordapp.com/attachments/491980024229134346/916631737021390908/unknown.png"></img>
+<img src="https://cdn.discordapp.com/attachments/491980024229134346/916631942416433152/unknown.png"></img>
 #### Notice
 You can not sell this after modifying,it is against the license of this repository.
