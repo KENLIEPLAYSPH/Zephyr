@@ -460,6 +460,7 @@ int main() {
 			{
 				event.peer->data = new PlayerInfo;
 				sendData(event.peer, 1, nullptr, 0);
+				// optional if your server has a website
 				ofstream write_new_online("C:/xampp/htdocs/growtopia/online.zep");
 				write_new_online << atoi(GetPlayerCountServer().c_str());
 				write_new_online.close();
@@ -1352,6 +1353,7 @@ int main() {
 							/*rift*/
 							items_here += "\nadd_button|rift_cape|`oRift Cape``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Rift Cape.<CR><CR>`5Description:`` Fully customizable cape, set your own colors, your own aura, or disable them!``|0|5|7500000|0|||-1|-1||-1|-1||1||||||0|";
 							//raymn
+							items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|10|200000|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|1|200000|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|build_machine|`oBuilding Blocks Machine``|interface/large/store_buttons/store_buttons26.rttex|`2You Get:`` 1 Building Blocks Machine.<CR><CR>`5Description:`` This provider gives you random block from whole server each 24 hours, it can be anything except clothing items, it can be even blue gem lock!``|0|3|2500000|0|||-1|-1||-1|-1||1||||||0|";
 							/*royallock*/
@@ -1428,6 +1430,7 @@ int main() {
 								enet_peer_send(peer, 0, packet);
 								delete p.data;
 							}
+						}
 						}
 						if (cch == "action|buy\nitem|royal_lock\n") {
 							/*Fast Item Setup*/

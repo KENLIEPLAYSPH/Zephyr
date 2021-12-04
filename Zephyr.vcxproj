@@ -146,6 +146,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
