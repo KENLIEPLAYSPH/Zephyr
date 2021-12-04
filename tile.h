@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "player.h"
 #include "world.h"
 #include "trading.h"
@@ -8,10 +8,9 @@ inline void playerRespawn(WorldInfo* world, ENetPeer* peer, const bool isDeadByT
 	if (static_cast<PlayerInfo*>(peer->data)->Fishing) {
 		static_cast<PlayerInfo*>(peer->data)->TriggerFish = false;
 		static_cast<PlayerInfo*>(peer->data)->FishPosX = 0;
-		static_cast<PlayerInfo*>(peer->data)->FishPosY = 0;
+     	static_cast<PlayerInfo*>(peer->data)->FishPosY = 0;
 		static_cast<PlayerInfo*>(peer->data)->Fishing = false;
 		send_state(peer);
-		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wSit perfectly when fishing!", 0, false);
 		Player::OnSetPos(peer, static_cast<PlayerInfo*>(peer->data)->netID, static_cast<PlayerInfo*>(peer->data)->x, static_cast<PlayerInfo*>(peer->data)->y);
 	}
 	auto netID = static_cast<PlayerInfo*>(peer->data)->netID;
@@ -4721,8 +4720,8 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 					if (pData->x != 0 && !pData->Fishing)
 					{
 						RemoveInventoryItem(tile, 1, peer, true);
-						pData->FishPosX = x * 32;
-						pData->FishPosY = y * 32;
+					//	pData->FishPosX = x * 32;
+					//	pData->FishPosY = y * 32;
 						pData->Fishing = true;
 						pData->LastBait = getItemDef(tile).name;
 						SendFishingState(peer);
@@ -4739,18 +4738,18 @@ inline void sendTileUpdate(int x, int y, int tile, int causedBy, ENetPeer* peer,
 						pData->FishPosY = 0;
 						pData->Fishing = false;
 						send_state(peer);
-						Player::OnSetPos(peer, pData->netID, pData->x, pData->y);
+					//	Player::OnSetPos(peer, pData->netID, pData->x, pData->y);
 					}
 				}
 				return;
 			}
 			if (pData->Fishing)
 			{
-				pData->FishPosX = 0;
-				pData->FishPosY = 0;
+			//	pData->FishPosX = 0;
+			//	pData->FishPosY = 0;
 				pData->Fishing = false;
 				send_state(peer);
-				Player::OnSetPos(peer, pData->netID, pData->x, pData->y);
+			//	Player::OnSetPos(peer, pData->netID, pData->x, pData->y);
 				Player::OnTalkBubble(peer, pData->netID, "`wSit perfectly while fishing`w!", 0, true);
 				return;
 			}
