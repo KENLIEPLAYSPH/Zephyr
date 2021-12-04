@@ -8817,7 +8817,8 @@ inline void SendChat(ENetPeer* peer, const int netID, string message, WorldInfo*
 		// to be worked on
 		else if (str == "/beta")
 		{
-			// test function Player::OnSendToServer(peer, 1, 1, "127.0.0.1", 17092, 0, true);
+			// testfunction 
+			Player::OnSendToServer(peer, 1, 1, "127.0.0.1", 17128, 0, true);
 			Player::OnAddNotification(peer, "`4This feature is being developed.", "audio/teleport.wav", "interface/test.rttex");
 		}
 		else if (str == "/version" || str == "/zephyr" || str == "/ver" || str == "/about") // optimize by having less command functions
