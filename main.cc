@@ -460,7 +460,6 @@ int main() {
 			{
 				event.peer->data = new PlayerInfo;
 				sendData(event.peer, 1, nullptr, 0);
-				// optional if your server has a website
 				ofstream write_new_online("C:/xampp/htdocs/growtopia/online.zep");
 				write_new_online << atoi(GetPlayerCountServer().c_str());
 				write_new_online.close();
@@ -1352,10 +1351,9 @@ int main() {
 							//items_here += "\nadd_banner|interface/large/gui_shop_featured_header.rttex|0|3|";
 							/*rift*/
 							items_here += "\nadd_button|rift_cape|`oRift Cape``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Rift Cape.<CR><CR>`5Description:`` Fully customizable cape, set your own colors, your own aura, or disable them!``|0|5|7500000|0|||-1|-1||-1|-1||1||||||0|";
-							items_here += "\nadd_button|chand90|`oChandelier``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` 90 Chandelier.<CR><CR>`5Description:`` Farmable``|0|11|1000|0|||-1|-1||-1|-1||1||||||0|";
-							items_here += "\nadd_button|lgrid|`oLaser Grid``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` 90 Laser Grid.<CR><CR>`5Description:`` Farmable``|0|1|500|0|||-1|-1||-1|-1||1||||||0|";
 							//raymn
-							items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|10|200000|0|||-1|-1||-1|-1||1||||||0|";
+							items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|1|200000|0|||-1|-1||-1|-1||1||||||0|";
+							items_here += "\nadd_button|build_machine|`oBuilding Blocks Machine``|interface/large/store_buttons/store_buttons26.rttex|`2You Get:`` 1 Building Blocks Machine.<CR><CR>`5Description:`` This provider gives you random block from whole server each 24 hours, it can be anything except clothing items, it can be even blue gem lock!``|0|3|2500000|0|||-1|-1||-1|-1||1||||||0|";
 							/*royallock*/
 							items_here += "\nadd_button|diamond_lock|`oDiamond Lock``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Diamond Lock.<CR><CR>`5Description:`` Behaves the same as the world lock but shinier! `5it's a perma-item, is never lost when destroyed``|0|11|100000|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|royal_lock|`oRoyal Lock``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Royal Lock.<CR><CR>`5Description:`` This lock features rainbow and silence modes thats the all difference from any other lock``|0|10|5000000|0|||-1|-1||-1|-1||1||||||0|";
@@ -13260,8 +13258,7 @@ int main() {
 									{
 										Player::OnDialogRequest(peer, "set_default_color|`o\n");
 									}
-									
-									if (btn == "alist")
+									if (btn == "achievements")
 									{
 										Player::Ping(peer);
 										//lock
