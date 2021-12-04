@@ -1356,6 +1356,7 @@ int main() {
 							items_here += "\nadd_button|raymanfist|`oRayman's Fist``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` Rayman's Fist.<CR><CR>`5Description:`` The perfect punch! Ever wanted to send a disembodie fist flying across the land like Rayman? Well, now you can! Land a blow like none other with this furious fist. It even comes with a friend: Globox!``|0|10|200000|0|||-1|-1||-1|-1||1||||||0|";
 							/*royallock*/
 							items_here += "\nadd_button|chand90|`oChandelier``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` 90 Chandelier.<CR><CR>`5Description:`` Farmable``|0|11|1000|0|||-1|-1||-1|-1||1||||||0|";
+							items_here += "\nadd_button|cchand|`oCrystal Chandelier``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` 90 Crystal Chandelier.<CR><CR>`5Description:`` Chandelier but better``|0|0|5000|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|lgrid|`oLaser Grid``|interface/large/store_buttons/store_buttons69.rttex|`2You Get:`` 90 Laser Grid.<CR><CR>`5Description:`` Farmable``|0|1|500|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|diamond_lock|`oDiamond Lock``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Diamond Lock.<CR><CR>`5Description:`` Behaves the same as the world lock but shinier! `5it's a perma-item, is never lost when destroyed``|0|11|100000|0|||-1|-1||-1|-1||1||||||0|";
 							items_here += "\nadd_button|royal_lock|`oRoyal Lock``|interface/large/store_buttons/store_buttons70.rttex|`2You Get:`` 1 Royal Lock.<CR><CR>`5Description:`` This lock features rainbow and silence modes thats the all difference from any other lock``|0|10|5000000|0|||-1|-1||-1|-1||1||||||0|";
@@ -5337,6 +5338,45 @@ int main() {
 							/*Fast Item Setup*/
 							auto Price = 1000;
 							auto ItemID = 340;
+							auto count = 90;
+							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
+							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
+							auto gembux = atoi(content.c_str());
+							if (gembux >= Price) {
+								if (CheckItemMaxed(peer, ItemID, count) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && CheckItemExists(peer, ItemID) && CheckItemMaxed(peer, ItemID, 1) || pData->inventory.items.size() + 1 >= pData->currentInventorySize && !CheckItemExists(peer, ItemID)) {
+									Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+									GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You don't have enough space in your inventory that. You may be carrying to many of one of the items you are trying to purchase or you don't have enough free spaces to fit them all in your backpack!"));
+									ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+									enet_peer_send(peer, 0, packet);
+									delete p.data;
+									break;
+								}
+								gembux -= Price;
+								ofstream myfile;
+								myfile.open("save/gemdb/_" + pData->rawName + ".zep");
+								myfile << gembux;
+								myfile.close();
+								Player::OnSetBux(peer, gembux, 0);
+								bool success = true;
+								SaveItemMoreTimes(ItemID, count, peer, success, "Purchased from store");
+								Player::PlayAudio(peer, "audio/piano_nice.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You've purchased " + to_string(count) + " `o" + getItemDef(ItemID).name + " `wfor `$" + to_string(Price) + " `wGems.\nYou have `$" + to_string(gembux) + " `wGems left.\n\n`5Received: ``" + to_string(count) + " " + getItemDef(ItemID).name + ""));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+							else {
+								Player::PlayAudio(peer, "audio/bleep_fail.wav", 0);
+								GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnStorePurchaseResult"), "You can't afford `o" + getItemDef(ItemID).name + "``!  You're `$" + to_string(Price - gembux) + "`` Gems short."));
+								ENetPacket* packet = enet_packet_create(p.data, p.len, ENET_PACKET_FLAG_RELIABLE);
+								enet_peer_send(peer, 0, packet);
+								delete p.data;
+							}
+						}
+						if (cch == "action|buy\nitem|cchand\n") {
+							/*Fast Item Setup*/
+							auto Price = 5000;
+							auto ItemID = 9508;
 							auto count = 90;
 							ifstream ifsz("save/gemdb/_" + pData->rawName + ".zep");
 							string content((std::istreambuf_iterator<char>(ifsz)), (std::istreambuf_iterator<char>()));
@@ -15152,70 +15192,6 @@ int main() {
 								}
 							}
 						}
-						/*if (btn == "withdraw") {
-							int xxx = ((PlayerInfo*)(peer->data))->lastPunchX;
-							int yyy = ((PlayerInfo*)(peer->data))->lastPunchY;
-							if (xxx < 0 && yyy < 0) continue;
-							int withdrawcpy = world->items[xxx + (yyy * world->width)].vdraw;
-							if (withdrawcpy != 0) {
-								if (withdrawcpy <= 200) {
-									if (CheckItemMaxed(peer, 242, withdrawcpy)) {
-										Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wI dont have free space to collect " + to_string(withdrawcpy) + " World Locks!", 0, true);
-										continue;
-									}
-									world->items[xxx + (yyy * world->width)].vdraw = 0;
-									int realid = world->items[xxx + (yyy * world->width)].vid;
-									int priceid = world->items[xxx + (yyy * world->width)].vprice;
-									bool success = true;
-									SaveShopsItemMoreTimes(242, withdrawcpy, peer, success);
-									if (!isWorldOwner(peer, world)) Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "Collected " + to_string(withdrawcpy) + " World Locks from " + getItemDef(world->items[xxx + (yyy * world->width)].foreground).name + " (" + world->name + ")", 0, true);
-									Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wYou collected " + to_string(withdrawcpy) + " World Locks.", 0, true);
-									if (world->items[xxx + (yyy * world->width)].vcount == 0) {
-										priceid = 0;
-										realid = 0;
-									}
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
-										if (isHere(peer, currentPeer)) {
-											if (world->items[xxx + (yyy * world->width)].vcount != 0 && world->items[xxx + (yyy * world->width)].vid != 0) {
-												UpdateVend(currentPeer, world->items[xxx + (yyy * world->width)].foreground, xxx, yyy, realid, false, priceid, world->items[xxx + (yyy * world->width)].background, world->items[xxx + (yyy * world->width)].opened);
-											}
-											else updateVendMsg(currentPeer, world->items[xxx + (yyy * world->width)].foreground, xxx, yyy, "`2" + getItemDef(world->items[xxx + (yyy * world->width)].foreground).name + "\n`wOUT OF ORDER");
-										}
-									}
-								}
-								else if (withdrawcpy > 200) {
-									if (CheckItemMaxed(peer, 242, 200)) {
-										Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wI dont have free space to collect 200 World Locks!", 0, true);
-										continue;
-									}
-									int grazinti = withdrawcpy - 200;
-									world->items[xxx + (yyy * world->width)].vdraw = grazinti;
-									int realid = world->items[xxx + (yyy * world->width)].vid;
-									int priceid = world->items[xxx + (yyy * world->width)].vprice;
-									bool success = true;
-									SaveShopsItemMoreTimes(242, 200, peer, success);
-									if (!isWorldOwner(peer, world)) Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "Collected 200 World Locks from " + getItemDef(world->items[xxx + (yyy * world->width)].foreground).name + " (" + world->name + ")", 0, true);
-									Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wYou collected 200 World Locks, leaving " + to_string(grazinti) + " in the machine!", 0, true);
-									if (world->items[xxx + (yyy * world->width)].vcount == 0) {
-										priceid = 0;
-										realid = 0;
-									}
-									for (ENetPeer* currentPeer = server->peers; currentPeer < &server->peers[server->peerCount]; ++currentPeer) {
-										if (currentPeer->state != ENET_PEER_STATE_CONNECTED) continue;
-										if (isHere(peer, currentPeer)) {
-											if (world->items[xxx + (yyy * world->width)].opened && world->items[xxx + (yyy * world->width)].vcount < world->items[xxx + (yyy * world->width)].vprice) {
-												UpdateVend(currentPeer, world->items[xxx + (yyy * world->width)].foreground, xxx, yyy, realid, true, priceid, world->items[xxx + (yyy * world->width)].background, world->items[xxx + (yyy * world->width)].opened);
-											}
-											else UpdateVend(currentPeer, world->items[xxx + (yyy * world->width)].foreground, xxx, yyy, realid, true, priceid, world->items[xxx + (yyy * world->width)].background, world->items[xxx + (yyy * world->width)].opened);
-										}
-									}
-								}
-								else {
-									Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wHuh?", 0, true);
-								}
-							}
-						}*/
 						if (btn == "withdraw") {
 							int xxx = ((PlayerInfo*)(peer->data))->lastPunchX;
 							int yyy = ((PlayerInfo*)(peer->data))->lastPunchY;
@@ -15239,7 +15215,7 @@ int main() {
 									if (plus > 200) {
 										counts = 200 - currentItemCount;
 										if (CheckItemMaxed(peer, 242, counts)) {
-											Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wI dont have free space to collect World Locks!", 0, true);
+											Player::OnTalkBubble(peer, ((PlayerInfo*)(peer->data))->netID, "`wI don't have free space to collect World Locks!", 0, true);
 											continue;
 										}
 										else {
