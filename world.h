@@ -4628,19 +4628,19 @@ inline void find_geiger(ENetPeer* peer) {
 		}
 
 		if (static_cast<PlayerInfo*>(peer->data)->geigerlevel >= 3 && rand() % 100 <= 1) {
-			Player::OnConsoleMessage(peer, "Obtained Uranium Block");
+			Player::OnConsoleMessage(peer, "Obtained Uranium Block!");
 			auto success1 = true;
 			SaveItemMoreTimes(4658, 1, peer, success1);
 		}
 
 		if (static_cast<PlayerInfo*>(peer->data)->geigerlevel >= 5 && rand() % 100 <= 1) {
-			Player::OnConsoleMessage(peer, "Obtained Electrical Power Cube");
+			Player::OnConsoleMessage(peer, "Obtained Electrical Power Cube!");
 			auto success1 = true;
 			SaveItemMoreTimes(6976, 1, peer, success1);
 		}
 
 		if (static_cast<PlayerInfo*>(peer->data)->geigerlevel >= 10 && rand() % 100 <= 1) {
-			Player::OnConsoleMessage(peer, "Obtained Growtoken");
+			Player::OnConsoleMessage(peer, "Obtained Growtoken!");
 			auto success1 = true;
 			SaveItemMoreTimes(1486, 1, peer, success1);
 		}
@@ -4889,7 +4889,6 @@ inline void DropGem(ENetPeer* peer, const int x, const int y, WorldInfo* world, 
 		if (gem_multiplier != 0) b *= gem_multiplier;
 		if (!world->drop_gem && b != 0) {
 			try {
-				Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`3placeholder for collectable gems", 0, 0);
 				int currentgems = 0;
 				ifstream fs("save/gemdb/_" + static_cast<PlayerInfo*>(peer->data)->rawName + ".zep");
 				if (!fs.is_open()) {
@@ -7154,6 +7153,7 @@ inline void SendPunishView(ENetPeer* peer, string PlayerName) {
 }
 
 inline void SendGrowpedia(ENetPeer* peer) {
+
 }
 
 inline void SendFishingState(ENetPeer* peer) {
@@ -7447,8 +7447,8 @@ inline void SyncFish(WorldInfo* world, ENetPeer* peer) {
 		return;
 	}
 	else if (static_cast<PlayerInfo*>(peer->data)->Fishing && !static_cast<PlayerInfo*>(peer->data)->TriggerFish) {
-		static_cast<PlayerInfo*>(peer->data)->FishPosX = 0;
-		static_cast<PlayerInfo*>(peer->data)->FishPosY = 0;
+	//	static_cast<PlayerInfo*>(peer->data)->FishPosX = 0;
+	//	static_cast<PlayerInfo*>(peer->data)->FishPosY = 0;
 		static_cast<PlayerInfo*>(peer->data)->Fishing = false;
 		Player::OnTalkBubble(peer, static_cast<PlayerInfo*>(peer->data)->netID, "`wSit perfectly while fishing`w!", 0, true);
 	}
@@ -9453,6 +9453,7 @@ inline void send_quest_view(ENetPeer* peer, PlayerInfo* pData, WorldInfo* world)
 }
 
 inline void send_info(ENetPeer* peer, PlayerInfo* pData) {
+	Player::Ping(peer);
 	string buffs = get_player_buffs(pData);
 	int levels = pData->level;
 	int xp = pData->xp;
@@ -9465,9 +9466,9 @@ inline void send_info(ENetPeer* peer, PlayerInfo* pData) {
 		joinguilddialog = "\nadd_button|joinguild|`2Join Guild " + pData->guildlast + "!|";
 	}
 	if (pData->cloth_back == 10424) {
-		rift_cape += "\nadd_button|rift_cape_edit|`$Rift Cape``|noflags|0|0|";
+		rift_cape += "\nadd_custom_button|rift_cape_edit|image:interface/large/gui_wrench_rift_cape.rttex;image_size:400,260;width:0.19;|";
 	}
-	Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_player_info|" + pData->displayName + "|" + std::to_string(levels) + "|" + std::to_string(xp) + "|" + to_string(pData->level * 1500) + "|\nadd_spacer|small|" + joinguilddialog + "|" + rift_cape + "\nadd_button|achievements|`$Achievements``|\nadd_button|EditBillboard|`$Edit Billboard|\nadd_button|change_password|`$Change password``|\nadd_button|manage_title|`$Title``|\nadd_button|notebook_edit|`$Notebook``|\nadd_button|goals|`$Goals & Quests``|noflags|0|0|\nadd_button|worlds_view|`$My Worlds``|\nadd_spacer|small|\nadd_textbox|`wActive effects:``|left|" + buffs + "|\nadd_spacer|small|\nadd_textbox|`oYou have `w" + to_string(pData->currentInventorySize) + "`` `obackpack slots.``|left|\nadd_spacer|small|\nadd_textbox|`oCurrent world: `w" + currentworld + " `o(`w" + std::to_string(xxx) + "`o, `w" + std::to_string(yyy) + "`o)|left|\nadd_spacer|small|\nadd_button|chc0|`wContinue|noflags|0|0|\n\nadd_quick_exit|\nnend_dialog|gazette||OK|");
+	Player::OnDialogRequest(peer, "set_default_color|`o\n\nadd_player_info|" + pData->displayName + "|" + std::to_string(levels) + "|" + std::to_string(xp) + "|" + to_string(pData->level * 1500) + "|\nadd_spacer|small|" + joinguilddialog + "|\nadd_custom_button|change_password|image:interface/large/gui_wrench_changepass.rttex;image_size:400,260;width:0.19;|" + rift_cape + "\nadd_custom_button|alist|image:interface/large/gui_wrench_achievements.rttex;image_size:400,260;width:0.19;|\nadd_custom_label|(?/13)|target:alist;top:0.72;left:0.5;size:small|\nadd_custom_button|EditBillboard|image:interface/large/gui_wrench_edit_billboard.rttex;image_size:400,260;width:0.19;|\nadd_custom_button|manage_title|image:interface/large/gui_wrench_title.rttex;image_size:400,260;width:0.19;|\nadd_custom_button|notebook_edit|image:interface/large/gui_wrench_notebook.rttex;image_size:400,260;width:0.19;|\nadd_custom_button|goals|image:interface/large/gui_wrench_goals_quests.rttex;image_size:400,260;width:0.19;|\nadd_custom_button|my_worlds|image:interface/large/gui_wrench_my_worlds.rttex;image_size:400,260;width:0.19;|\nadd_custom_break|\nadd_spacer|small|\nadd_textbox|`wActive effects:``|left|" + buffs + "|\nadd_spacer|small|\nadd_textbox|`oYou have `w" + to_string(pData->currentInventorySize) + "`` `obackpack slots.``|left|\nadd_spacer|small|\nadd_textbox|`oCurrent world: `w" + currentworld + " `o(`w" + std::to_string(xxx) + "`o, `w" + std::to_string(yyy) + "`o)|left|\nadd_spacer|small|\nadd_button|chc0|`wContinue|noflags|0|0|\n\nadd_quick_exit|\nnend_dialog|gazette||OK|");
 }
 
 bool has_permission(int adminLevel, string str, bool subscriber) {
