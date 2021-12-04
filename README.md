@@ -12,6 +12,7 @@ Release Core (soon!)
 Gems drop and merge (done)
 Tutorial (coming soon)
 Improved speed (done)
+OH GOD I GOT THE WORST ERROR NOO
 User-friendly folder structure on core files (will release core files soon)
 </pre>
 #### Screenshots
