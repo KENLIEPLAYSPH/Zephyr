@@ -6,6 +6,8 @@ An open-source Growtopia server software project based on GTOS ![Zephyr](https:/
 #### To-Do's
 <pre>
 Achievements (added some)
+Add Real GT Wrench Menu (done)
+Release Core (soon!)
 200 Max Items (done)
 Gems drop and merge (done)
 Tutorial (coming soon)
