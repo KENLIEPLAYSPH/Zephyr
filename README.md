@@ -17,3 +17,5 @@ User-friendly folder structure on core files (will release core files soon)
 <img src="https://cdn.discordapp.com/attachments/491980024229134346/916631942416433152/unknown.png"></img>
 #### Notice
 This is semi-complete for production.
+</ br>
+ADVICE : change to null instead of channel -> null
